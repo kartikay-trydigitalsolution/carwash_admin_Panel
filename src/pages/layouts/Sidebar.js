@@ -18,19 +18,19 @@ const sidebar=  ()=> {
         <NavLink to="/dashboard" end className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>
           Home
         </NavLink>
-        <NavLink to="/staff-management" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>
+        <NavLink to="/dashboard/staff-management" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>
           Staff Management
         </NavLink>
-        <NavLink to="/assigned-maintenance" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>
+        <NavLink to="/dashboard/assigned-management" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>
           Assigned Maintenance
         </NavLink>
-        <NavLink to="/machine-management" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>
+        <NavLink to="/dashboard/machine-management" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>
           Machine Management
         </NavLink>
-        <NavLink to="/maintenance-record" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>
+        <NavLink to="/dashboard/maintenance-record-management" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>
           Maintenance Record Management
         </NavLink>
-        <NavLink to="/recipient-list" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>
+        <NavLink to="/dashboard/recepient-list-management" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>
           Recipient List Management
         </NavLink>
         <NavLink to="/inventory-management" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>

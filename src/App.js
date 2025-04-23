@@ -8,9 +8,13 @@ import ChangePasswordPage from "./pages/auth/ChangePassword";
 import DashboardLayout from "./pages/dashboardLayout/DashboardLayout";
 import DashboardHome from "./pages/dashboard/Dashboard";
 import UserProfile from "./pages/components/UserProfile";
-import StaffManagement from "./pages/components/UserProfile";
+import StaffManagement from "./pages/modules/StaffManagement";
 import Settings from "./pages/components/Settings";
 import "bootstrap/dist/css/bootstrap.min.css";
+import AssignedManagement from "./pages/modules/AssignedMantance";
+import MachineManagement from "./pages/modules/MachineManagement";
+import RecepientListManagement from "./pages/modules/RecepientListManagement";
+import MaintenanceRecordManagement from "./pages/modules/MaintenanceRecordManagement";
 
 function App() {
   return (
@@ -23,7 +27,11 @@ function App() {
         <Route path="/change-password" element={<ChangePasswordPage />} />
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<DashboardHome />} />
-          {/* <Route path="/staff-management" element={<UserProfile />} /> */}
+          <Route path="staff-management" element={<StaffManagement />} />
+          <Route path="assigned-management" element={<AssignedManagement />} />
+          <Route path="machine-management" element={<MachineManagement />} />
+          <Route path="recepient-list-management" element={<RecepientListManagement />} />
+          <Route path="maintenance-record-management" element={<MaintenanceRecordManagement />} />
           <Route path="settings" element={<Settings />} />
         </Route>
         {/* Add other routes here */}

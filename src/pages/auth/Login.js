@@ -22,7 +22,7 @@ const LoginPage = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      navigate('/dashboard')
     },
   });
   return (

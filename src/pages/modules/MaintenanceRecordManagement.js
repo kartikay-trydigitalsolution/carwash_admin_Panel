@@ -2,7 +2,7 @@
 import React, { useCallback, useState } from "react";
 import DataTableHeaderContainer from "../components/DataTableHeaderContainer";
 import DataTableComponent from "../datatable/DataTable";
-const StaffManagement = () => {
+const MaintenanceRecordManagement = () => {
   const [parentMessage, setParentMessage] = useState("");
 
   const handleButtonClick = useCallback(
@@ -16,8 +16,8 @@ const StaffManagement = () => {
       <div class="card shadow-sm p-4">
         <DataTableHeaderContainer
           onButtonClick={handleButtonClick}
-          title={"Staff List"}
-          buttonTitle={"Add Staff"}
+          title={"Maintenance Records"}
+          buttonTitle={"Maintenance Records"}
         />
         <DataTableComponent />
       </div>
@@ -25,4 +25,4 @@ const StaffManagement = () => {
   );
 };
 
-export default StaffManagement;
+export default MaintenanceRecordManagement;
