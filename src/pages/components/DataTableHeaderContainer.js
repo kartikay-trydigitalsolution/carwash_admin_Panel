@@ -1,9 +1,17 @@
 import React from "react";
 
-const DataTableHeaderContainer = ({ onButtonClick, title, buttonTitle }) => {
+const DataTableHeaderContainer = ({
+  onButtonClick,
+  onAddButtonClick,
+  title,
+  buttonTitle,
+}) => {
   const handleClick = () => {
     const message = "Hello from the child!";
     onButtonClick(message);
+  };
+  const handleModelClick = () => {
+    onAddButtonClick({ type: "Dashboard" });
   };
 
   return (
@@ -23,7 +31,9 @@ const DataTableHeaderContainer = ({ onButtonClick, title, buttonTitle }) => {
               placeholder="Search..."
             />
           </div>
-          <button class="add-button">{buttonTitle}</button>
+          <button class="add-button" onClick={handleModelClick}>
+            {buttonTitle}
+          </button>
         </div>
       </div>
     </div>
