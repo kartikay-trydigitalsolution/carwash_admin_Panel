@@ -58,8 +58,55 @@
   padding-left: 12px;
   /* Add other button styles */
 }
-.datatable_wrapper{
+
+.z-50 {
+  z-index: 50;
+}
+.mainContent {
+  position: relative;
+  z-index: 0;
+}
+.placeholder-style {
+  color: #999; /* Light gray color for the placeholder text */
+}
+.datatable_wrapper {
   border-radius: 10px;
+  /* z-index: -1; */
+}
+.form-check {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: -2%;
+  color: #4b5563;
+  margin-bottom: 0.5rem !important
+  ;
+}
+/* Target the custom checkbox container */
+.custom-checkbox-color .form-check-input:checked {
+  background-color: #d2d5da; /* Replace with your desired color */
+  border-color: #D2D5DA; /* Optional: Change border color too */
+}
+
+.content_header {
+  font-family: Inter;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: -2%;
+}
+
+.modal-footer-btn {
+  font-size: 14px;
+  font-weight: 600;
+}
+.modal-text {
+  font-family: Inter;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 100%;
+  letter-spacing: -2%;
 }
 .datatable_input:focus {
   outline: none; /* Important: Remove the default focus outline */
@@ -67,7 +114,7 @@
   /* You can optionally add other focus styles like a subtle box-shadow */
 }
 div.rdt_TableRow:nth-child(odd) {
-  background-color: #F7F6FE;
+  background-color: #f7f6fe;
 }
 
 .fa-trash-alt {

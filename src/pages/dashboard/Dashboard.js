@@ -4,10 +4,17 @@ import DataTableHeaderContainer from "../components/DataTableHeaderContainer";
 import DataTableComponent from "../datatable/DataTable";
 const DashboardHome = () => {
   const [parentMessage, setParentMessage] = useState("");
+  const [showModel, setShowModel] = useState(false);
 
   const handleButtonClick = useCallback(
     (dataFromChild) => {
       setParentMessage(dataFromChild);
+    },
+    [setParentMessage]
+  );
+  const handleModelClick = useCallback(
+    (dataFromChild) => {
+      setShowModel(true);
     },
     [setParentMessage]
   );
@@ -16,6 +23,7 @@ const DashboardHome = () => {
       <div class="card shadow-sm border-0 pt-4 datatable_wrapper">
         <DataTableHeaderContainer
           onButtonClick={handleButtonClick}
+          onAddButtonClick={handleModelClick}
           title={"Machines Details"}
           buttonTitle={"Add Machine"}
         />

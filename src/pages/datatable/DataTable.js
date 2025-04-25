@@ -364,7 +364,7 @@ const DataTableComponent = () => {
   };
 
   return (
-    <div className="p-4">
+    <div className="p-4 datatable">
       <DataTable
         columns={columns}
         data={data}

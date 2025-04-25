@@ -13,7 +13,7 @@ const MaintenanceRecordManagement = () => {
   );
   return (
     <div class="p-5 w-100">
-      <div class="card shadow-sm p-4">
+      <div class="card shadow-sm border-0 pt-4 datatable_wrapper">
         <DataTableHeaderContainer
           onButtonClick={handleButtonClick}
           title={"Maintenance Records"}
