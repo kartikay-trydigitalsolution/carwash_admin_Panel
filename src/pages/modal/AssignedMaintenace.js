@@ -21,8 +21,7 @@ const AssignMaintenanceModal = ({ show, onClose }) => {
     onClose();
   };
 
-  if (!show) return null;
-
+ 
   return (
     <div className="absolute inset-0 bg-[#00000099] flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg w-full max-w-xl">

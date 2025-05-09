@@ -20,10 +20,10 @@ const AssignedManagement = () => {
   );
   return (
     <>
-      <AssignMaintenanceModal
+      {showModal && <AssignMaintenanceModal
         show={showModal}
         onClose={() => setShowModal(false)}
-      />
+      />}
       <div class="p-5 w-100">
         <div class="card shadow-sm border-0 pt-4 datatable_wrapper">
           <DataTableHeaderContainer
