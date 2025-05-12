@@ -19,8 +19,8 @@ const DashboardHome = () => {
     [setParentMessage]
   );
   return (
-    <div class="p-5 w-100">
-      <div class="card shadow-sm border-0 pt-4 datatable_wrapper">
+    <div className="p-5 w-100">
+      <div className="card shadow-sm border-0 pt-4 datatable_wrapper">
         <DataTableHeaderContainer
           onButtonClick={handleButtonClick}
           onAddButtonClick={handleModelClick}

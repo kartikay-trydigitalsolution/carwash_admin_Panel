@@ -19,7 +19,7 @@ const DataTableHeaderContainer = ({
       <div className="d-flex justify-content-between ">
         <div className="datatable_title">{title}</div>
         <div className="d-flex">
-          <div class="search-box mr-2">
+          <div className="search-box mr-2">
             <button className="search_icon">
               <i className="fa fa-search"></i>
             </button>
@@ -31,7 +31,7 @@ const DataTableHeaderContainer = ({
               placeholder="Search..."
             />
           </div>
-          <button class="add-button" onClick={handleModelClick}>
+          <button className="add-button" onClick={handleModelClick}>
             {buttonTitle}
           </button>
         </div>

@@ -173,7 +173,7 @@ div.rdt_TableRow:nth-child(odd) {
 }
 
 .fullscreen-container {
-  /* Apply this class to your outermost div */
+  /* Apply this className to your outermost div */
   width: 100vw; /* 100% of the viewport width */
 }
 .datatable_input {
