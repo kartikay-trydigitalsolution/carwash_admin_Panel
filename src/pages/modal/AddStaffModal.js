@@ -2,17 +2,20 @@ import { memo, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { createRequest, fetchRequest } from "../../features/staff/StaffSlice";
+import {
+  createRequest,
+  fetchRequest,
+  resetSuccess,
+} from "../../features/staff/StaffSlice";
 import { useNavigate } from "react-router-dom";
-const AddStaffModal = ({ show, onClose }) => {
+const AddStaffModal = ({ show, onClose, onSuccess, parentData }) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const success = useSelector((state) => state.staff.success);
-  useEffect(() => {
-    if (success) {
-      navigate("/dashboard");
-    }
-  }, [success, navigate]);
+  const success = useSelector((state) => state?.staff?.data?.success);
+  // useEffect(() => {
+  //   if (success === true) {
+
+  //   }
+  // }, [dispatch]);
   const validationSchema = Yup.object({
     name: Yup.string().required("*Name is required"),
     email: Yup.string()
@@ -39,10 +42,13 @@ const AddStaffModal = ({ show, onClose }) => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      dispatch(createRequest(values));
-      // navigate("/dashboard");
+      parentData(values);
+      // dispatch(createRequest(values));
+      // onSuccess(); // Parent closes modal & fetches updated list
+      // formik.resetForm();
     },
   });
+
   useEffect(() => {
     dispatch(fetchRequest());
   }, [dispatch]);

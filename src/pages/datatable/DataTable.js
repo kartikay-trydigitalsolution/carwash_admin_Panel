@@ -1,15 +1,16 @@
 import React, { useMemo, useState } from "react";
 import DataTable from "react-data-table-component";
 
-const DataTableComponent = ({dataTableData}) => {
-  const handleEdit = (row) => {
-    console.log("Edit clicked!", row);
-    // You can open a modal or redirect, etc.
-  };
-
+const DataTableComponent = ({ dataTableData, onDelete, onUpdate }) => {
   const handleDelete = (row) => {
-    console.log("Delete clicked!", row);
-    // You can show a confirmation and remove from state
+    if (window.confirm("Are you sure you want to delete this staff member?")) {
+      onDelete?.(row._id); // or onDelete(row) if you're passing the full object
+    }
+  };
+  const handleEdit = (row) => {
+    if (window.confirm("Are you sure you want to update this staff member?")) {
+      onUpdate?.(row._id); // or onDelete(row) if you're passing the full object
+    }
   };
   const customStyles = {
     table: {

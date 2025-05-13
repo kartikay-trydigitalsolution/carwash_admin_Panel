@@ -7,6 +7,9 @@ import {
   createRequest,
   createSuccess,
   createFailure,
+  deleteRequest,
+  deleteSuccess,
+  deleteFailure,
 } from "./StaffSlice";
 
 function* fetchStaffSaga() {
@@ -27,7 +30,18 @@ function* createStaffSaga(action) {
   }
 }
 
+// DELETE
+function* deleteStaffSaga(action) {
+  try {
+    yield call(axios.delete, `/staff/staff/${action.payload}`);
+    yield put(deleteSuccess(action.payload)); // Use the same ID to update state
+  } catch (error) {
+    yield put(deleteFailure(error.message));
+  }
+}
+
 export function* watchStaffSaga() {
   yield takeLatest(fetchRequest.type, fetchStaffSaga); // Using fetchRequest.type
   yield takeLatest(createRequest.type, createStaffSaga); // Using createRequest.type
+  yield takeLatest(deleteRequest.type, deleteStaffSaga);
 }
