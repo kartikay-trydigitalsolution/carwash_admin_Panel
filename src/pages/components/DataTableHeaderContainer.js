@@ -1,9 +1,17 @@
 import React from "react";
 
-const DataTableHeaderContainer = ({ onButtonClick, title, buttonTitle }) => {
+const DataTableHeaderContainer = ({
+  onButtonClick,
+  onAddButtonClick,
+  title,
+  buttonTitle,
+}) => {
   const handleClick = () => {
     const message = "Hello from the child!";
     onButtonClick(message);
+  };
+  const handleModelClick = () => {
+    onAddButtonClick({ type: "Dashboard" });
   };
 
   return (
@@ -11,7 +19,7 @@ const DataTableHeaderContainer = ({ onButtonClick, title, buttonTitle }) => {
       <div className="d-flex justify-content-between ">
         <div className="datatable_title">{title}</div>
         <div className="d-flex">
-          <div class="search-box mr-2">
+          <div className="search-box mr-2">
             <button className="search_icon">
               <i className="fa fa-search"></i>
             </button>
@@ -23,7 +31,9 @@ const DataTableHeaderContainer = ({ onButtonClick, title, buttonTitle }) => {
               placeholder="Search..."
             />
           </div>
-          <button class="add-button">{buttonTitle}</button>
+          <button className="add-button" onClick={handleModelClick}>
+            {buttonTitle}
+          </button>
         </div>
       </div>
     </div>

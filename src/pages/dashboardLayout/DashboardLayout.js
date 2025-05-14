@@ -7,7 +7,7 @@ const dashboardLayout = () => {
   return (
     <div className="dashboardContainer">
       <Sidebar />
-      <main className="mainContent">
+      <main className="mainContent relative">
         <Outlet />
       </main>
     </div>

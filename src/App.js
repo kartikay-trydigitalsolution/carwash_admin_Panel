@@ -15,10 +15,11 @@ import AssignedManagement from "./pages/modules/AssignedMantance";
 import MachineManagement from "./pages/modules/MachineManagement";
 import RecepientListManagement from "./pages/modules/RecepientListManagement";
 import MaintenanceRecordManagement from "./pages/modules/MaintenanceRecordManagement";
-
+import { Toaster } from "sonner";
 function App() {
   return (
     <BrowserRouter>
+      <Toaster position="top-center" />
       <ToastContainer />
       <Routes>
         <Route path="/" element={<LoginPage />} />
@@ -30,8 +31,14 @@ function App() {
           <Route path="staff-management" element={<StaffManagement />} />
           <Route path="assigned-management" element={<AssignedManagement />} />
           <Route path="machine-management" element={<MachineManagement />} />
-          <Route path="recepient-list-management" element={<RecepientListManagement />} />
-          <Route path="maintenance-record-management" element={<MaintenanceRecordManagement />} />
+          <Route
+            path="recepient-list-management"
+            element={<RecepientListManagement />}
+          />
+          <Route
+            path="maintenance-record-management"
+            element={<MaintenanceRecordManagement />}
+          />
           <Route path="settings" element={<Settings />} />
         </Route>
         {/* Add other routes here */}
