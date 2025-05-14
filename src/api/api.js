@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const instance = axios.create({
   baseURL: "http://localhost:5000", // example public API
@@ -19,13 +20,16 @@ instance.interceptors.request.use(
 
 // Response Interceptor
 instance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    toast.success(response.data.message); // Show toast on every success
+    return response;
+  },
   (error) => {
-    if (error.response?.status === 401) {
-      console.warn("Unauthorized. Redirecting...");
+    if (error.response?.status === 500) {
+      toast.error(error.response.data.message);
       // e.g., redirect to login
     }
-    return Promise.reject(error);
+    // return Promise.reject(error);
   }
 );
 

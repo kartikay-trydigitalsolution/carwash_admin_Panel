@@ -1,26 +1,29 @@
 import { useState } from "react";
-
-const AddMachineModal = ({ show, onClose }) => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    role: "",
-    password: "",
-    confirmPassword: "",
+import { useFormik } from "formik";
+import * as Yup from "yup";
+const AddMachineModal = ({ show, onClose, onSubmit, data, type }) => {
+  const validationSchema = Yup.object({
+    machine_model: Yup.string().required("*Machine Model is required"),
+    machine_sr_no: Yup.string().required("*Machine Sr. No. is required"),
+    location: Yup.string().required("*location is required"),
+    operation_status: Yup.string().required("*location is required"),
   });
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission here
-    console.log(formData);
-    onClose();
-  };
-
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      machine_model: data?.machine_model || "",
+      machine_sr_no: data?.machine_sr_no || "",
+      location: data?.location || "",
+      operation_status: data?.operation_status || "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values, { resetForm }) => {
+      onSubmit(
+        type === "UPDATE" ? { ...values, id: data._id, type: type } : values
+      );
+      resetForm();
+    },
+  });
   if (!show) return null;
 
   return (
@@ -35,31 +38,70 @@ const AddMachineModal = ({ show, onClose }) => {
 
         {/* Body */}
         <div className="p-6 overflow-y-auto flex-1">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={formik.handleSubmit} id="machineForm">
             <div className="space-y-4">
               <input
-                id="name"
+                id="machine_model"
                 type="text"
-                className="form-input w-full ps-4"
-                placeholder="Machine Name"
+                name="machine_model"
+                className="form-input w-full ps-3"
+                placeholder="Machine Model"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.machine_model}
+                aria-label="machine_model"
               />
+              {formik.touched.machine_model && formik.errors.machine_model ? (
+                <div className="red">{formik.errors.machine_model}</div>
+              ) : null}
               <input
-                id="email"
+                id="machine_sr_no"
                 type="text"
-                className="form-input w-full ps-4"
-                placeholder="Machine ID"
+                name="machine_sr_no"
+                className="form-input w-full ps-3"
+                placeholder="Machine Sr. No."
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.machine_sr_no}
+                aria-label="machine_sr_no"
               />
+              {formik.touched.machine_sr_no && formik.errors.machine_sr_no ? (
+                <div className="red">{formik.errors.machine_sr_no}</div>
+              ) : null}
               <input
-                id="email"
+                id="location"
                 type="text"
-                className="form-input w-full ps-4"
+                name="location"
+                className="form-input w-full ps-3"
                 placeholder="Location"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.location}
+                aria-label="location"
               />
-              <select id="role" type="text" className="form-input w-full ps-3">
-                <option>Operational Status</option>
-                <option>Active</option>
-                <option>Inactive</option>
+              {formik.touched.location && formik.errors.location ? (
+                <div className="red">{formik.errors.location}</div>
+              ) : null}
+
+              <select
+                id="operation_status"
+                name="operation_status"
+                className="form-input w-full ps-2"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.operation_status}
+              >
+                <option value="" disabled>
+                  Operational Status
+                </option>
+                <option value="active">Active</option>
+                <option value="inactive">In Active</option>
+                <option value="in_maintenance">In Maintenance</option>
               </select>
+              {formik.touched.operation_status &&
+                formik.errors.operation_status && (
+                  <div className="red">{formik.errors.operation_status}</div>
+                )}
             </div>
           </form>
         </div>
@@ -75,10 +117,10 @@ const AddMachineModal = ({ show, onClose }) => {
           </button>
           <button
             type="submit"
-            form="yourFormId"
+            form="machineForm"
             className="px-4 py-2 bg-[#005FAF] text-white hover:bg-[#005FAF] rounded-md modal-footer-btn"
           >
-            Create Staff
+            Create Machine
           </button>
         </div>
       </div>

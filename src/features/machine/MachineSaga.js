@@ -13,12 +13,12 @@ import {
   updateRequest,
   updateSuccess,
   updateFailure,
-} from "./StaffSlice";
+} from "./MachineSlice";
 
 // FETCH
-function* fetchStaffSaga() {
+function* fetchMachineSaga() {
   try {
-    const response = yield call(axios.get, "/staff/staff");
+    const response = yield call(axios.get, "/machine/machine");
     yield put(fetchSuccess(response.data));
   } catch (error) {
     yield put(fetchFailure(error.message));
@@ -26,9 +26,9 @@ function* fetchStaffSaga() {
 }
 
 // CREATE
-function* createStaffSaga(action) {
+function* createMachineSaga(action) {
   try {
-    const response = yield call(axios.post, "/staff/staff", action.payload);
+    const response = yield call(axios.post, "/machine/machine", action.payload);
     yield put(createSuccess(response.data));
   } catch (error) {
     yield put(createFailure(error.message));
@@ -36,9 +36,9 @@ function* createStaffSaga(action) {
 }
 
 // DELETE
-function* deleteStaffSaga(action) {
+function* deleteMachineSaga(action) {
   try {
-    yield call(axios.delete, `/staff/staff/${action.payload}`);
+    yield call(axios.delete, `/machine/machine/${action.payload}`);
     yield put(deleteSuccess(action.payload));
   } catch (error) {
     yield put(deleteFailure(error.message));
@@ -46,19 +46,19 @@ function* deleteStaffSaga(action) {
 }
 
 // UPDATE
-function* updateStaffSaga(action) {
+function* updateMachineSaga(action) {
   try {
     const { id, ...data } = action.payload;
-    const response = yield call(axios.put, `/staff/staff/${id}`, data);
+    const response = yield call(axios.put, `/machine/machine/${id}`, data);
     yield put(updateSuccess(response.data));
   } catch (error) {
     yield put(updateFailure(error.message));
   }
 }
 
-export function* watchStaffSaga() {
-  yield takeLatest(fetchRequest.type, fetchStaffSaga);
-  yield takeLatest(createRequest.type, createStaffSaga);
-  yield takeLatest(deleteRequest.type, deleteStaffSaga);
-  yield takeLatest(updateRequest.type, updateStaffSaga); // new line for update
+export function* watchMachineSaga() {
+  yield takeLatest(fetchRequest.type, fetchMachineSaga);
+  yield takeLatest(createRequest.type, createMachineSaga);
+  yield takeLatest(deleteRequest.type, deleteMachineSaga);
+  yield takeLatest(updateRequest.type, updateMachineSaga); // new line for update
 }

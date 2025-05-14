@@ -1,21 +1,7 @@
-import { memo, useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { memo } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import {
-  createRequest,
-  fetchRequest,
-  resetSuccess,
-} from "../../features/staff/StaffSlice";
-import { useNavigate } from "react-router-dom";
-const AddStaffModal = ({ show, onClose, onSuccess, parentData }) => {
-  const dispatch = useDispatch();
-  const success = useSelector((state) => state?.staff?.data?.success);
-  // useEffect(() => {
-  //   if (success === true) {
-
-  //   }
-  // }, [dispatch]);
+const AddStaffModal = ({ show, onClose, onSubmit, data, type }) => {
   const validationSchema = Yup.object({
     name: Yup.string().required("*Name is required"),
     email: Yup.string()
@@ -33,34 +19,32 @@ const AddStaffModal = ({ show, onClose, onSuccess, parentData }) => {
       .required("*Confirm password is required"),
   });
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      role: "",
+      name: data?.name || "",
+      email: data?.email || "",
+      password: data?.password || "",
+      confirmPassword: data?.password || "",
+      role: data?.role || "",
+      phone: data?.phone || "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      parentData(values);
-      // dispatch(createRequest(values));
-      // onSuccess(); // Parent closes modal & fetches updated list
-      // formik.resetForm();
+    onSubmit: (values, { resetForm }) => {
+      console.log(type);
+      onSubmit(
+        type === "UPDATE" ? { ...values, id: data._id, type: type } : values
+      );
+      resetForm();
     },
   });
-
-  useEffect(() => {
-    dispatch(fetchRequest());
-  }, [dispatch]);
   if (!show) return null;
-
   return (
     <div className="absolute inset-0 bg-[#00000099] flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg w-full max-w-xl">
         {/* Header */}
         <div className=" py-4 border-b">
           <h2 className="text-xl font-semibold text-center modal-text">
-            Add Staff
+            {type === "UPDATE" ? "Update Staff" : "Add Staff"}
           </h2>
         </div>
 
@@ -72,7 +56,7 @@ const AddStaffModal = ({ show, onClose, onSuccess, parentData }) => {
                 id="name"
                 type="text"
                 name="name"
-                className="form-input w-full ps-4"
+                className="form-input w-full ps-3"
                 placeholder="Name"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -86,7 +70,7 @@ const AddStaffModal = ({ show, onClose, onSuccess, parentData }) => {
                 id="email"
                 type="email"
                 name="email"
-                className="form-input w-full ps-4"
+                className="form-input w-full ps-3"
                 placeholder="Email Address"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -99,7 +83,7 @@ const AddStaffModal = ({ show, onClose, onSuccess, parentData }) => {
               <input
                 type="tel"
                 name="phone"
-                className="form-input w-full ps-4"
+                className="form-input w-full ps-3"
                 placeholder="Phone Number"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -111,7 +95,7 @@ const AddStaffModal = ({ show, onClose, onSuccess, parentData }) => {
               <select
                 id="role"
                 name="role"
-                className="form-input w-full ps-3"
+                className="form-input w-full ps-2"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 value={formik.values.role}
@@ -129,7 +113,7 @@ const AddStaffModal = ({ show, onClose, onSuccess, parentData }) => {
                 id="password"
                 type="password"
                 name="password"
-                className="form-input w-full ps-4"
+                className="form-input w-full ps-3"
                 placeholder="Password"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -143,7 +127,7 @@ const AddStaffModal = ({ show, onClose, onSuccess, parentData }) => {
                 id="confirmPassword"
                 name="confirmPassword"
                 type="password"
-                className="form-input w-full ps-4"
+                className="form-input w-full ps-3"
                 placeholder="Confirm Password"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -174,7 +158,7 @@ const AddStaffModal = ({ show, onClose, onSuccess, parentData }) => {
             type="submit"
             className="px-4 py-2 bg-[#005FAF] text-white hover:bg-[#005FAF] rounded-md modal-footer-btn"
           >
-            Create Staff
+            {type === "UPDATE" ? "UPATE" : "Create Staff"}
           </button>
         </div>
       </div>

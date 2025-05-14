@@ -58,6 +58,16 @@
   padding-left: 12px;
   /* Add other button styles */
 }
+.bg-light-green {
+  background-color: #e6f4ea; /* Very light green */
+}
+
+.bg-light-red {
+  background-color: #fcebea; /* Very light red */
+}
+.bg-light-yellow {
+  background-color: #fff9e6; /* light yellow */
+}
 
 .z-50 {
   z-index: 50;
@@ -86,7 +96,7 @@
 /* Target the custom checkbox container */
 .custom-checkbox-color .form-check-input:checked {
   background-color: #d2d5da; /* Replace with your desired color */
-  border-color: #D2D5DA; /* Optional: Change border color too */
+  border-color: #d2d5da; /* Optional: Change border color too */
 }
 
 .content_header {

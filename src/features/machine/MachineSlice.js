@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const staffSlice = createSlice({
-  name: "staff",
+const machineSlice = createSlice({
+  name: "machine",
   initialState: {
     data: [],
     loading: false,
@@ -15,7 +15,7 @@ const staffSlice = createSlice({
     },
     fetchSuccess: (state, action) => {
       state.loading = false;
-      state.data = action.payload?.user;
+      state.data = action.payload?.machines;
     },
     fetchFailure: (state, action) => {
       state.loading = false;
@@ -28,7 +28,7 @@ const staffSlice = createSlice({
     createSuccess: (state, action) => {
       state.loading = false;
       state.success = true;
-      state.data.push(action.payload.user);
+      state.data.push(action.payload.machines);
     },
     createFailure: (state, action) => {
       state.loading = false;
@@ -54,12 +54,12 @@ const staffSlice = createSlice({
     updateSuccess: (state, action) => {
       state.loading = false;
       state.success = true;
-      const updatedUser = action.payload.user;
+      const updatedMachine = action.payload.machines;
       const index = state.data.findIndex(
-        (item) => item._id === updatedUser._id
+        (item) => item._id === updatedMachine._id
       );
       if (index !== -1) {
-        state.data[index] = updatedUser;
+        state.data[index] = updatedMachine;
       }
     },
     updateFailure: (state, action) => {
@@ -86,6 +86,6 @@ export const {
   updateSuccess,
   updateFailure,
   resetSuccess,
-} = staffSlice.actions;
+} = machineSlice.actions;
 
-export default staffSlice.reducer;
+export default machineSlice.reducer;
