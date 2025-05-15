@@ -33,7 +33,7 @@ const sidebar=  ()=> {
         <NavLink to="/dashboard/recepient-list-management" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>
           Recipient List Management
         </NavLink>
-        <NavLink to="/inventory-management" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>
+        <NavLink to="/dashboard/inventory-management" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>
           Inventory Management
         </NavLink>
         <NavLink to="/master-data" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}>

@@ -2,25 +2,25 @@
 import React, { useCallback, useState, useEffect } from "react";
 import DataTableHeaderContainer from "../components/DataTableHeaderContainer";
 import DataTableComponent from "../datatable/DataTable";
-import AssignMachineModal from "../modal/AddMachine";
+import AddInventoryModal from "../modal/AddInventory";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchRequest,
   deleteRequest,
   createRequest,
   updateRequest,
-} from "../../features/machine/MachineSlice";
+} from "../../features/inventory/InventorySlice";
 import AddDeleteModal from "../modal/DeleteModal";
-const MachineManagement = () => {
+const InventoryManagement = () => {
   const dispatch = useDispatch();
   const [parentMessage, setParentMessage] = useState("");
-  const [showModal, setShowModal] = useState(false);
+  const [showInventoryModal, setShowInventoryModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [dataForUpdate, setDataForUpdate] = useState({});
   const [dataForDelete, setDataForDelete] = useState({});
   const [type, setType] = useState("ADD");
-  const [dataType, setDataType] = useState("MACHINE");
-  const machines = useSelector((state) => state?.machine?.data);
+  const [dataType, setDataType] = useState("INVENTORY");
+  const inventory = useSelector((state) => state.inventory.data);
   const handleButtonClick = useCallback(
     (dataFromChild) => {
       setParentMessage(dataFromChild);
@@ -29,7 +29,7 @@ const MachineManagement = () => {
   );
   const handleModelClick = useCallback(
     (dataFromChild) => {
-      setShowModal(true);
+      setShowInventoryModal(true);
     },
     [setParentMessage]
   );
@@ -38,7 +38,7 @@ const MachineManagement = () => {
       data.type == "UPDATE"
         ? dispatch(updateRequest(data))
         : dispatch(createRequest(data));
-      setShowModal(false);
+      setShowInventoryModal(false);
       setType("ADD");
       setDataForUpdate({});
     },
@@ -58,7 +58,7 @@ const MachineManagement = () => {
   const handleUpdate = useCallback((data) => {
     setDataForUpdate(data);
     setType("UPDATE");
-    setShowModal(true);
+    setShowInventoryModal(true);
   });
 
   const handleDeleteModal = useCallback(
@@ -71,12 +71,12 @@ const MachineManagement = () => {
   );
   return (
     <>
-      <AssignMachineModal
+      <AddInventoryModal
         data={dataForUpdate}
         type={type}
-        show={showModal}
+        show={showInventoryModal}
         onClose={() => {
-          setShowModal(false);
+          setShowInventoryModal(false);
           setDataForUpdate({});
           setType("ADD");
         }}
@@ -94,11 +94,11 @@ const MachineManagement = () => {
           <DataTableHeaderContainer
             onButtonClick={handleButtonClick}
             onAddButtonClick={handleModelClick}
-            title={"Machines Details"}
-            buttonTitle={"Add Machine"}
+            title={"Inventory Details"}
+            buttonTitle={"Add Items"}
           />
           <DataTableComponent
-            dataTableData={machines?.length > 0 ? machines : []}
+            dataTableData={inventory?.length > 0 ? inventory : []}
             onDelete={handleDelete}
             onUpdate={(row) => handleUpdate(row)}
             dataTableType={dataType}
@@ -109,4 +109,4 @@ const MachineManagement = () => {
   );
 };
 
-export default MachineManagement;
+export default InventoryManagement;

@@ -20,8 +20,8 @@ const StaffManagement = () => {
   const [dataForUpdate, setDataForUpdate] = useState({});
   const [dataForDelete, setDataForDelete] = useState({});
   const [type, setType] = useState("ADD");
-  const [parentMessage, setParentMessage] = useState("");  
-  const [dataTableType, setDataTableType] = useState("STAFF");  
+  const [parentMessage, setParentMessage] = useState("");
+  const [dataType, setDataType] = useState("STAFF");
   const staff = useSelector((state) => state?.staff?.data);
   const handleButtonClick = useCallback(
     (dataFromChild) => {
@@ -90,6 +90,7 @@ const StaffManagement = () => {
         showDelete={showDeleteModal}
         onCloseDelete={() => setShowDeleteModal(false)}
         onDelete={handleDeleteModal}
+        type={dataType}
       />
       <div className="p-5 w-100">
         <div className="card shadow-sm border-0 pt-4 datatable_wrapper">
@@ -103,7 +104,7 @@ const StaffManagement = () => {
             dataTableData={staff?.length > 0 ? staff : []}
             onDelete={handleDelete}
             onUpdate={(row) => handleUpdate(row)}
-            dataTableType={dataTableType}
+            dataTableType={dataType}
           />
         </div>
       </div>

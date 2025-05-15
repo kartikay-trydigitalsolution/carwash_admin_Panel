@@ -25,6 +25,8 @@
     "redux": "^5.0.1",
     "redux-saga": "^1.3.0",
     "sonner": "^2.0.3",
+    "victory": "^37.3.6",
+    "victory-core": "^37.3.6",
     "web-vitals": "^2.1.4",
     "yup": "^1.6.1"
   },

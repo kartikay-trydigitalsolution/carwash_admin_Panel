@@ -13,6 +13,7 @@ import Settings from "./pages/components/Settings";
 import "bootstrap/dist/css/bootstrap.min.css";
 import AssignedManagement from "./pages/modules/AssignedMantance";
 import MachineManagement from "./pages/modules/MachineManagement";
+import InventoryManagement from "./pages/modules/InventoryManagement";
 import RecepientListManagement from "./pages/modules/RecepientListManagement";
 import MaintenanceRecordManagement from "./pages/modules/MaintenanceRecordManagement";
 import { Toaster } from "sonner";
@@ -31,6 +32,7 @@ function App() {
           <Route path="staff-management" element={<StaffManagement />} />
           <Route path="assigned-management" element={<AssignedManagement />} />
           <Route path="machine-management" element={<MachineManagement />} />
+          <Route path="inventory-management" element={<InventoryManagement />} />
           <Route
             path="recepient-list-management"
             element={<RecepientListManagement />}

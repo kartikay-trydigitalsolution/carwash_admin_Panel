@@ -206,6 +206,85 @@ const DataTableComponent = ({
     },
   ];
 
+  const inventoryColumns = [
+    {
+      name: "Item",
+      selector: (row) => row.itemName,
+      sortable: true,
+    },
+    { name: "Quantity", selector: (row) => row.quantity, sortable: true },
+    {
+      name: "Used Quantity",
+      selector: (row) => row.usedQuantity,
+      sortable: true,
+    },
+    {
+      name: "Notification",
+      sortable: true,
+      cell: (row) => {
+        const statusRaw = row.notification || "Unknown";
+        const status = statusRaw.toLowerCase();
+
+        const statusMap = {
+          available: "bg-light-green text-success",
+          low: "bg-light-yellow text-warning",
+          very_low: "bg-light-red text-danger",
+        };
+
+        // Capitalize first letter
+        const formatStatus = (str) =>
+          str.charAt(0).toUpperCase() + str.slice(1);
+
+        return (
+          <span
+            className={`rounded-pill px-3 py-1 fw-semibold ${
+              statusMap[status] || "bg-secondary text-white"
+            }`}
+          >
+            {formatStatus(status)}
+          </span>
+        );
+      },
+    },
+    // { name: "Phone", selector: (row) => row.phone, sortable: true },
+    // {
+    //   name: "Status",
+    //   cell: (row) => (
+    //     <span
+    //       className={`px-3 py-1 rounded-full text-sm font-semibold
+    //       ${row.status === "Active" ? "bg-[#EBF9F1] text-[#1F9254]" : ""}
+    //       ${row.status === "Inactive" ? "bg-[#A30D111A] text-[#A30D11]" : ""}
+    //       ${
+    //         row.status === "Not Available"
+    //           ? "bg-orange-100 text-orange-500"
+    //           : ""
+    //       }
+    //     `}
+    //     >
+    //       {row.status}
+    //     </span>
+    //   ),
+    // },
+    { name: "remarks", selector: (row) => row.remarks },
+    {
+      name: "Action",
+      cell: (row) => (
+        <div className="flex gap-2 d-flex justify-content-center">
+          <button variant="outline" size="icon" onClick={() => handleEdit(row)}>
+            <i className="fas fa-edit"></i>
+          </button>
+          <button
+            variant="destructive"
+            size="icon"
+            onClick={() => handleDelete(row)}
+          >
+            <i className="fas fa-trash-alt img-fluid border-0 shadow-none"></i>
+          </button>
+        </div>
+      ),
+    },
+  ];
+
   const contextActions = useMemo(
     () => [
       <button
@@ -235,6 +314,8 @@ const DataTableComponent = ({
             ? staffColumns
             : dataTableType == "MACHINE"
             ? machineColumns
+            : dataTableType == "INVENTORY"
+            ? inventoryColumns
             : machineColumns
         }
         data={dataTableData}

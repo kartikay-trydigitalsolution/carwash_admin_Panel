@@ -30,7 +30,6 @@ const AddStaffModal = ({ show, onClose, onSubmit, data, type }) => {
     },
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
-      console.log(type);
       onSubmit(
         type === "UPDATE" ? { ...values, id: data._id, type: type } : values
       );
