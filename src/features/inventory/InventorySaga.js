@@ -28,7 +28,6 @@ function* fetchInventorySaga() {
 // CREATE
 function* createInventorySaga(action) {
   try {
-    console.log("kartik");
     const response = yield call(
       axios.post,
       "/inventory/inventory",

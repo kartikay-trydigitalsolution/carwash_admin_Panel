@@ -14,7 +14,6 @@ const inventorySlice = createSlice({
       state.error = null;
     },
     fetchSuccess: (state, action) => {
-        console.log(action.payload);
       state.loading = false;
       state.data = action.payload?.inventory;
     },

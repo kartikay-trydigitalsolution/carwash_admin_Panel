@@ -35,7 +35,6 @@ const InventoryManagement = () => {
   );
   const handleDataFromModal = useCallback(
     (data) => {
-      console.log(data, "kartik");
       data.type == "UPDATE"
         ? dispatch(updateRequest(data))
         : dispatch(createRequest(data));
@@ -98,7 +97,6 @@ const InventoryManagement = () => {
             title={"Inventory Details"}
             buttonTitle={"Add Items"}
           />
-          {console.log(inventory)}
           <DataTableComponent
             dataTableData={inventory?.length > 0 ? inventory : []}
             onDelete={handleDelete}
