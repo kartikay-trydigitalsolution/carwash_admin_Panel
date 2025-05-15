@@ -1,7 +1,13 @@
 import { memo } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-const AddDeleteModal = ({ showDelete, onCloseDelete, data, onDelete }) => {
+const AddDeleteModal = ({
+  showDelete,
+  onCloseDelete,
+  data,
+  onDelete,
+  type,
+}) => {
   const deleteClick = () => {
     onDelete(data._id);
   };
@@ -12,14 +18,28 @@ const AddDeleteModal = ({ showDelete, onCloseDelete, data, onDelete }) => {
         {/* Header */}
         <div className=" py-4 border-b">
           <h2 className="text-xl font-semibold text-center modal-text">
-            Delete Staff
+            Delete{" "}
+            {type === "INVENTORY"
+              ? "Inventory"
+              : type === "STAFF"
+              ? "Staff"
+              : type === "MACHINE"
+              ? "MACHINE"
+              : "NONE"}
           </h2>
         </div>
 
         {/* Body */}
         <div className="p-6 overflow-y-auto flex-1">
           <div className="space-y-4">
-            Are you sure you want to delete the record for {data?.name}?
+            Are you sure you want to delete the record for{" "}
+            {type === "INVENTORY"
+              ? data.itemName
+              : type === "STAFF"
+              ? data.name
+              : type === "MACHINE"
+              ? data.machine_sr_no
+              : "NONE"}?
           </div>
         </div>
 
