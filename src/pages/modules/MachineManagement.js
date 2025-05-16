@@ -21,21 +21,15 @@ const MachineManagement = () => {
   const [type, setType] = useState("ADD");
   const [dataType, setDataType] = useState("MACHINE");
   const machines = useSelector((state) => state?.machine?.data);
-  const handleButtonClick = useCallback(
-    (dataFromChild) => {
-      setParentMessage(dataFromChild);
-    },
-    [setParentMessage]
-  );
-  const handleModelClick = useCallback(
-    (dataFromChild) => {
-      setShowModal(true);
-    },
-    [setParentMessage]
-  );
+  const handleButtonClick = useCallback((dataFromChild) => {
+    setParentMessage(dataFromChild);
+  }, []);
+  const handleModelClick = useCallback((dataFromChild) => {
+    setShowModal(true);
+  }, []);
   const handleDataFromModal = useCallback(
     (data) => {
-      data.type == "UPDATE"
+      data.type === "UPDATE"
         ? dispatch(updateMachineRequest(data))
         : dispatch(createMachineRequest(data));
       setShowModal(false);
@@ -46,20 +40,18 @@ const MachineManagement = () => {
   );
   useEffect(() => {
     dispatch(fetchMachineRequest());
-  }, []);
+  }, [dispatch]);
 
-  const handleDelete = useCallback((row) => {
+  const handleDelete = (row) => {
     setShowDeleteModal(true);
     setDataForDelete(row);
-    // dispatch(deleteRequest(row._id)); // Replace with your Redux action
-    // dispatch(fetchRequest());
-  });
+  };
 
-  const handleUpdate = useCallback((data) => {
+  const handleUpdate = (data) => {
     setDataForUpdate(data);
     setType("UPDATE");
     setShowModal(true);
-  });
+  };
 
   const handleDeleteModal = useCallback(
     (id) => {

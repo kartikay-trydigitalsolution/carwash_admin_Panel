@@ -9,7 +9,7 @@ const RecepientListManagement = () => {
     (dataFromChild) => {
       setParentMessage(dataFromChild);
     },
-    [setParentMessage]
+    []
   );
   return (
     <div className="p-5 w-100">

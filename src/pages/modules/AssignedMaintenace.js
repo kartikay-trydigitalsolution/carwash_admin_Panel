@@ -1,5 +1,5 @@
 // src/pages/dashboard/DashboardHome.jsx
-import React, { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect } from "react";
 import DataTableHeaderContainer from "../components/DataTableHeaderContainer";
 import DataTableComponent from "../datatable/DataTable";
 import AssignMaintenanceModal from "../modal/AssignedMaintenace";
@@ -22,22 +22,16 @@ const AssignedManagement = () => {
   const [parentMessage, setParentMessage] = useState("");
   const [dataType, setDataType] = useState("STAFF");
   const staff = useSelector((state) => state?.staff?.data);
-  const handleButtonClick = useCallback(
-    (dataFromChild) => {
-      setParentMessage(dataFromChild);
-    },
-    [setParentMessage]
-  );
-  const handleModelClick = useCallback(
-    (dataFromChild) => {
-      setShowModal(true);
-    },
-    [setParentMessage]
-  );
+  const handleButtonClick = useCallback((dataFromChild) => {
+    setParentMessage(dataFromChild);
+  }, []);
+  const handleModelClick = useCallback((dataFromChild) => {
+    setShowModal(true);
+  }, []);
   const handleDataFromModal = useCallback(
     (data) => {
       // dispatch(createRequest(data));
-      data.type == "UPDATE"
+      data.type === "UPDATE"
         ? dispatch(updateRequest(data))
         : dispatch(createRequest(data));
       setShowModal(false);
@@ -48,20 +42,18 @@ const AssignedManagement = () => {
   );
   useEffect(() => {
     dispatch(fetchRequest());
-  }, []);
+  }, [dispatch]);
 
-  const handleDelete = useCallback((row) => {
+  const handleDelete = (row) => {
     setShowDeleteModal(true);
     setDataForDelete(row);
-    // dispatch(deleteRequest(row._id)); // Replace with your Redux action
-    // dispatch(fetchRequest());
-  });
+  };
 
-  const handleUpdate = useCallback((data) => {
+  const handleUpdate = (data) => {
     setDataForUpdate(data);
     setType("UPDATE");
     setShowModal(true);
-  });
+  };
 
   const handleDeleteModal = useCallback(
     (id) => {

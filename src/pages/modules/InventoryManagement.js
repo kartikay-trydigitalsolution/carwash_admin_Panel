@@ -25,17 +25,17 @@ const InventoryManagement = () => {
     (dataFromChild) => {
       setParentMessage(dataFromChild);
     },
-    [setParentMessage]
+    []
   );
   const handleModelClick = useCallback(
     (dataFromChild) => {
       setShowInventoryModal(true);
     },
-    [setParentMessage]
+    []
   );
   const handleDataFromModal = useCallback(
     (data) => {
-      data.type == "UPDATE"
+      data.type === "UPDATE"
         ? dispatch(updateInventoryRequest(data))
         : dispatch(createInventoryRequest(data));
       setShowInventoryModal(false);
@@ -46,20 +46,18 @@ const InventoryManagement = () => {
   );
   useEffect(() => {
     dispatch(fetchInventoryRequest());
-  }, []);
+  }, [dispatch]);
 
-  const handleDelete = useCallback((row) => {
+  const handleDelete = (row) => {
     setShowDeleteModal(true);
     setDataForDelete(row);
-    // dispatch(deleteRequest(row._id)); // Replace with your Redux action
-    // dispatch(fetchRequest());
-  });
+  };
 
-  const handleUpdate = useCallback((data) => {
+  const handleUpdate = (data) => {
     setDataForUpdate(data);
     setType("UPDATE");
     setShowInventoryModal(true);
-  });
+  };
 
   const handleDeleteModal = useCallback(
     (id) => {
