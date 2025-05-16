@@ -9,36 +9,36 @@ const staffSlice = createSlice({
     success: null,
   },
   reducers: {
-    fetchRequest: (state) => {
+    fetchStaffRequest: (state) => {
       state.loading = true;
       state.error = null;
     },
-    fetchSuccess: (state, action) => {
+    fetchStaffSuccess: (state, action) => {
       state.loading = false;
       state.data = action.payload?.user;
     },
-    fetchFailure: (state, action) => {
+    fetchStaffFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },
-    createRequest: (state) => {
+    createStaffRequest: (state) => {
       state.loading = true;
       state.success = null;
     },
-    createSuccess: (state, action) => {
+    createStaffSuccess: (state, action) => {
       state.loading = false;
       state.success = true;
       state.data.push(action.payload.user);
     },
-    createFailure: (state, action) => {
+    createStaffFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },
-    deleteRequest: (state) => {
+    deleteStaffRequest: (state) => {
       state.loading = true;
       state.success = null;
     },
-    deleteSuccess: (state, action) => {
+    deleteStaffSuccess: (state, action) => {
       state.loading = false;
       state.success = true;
       state.data = state.data.filter((item) => item._id !== action.payload);
@@ -47,11 +47,11 @@ const staffSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    updateRequest: (state) => {
+    updateStaffRequest: (state) => {
       state.loading = true;
       state.success = null;
     },
-    updateSuccess: (state, action) => {
+    updateStaffSuccess: (state, action) => {
       state.loading = false;
       state.success = true;
       const updatedUser = action.payload.user;
@@ -62,30 +62,30 @@ const staffSlice = createSlice({
         state.data[index] = updatedUser;
       }
     },
-    updateFailure: (state, action) => {
+    updateStaffFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },
-    resetSuccess: (state) => {
+    resetStaffSuccess: (state) => {
       state.success = null;
     },
   },
 });
 
 export const {
-  fetchRequest,
-  fetchSuccess,
-  fetchFailure,
-  createRequest,
-  createSuccess,
-  createFailure,
-  deleteRequest,
-  deleteSuccess,
-  deleteFailure,
-  updateRequest,
-  updateSuccess,
-  updateFailure,
-  resetSuccess,
+  fetchStaffRequest,
+  fetchStaffSuccess,
+  fetchStaffFailure,
+  createStaffRequest,
+  createStaffSuccess,
+  createStaffFailure,
+  deleteStaffRequest,
+  deleteStaffSuccess,
+  deleteStaffFailure,
+  updateStaffRequest,
+  updateStaffSuccess,
+  updateStaffFailure,
+  resetStaffSuccess,
 } = staffSlice.actions;
 
 export default staffSlice.reducer;

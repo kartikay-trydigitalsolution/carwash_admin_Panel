@@ -1,27 +1,27 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 import axios from "../../api/api";
 import {
-  fetchRequest,
-  fetchSuccess,
-  fetchFailure,
-  createRequest,
-  createSuccess,
-  createFailure,
-  deleteRequest,
-  deleteSuccess,
-  deleteFailure,
-  updateRequest,
-  updateSuccess,
-  updateFailure,
+  fetchStaffRequest,
+  fetchStaffSuccess,
+  fetchStaffFailure,
+  createStaffRequest,
+  createStaffSuccess,
+  createStaffFailure,
+  deleteStaffRequest,
+  deleteStaffSuccess,
+  deleteStaffFailure,
+  updateStaffRequest,
+  updateStaffSuccess,
+  updateStaffFailure,
 } from "./StaffSlice";
 
 // FETCH
 function* fetchStaffSaga() {
   try {
     const response = yield call(axios.get, "/staff/staff");
-    yield put(fetchSuccess(response.data));
+    yield put(fetchStaffSuccess(response.data));
   } catch (error) {
-    yield put(fetchFailure(error.message));
+    yield put(fetchStaffFailure(error.message));
   }
 }
 
@@ -29,9 +29,9 @@ function* fetchStaffSaga() {
 function* createStaffSaga(action) {
   try {
     const response = yield call(axios.post, "/staff/staff", action.payload);
-    yield put(createSuccess(response.data));
+    yield put(createStaffSuccess(response.data));
   } catch (error) {
-    yield put(createFailure(error.message));
+    yield put(createStaffFailure(error.message));
   }
 }
 
@@ -39,9 +39,9 @@ function* createStaffSaga(action) {
 function* deleteStaffSaga(action) {
   try {
     yield call(axios.delete, `/staff/staff/${action.payload}`);
-    yield put(deleteSuccess(action.payload));
+    yield put(deleteStaffSuccess(action.payload));
   } catch (error) {
-    yield put(deleteFailure(error.message));
+    yield put(deleteStaffFailure(error.message));
   }
 }
 
@@ -50,15 +50,15 @@ function* updateStaffSaga(action) {
   try {
     const { id, ...data } = action.payload;
     const response = yield call(axios.put, `/staff/staff/${id}`, data);
-    yield put(updateSuccess(response.data));
+    yield put(updateStaffSuccess(response.data));
   } catch (error) {
-    yield put(updateFailure(error.message));
+    yield put(updateStaffFailure(error.message));
   }
 }
 
 export function* watchStaffSaga() {
-  yield takeLatest(fetchRequest.type, fetchStaffSaga);
-  yield takeLatest(createRequest.type, createStaffSaga);
-  yield takeLatest(deleteRequest.type, deleteStaffSaga);
-  yield takeLatest(updateRequest.type, updateStaffSaga); // new line for update
+  yield takeLatest(fetchStaffRequest.type, fetchStaffSaga);
+  yield takeLatest(createStaffRequest.type, createStaffSaga);
+  yield takeLatest(deleteStaffRequest.type, deleteStaffSaga);
+  yield takeLatest(updateStaffRequest.type, updateStaffSaga); // new line for update
 }

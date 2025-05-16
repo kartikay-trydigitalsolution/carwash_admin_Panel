@@ -5,10 +5,10 @@ import DataTableComponent from "../datatable/DataTable";
 import AssignMaintenanceModal from "../modal/AssignedMaintenace";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchRequest,
-  deleteRequest,
-  createRequest,
-  updateRequest,
+  fetchStaffRequest,
+  deleteStaffRequest,
+  createStaffRequest,
+  updateStaffRequest,
 } from "../../features/staff/StaffSlice";
 import AddDeleteModal from "../modal/DeleteModal";
 
@@ -32,8 +32,8 @@ const AssignedManagement = () => {
     (data) => {
       // dispatch(createRequest(data));
       data.type === "UPDATE"
-        ? dispatch(updateRequest(data))
-        : dispatch(createRequest(data));
+        ? dispatch(updateStaffRequest(data))
+        : dispatch(createStaffRequest(data));
       setShowModal(false);
       setType("ADD");
       setDataForUpdate({});
@@ -41,7 +41,7 @@ const AssignedManagement = () => {
     [dispatch]
   );
   useEffect(() => {
-    dispatch(fetchRequest());
+    dispatch(fetchStaffRequest());
   }, [dispatch]);
 
   const handleDelete = (row) => {
@@ -57,9 +57,9 @@ const AssignedManagement = () => {
 
   const handleDeleteModal = useCallback(
     (id) => {
-      dispatch(deleteRequest(id));
+      dispatch(deleteStaffRequest(id));
       setShowDeleteModal(false);
-      dispatch(fetchRequest());
+      dispatch(fetchStaffRequest());
     },
     [dispatch]
   );
