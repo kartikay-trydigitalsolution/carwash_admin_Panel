@@ -9,49 +9,49 @@ const inventorySlice = createSlice({
     success: null,
   },
   reducers: {
-    fetchRequest: (state) => {
+    fetchInventoryRequest: (state) => {
       state.loading = true;
       state.error = null;
     },
-    fetchSuccess: (state, action) => {
+    fetchInventorySuccess: (state, action) => {
       state.loading = false;
       state.data = action.payload?.inventory;
     },
-    fetchFailure: (state, action) => {
+    fetchInventoryFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },
-    createRequest: (state) => {
+    createInventoryRequest: (state) => {
       state.loading = true;
       state.success = null;
     },
-    createSuccess: (state, action) => {
+    createInventorySuccess: (state, action) => {
       state.loading = false;
       state.success = true;
       state.data.push(action.payload.inventory);
     },
-    createFailure: (state, action) => {
+    createInventoryFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },
-    deleteRequest: (state) => {
+    deleteInventoryRequest: (state) => {
       state.loading = true;
       state.success = null;
     },
-    deleteSuccess: (state, action) => {
+    deleteInventorySuccess: (state, action) => {
       state.loading = false;
       state.success = true;
       state.data = state.data.filter((item) => item._id !== action.payload);
     },
-    deleteFailure: (state, action) => {
+    deleteInventoryFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },
-    updateRequest: (state) => {
+    updateInventoryRequest: (state) => {
       state.loading = true;
       state.success = null;
     },
-    updateSuccess: (state, action) => {
+    updateInventorySuccess: (state, action) => {
       state.loading = false;
       state.success = true;
       const updatedInventory = action.payload.inventory;
@@ -62,30 +62,30 @@ const inventorySlice = createSlice({
         state.data[index] = updatedInventory;
       }
     },
-    updateFailure: (state, action) => {
+    updateInventoryFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },
-    resetSuccess: (state) => {
+    resetInventorySuccess: (state) => {
       state.success = null;
     },
   },
 });
 
 export const {
-  fetchRequest,
-  fetchSuccess,
-  fetchFailure,
-  createRequest,
-  createSuccess,
-  createFailure,
-  deleteRequest,
-  deleteSuccess,
-  deleteFailure,
-  updateRequest,
-  updateSuccess,
-  updateFailure,
-  resetSuccess,
+  fetchInventoryRequest,
+  fetchInventorySuccess,
+  fetchInventoryFailure,
+  createInventoryRequest,
+  createInventorySuccess,
+  createInventoryFailure,
+  deleteInventoryRequest,
+  deleteInventorySuccess,
+  deleteInventoryFailure,
+  updateInventoryRequest,
+  updateInventorySuccess,
+  updateInventoryFailure,
+  resetInventorySuccess,
 } = inventorySlice.actions;
 
 export default inventorySlice.reducer;

@@ -11,7 +11,7 @@ import UserProfile from "./pages/components/UserProfile";
 import StaffManagement from "./pages/modules/StaffManagement";
 import Settings from "./pages/components/Settings";
 import "bootstrap/dist/css/bootstrap.min.css";
-import AssignedManagement from "./pages/modules/AssignedMantance";
+import AssignedManagement from "./pages/modules/AssignedMaintenace";
 import MachineManagement from "./pages/modules/MachineManagement";
 import InventoryManagement from "./pages/modules/InventoryManagement";
 import RecepientListManagement from "./pages/modules/RecepientListManagement";

@@ -9,49 +9,49 @@ const machineSlice = createSlice({
     success: null,
   },
   reducers: {
-    fetchRequest: (state) => {
+    fetchMachineRequest: (state) => {
       state.loading = true;
       state.error = null;
     },
-    fetchSuccess: (state, action) => {
+    fetchMachineSuccess: (state, action) => {
       state.loading = false;
       state.data = action.payload?.machines;
     },
-    fetchFailure: (state, action) => {
+    fetchMachineFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },
-    createRequest: (state) => {
+    createMachineRequest: (state) => {
       state.loading = true;
       state.success = null;
     },
-    createSuccess: (state, action) => {
+    createMachineSuccess: (state, action) => {
       state.loading = false;
       state.success = true;
       state.data.push(action.payload.machines);
     },
-    createFailure: (state, action) => {
+    createMachineFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },
-    deleteRequest: (state) => {
+    deleteMachineRequest: (state) => {
       state.loading = true;
       state.success = null;
     },
-    deleteSuccess: (state, action) => {
+    deleteMachineSuccess: (state, action) => {
       state.loading = false;
       state.success = true;
       state.data = state.data.filter((item) => item._id !== action.payload);
     },
-    deleteFailure: (state, action) => {
+    deleteMachineFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },
-    updateRequest: (state) => {
+    updateMachineRequest: (state) => {
       state.loading = true;
       state.success = null;
     },
-    updateSuccess: (state, action) => {
+    updateMachineSuccess: (state, action) => {
       state.loading = false;
       state.success = true;
       const updatedMachine = action.payload.machines;
@@ -62,30 +62,30 @@ const machineSlice = createSlice({
         state.data[index] = updatedMachine;
       }
     },
-    updateFailure: (state, action) => {
+    updateMachineFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },
-    resetSuccess: (state) => {
+    resetMachineSuccess: (state) => {
       state.success = null;
     },
   },
 });
 
 export const {
-  fetchRequest,
-  fetchSuccess,
-  fetchFailure,
-  createRequest,
-  createSuccess,
-  createFailure,
-  deleteRequest,
-  deleteSuccess,
-  deleteFailure,
-  updateRequest,
-  updateSuccess,
-  updateFailure,
-  resetSuccess,
+  fetchMachineRequest,
+  fetchMachineSuccess,
+  fetchMachineFailure,
+  createMachineRequest,
+  createMachineSuccess,
+  createMachineFailure,
+  deleteMachineRequest,
+  deleteMachineSuccess,
+  deleteMachineFailure,
+  updateMachineRequest,
+  updateMachineSuccess,
+  updateMachineFailure,
+  resetMachineSuccess,
 } = machineSlice.actions;
 
 export default machineSlice.reducer;

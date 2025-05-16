@@ -1,39 +1,56 @@
 import { useState } from "react";
-
-const AssignMaintenanceModal = ({ show, onClose }) => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    role: "",
-    password: "",
-    confirmPassword: "",
+import { useFormik } from "formik";
+import * as Yup from "yup";
+const AssignMaintenanceModal = ({ show, onClose, onSubmit, data, type }) => {
+  const validationSchema = Yup.object({
+    name: Yup.string().required("*Name is required"),
+    email: Yup.string()
+      .email("*Invalid email format")
+      .required("*Email is required"),
+    role: Yup.string().required("*Role is required"),
+    phone: Yup.string()
+      .matches(/^\+?[1-9]\d{1,14}$/, "*Invalid phone number")
+      .required("*Phone number is required"),
+    password: Yup.string()
+      .min(8, "*Password must be at least 8 characters")
+      .required("*Password is required"),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref("password"), null], "*Passwords must match")
+      .required("*Confirm password is required"),
   });
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      name: data?.name || "",
+      email: data?.email || "",
+      password: data?.password || "",
+      confirmPassword: data?.password || "",
+      role: data?.role || "",
+      phone: data?.phone || "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values, { resetForm }) => {
+      onSubmit(
+        type === "UPDATE" ? { ...values, id: data._id, type: type } : values
+      );
+      resetForm();
+    },
+  });
+  if (!show) return null;
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission here
-    onClose();
-  };
-
- 
   return (
     <div className="absolute inset-0 bg-[#00000099] flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg w-full max-w-xl">
         {/* Header */}
         <div className=" py-4 border-b">
           <h2 className="text-xl font-semibold text-center modal-text">
-          Assign Maintenance
+            Assign Maintenance
           </h2>
         </div>
 
         {/* Body */}
         <div className="p-6 overflow-y-auto flex-1">
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={formik.handleSubmit}>
             <div className="space-y-4">
               <select id="role" type="text" className="form-input w-full ps-3">
                 <option>Staff Name</option>
@@ -79,7 +96,6 @@ const AssignMaintenanceModal = ({ show, onClose }) => {
                     type="checkbox"
                     value=""
                     id="flexCheckChecked"
-                    
                   />
                   <label className="form-check-label" for="flexCheckChecked">
                     Tool Box Meeting

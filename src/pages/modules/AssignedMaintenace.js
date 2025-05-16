@@ -2,25 +2,26 @@
 import React, { useCallback, useState, useEffect } from "react";
 import DataTableHeaderContainer from "../components/DataTableHeaderContainer";
 import DataTableComponent from "../datatable/DataTable";
-import AssignMachineModal from "../modal/AddMachine";
+import AssignMaintenanceModal from "../modal/AssignedMaintenace";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchMachineRequest,
-  deleteMachineRequest,
-  createMachineRequest,
-  updateMachineRequest,
-} from "../../features/machine/MachineSlice";
+  fetchRequest,
+  deleteRequest,
+  createRequest,
+  updateRequest,
+} from "../../features/staff/StaffSlice";
 import AddDeleteModal from "../modal/DeleteModal";
-const MachineManagement = () => {
+
+const AssignedManagement = () => {
   const dispatch = useDispatch();
-  const [parentMessage, setParentMessage] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [dataForUpdate, setDataForUpdate] = useState({});
   const [dataForDelete, setDataForDelete] = useState({});
   const [type, setType] = useState("ADD");
-  const [dataType, setDataType] = useState("MACHINE");
-  const machines = useSelector((state) => state?.machine?.data);
+  const [parentMessage, setParentMessage] = useState("");
+  const [dataType, setDataType] = useState("STAFF");
+  const staff = useSelector((state) => state?.staff?.data);
   const handleButtonClick = useCallback(
     (dataFromChild) => {
       setParentMessage(dataFromChild);
@@ -35,9 +36,10 @@ const MachineManagement = () => {
   );
   const handleDataFromModal = useCallback(
     (data) => {
+      // dispatch(createRequest(data));
       data.type == "UPDATE"
-        ? dispatch(updateMachineRequest(data))
-        : dispatch(createMachineRequest(data));
+        ? dispatch(updateRequest(data))
+        : dispatch(createRequest(data));
       setShowModal(false);
       setType("ADD");
       setDataForUpdate({});
@@ -45,7 +47,7 @@ const MachineManagement = () => {
     [dispatch]
   );
   useEffect(() => {
-    dispatch(fetchMachineRequest());
+    dispatch(fetchRequest());
   }, []);
 
   const handleDelete = useCallback((row) => {
@@ -63,15 +65,34 @@ const MachineManagement = () => {
 
   const handleDeleteModal = useCallback(
     (id) => {
-      dispatch(deleteMachineRequest(id));
+      dispatch(deleteRequest(id));
       setShowDeleteModal(false);
-      dispatch(fetchMachineRequest());
+      dispatch(fetchRequest());
     },
     [dispatch]
   );
   return (
+    // <>
+    //   {showModal && (
+    //     <AssignMaintenanceModal
+    //       show={showModal}
+    //       onClose={() => setShowModal(false)}
+    //     />
+    //   )}
+    //   <div className="p-5 w-100">
+    //     <div className="card shadow-sm border-0 pt-4 datatable_wrapper">
+    //       <DataTableHeaderContainer
+    //         onButtonClick={handleButtonClick}
+    //         onAddButtonClick={handleModelClick}
+    //         title={"Assigned Staff"}
+    //         buttonTitle={"Assign Task"}
+    //       />
+    //       <DataTableComponent />
+    //     </div>
+    //   </div>
+    // </>
     <>
-      <AssignMachineModal
+      <AssignMaintenanceModal
         data={dataForUpdate}
         type={type}
         show={showModal}
@@ -94,11 +115,11 @@ const MachineManagement = () => {
           <DataTableHeaderContainer
             onButtonClick={handleButtonClick}
             onAddButtonClick={handleModelClick}
-            title={"Machines Details"}
-            buttonTitle={"Add Machine"}
+            title={"Assigned Staff"}
+            buttonTitle={"Assign Task"}
           />
           <DataTableComponent
-            dataTableData={machines?.length > 0 ? machines : []}
+            dataTableData={staff?.length > 0 ? staff : []}
             onDelete={handleDelete}
             onUpdate={(row) => handleUpdate(row)}
             dataTableType={dataType}
@@ -109,4 +130,4 @@ const MachineManagement = () => {
   );
 };
 
-export default MachineManagement;
+export default AssignedManagement;

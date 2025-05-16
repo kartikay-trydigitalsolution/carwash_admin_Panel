@@ -5,10 +5,10 @@ import DataTableComponent from "../datatable/DataTable";
 import AddInventoryModal from "../modal/AddInventory";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  fetchRequest,
-  deleteRequest,
-  createRequest,
-  updateRequest,
+  fetchInventoryRequest,
+  deleteInventoryRequest,
+  createInventoryRequest,
+  updateInventoryRequest,
 } from "../../features/inventory/InventorySlice";
 import AddDeleteModal from "../modal/DeleteModal";
 const InventoryManagement = () => {
@@ -36,8 +36,8 @@ const InventoryManagement = () => {
   const handleDataFromModal = useCallback(
     (data) => {
       data.type == "UPDATE"
-        ? dispatch(updateRequest(data))
-        : dispatch(createRequest(data));
+        ? dispatch(updateInventoryRequest(data))
+        : dispatch(createInventoryRequest(data));
       setShowInventoryModal(false);
       setType("ADD");
       setDataForUpdate({});
@@ -45,7 +45,7 @@ const InventoryManagement = () => {
     [dispatch]
   );
   useEffect(() => {
-    dispatch(fetchRequest());
+    dispatch(fetchInventoryRequest());
   }, []);
 
   const handleDelete = useCallback((row) => {
@@ -63,9 +63,9 @@ const InventoryManagement = () => {
 
   const handleDeleteModal = useCallback(
     (id) => {
-      dispatch(deleteRequest(id));
+      dispatch(deleteInventoryRequest(id));
       setShowDeleteModal(false);
-      dispatch(fetchRequest());
+      dispatch(fetchInventoryRequest());
     },
     [dispatch]
   );
