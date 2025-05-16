@@ -62,7 +62,12 @@ const AddInventoryModal = ({ show, onClose, onSubmit, data, type }) => {
                 name="quantity"
                 className="form-input w-full ps-3"
                 placeholder="Quantity"
-                onChange={formik.handleChange}
+                onChange={(e) => {
+                  const quantityigitsOnly = e.target.value
+                    .replace(/\D/g, "")
+                    .slice(0, 10);
+                  formik.setFieldValue("quantity", quantityigitsOnly);
+                }}
                 onBlur={formik.handleBlur}
                 value={formik.values.quantity}
                 aria-label="quantity"
@@ -76,7 +81,12 @@ const AddInventoryModal = ({ show, onClose, onSubmit, data, type }) => {
                 name="usedQuantity"
                 className="form-input w-full ps-3"
                 placeholder="Used Quantity"
-                onChange={formik.handleChange}
+                onChange={(e) => {
+                  const usedQuantityDigitsOnly = e.target.value
+                    .replace(/\D/g, "")
+                    .slice(0, 10);
+                  formik.setFieldValue("usedQuantity", usedQuantityDigitsOnly);
+                }}
                 onBlur={formik.handleBlur}
                 value={formik.values.usedQuantity}
                 aria-label="usedQuantity"

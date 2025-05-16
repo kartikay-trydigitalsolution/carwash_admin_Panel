@@ -32,14 +32,15 @@ const AddDeleteModal = ({
         {/* Body */}
         <div className="p-6 overflow-y-auto flex-1">
           <div className="space-y-4">
-            Are you sure you want to delete the record for{" "}
+            Are you sure you want to delete this record for{" "}
             {type === "INVENTORY"
               ? data.itemName
               : type === "STAFF"
               ? data.name
               : type === "MACHINE"
               ? data.machine_sr_no
-              : "NONE"}?
+              : "NONE"}
+            ?
           </div>
         </div>
 
