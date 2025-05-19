@@ -5,6 +5,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import logo from "../../assets/images/logo.svg";
 import StyledImageInline from "../components/Image";
+import { fetchLoginRequest } from "../../features/auth/authSlice";
 const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -24,8 +25,7 @@ const LoginPage = () => {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       console.log(values, "values");
-      // dispatch(userLogin());
-      navigate("/dashboard");
+      dispatch(fetchLoginRequest(values));
     },
   });
   return (

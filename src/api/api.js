@@ -21,13 +21,23 @@ instance.interceptors.request.use(
 // Response Interceptor
 instance.interceptors.response.use(
   (response) => {
-    toast.success(response.data.message); // Show toast on every success
-    return response;
+    if (response?.data?.success == true) {
+      toast.success(response.data.message); // Show toast on every success
+      return response;
+    } else {
+      toast.error(response.data.message);
+    }
   },
   (error) => {
     if (error.response?.status === 500) {
       toast.error(error.response.data.message);
       // e.g., redirect to login
+    }
+    if (error.response?.status === 400) {
+      toast.error(error.response.data.message);
+    }
+    if (error.response?.status === 404) {
+      toast.error(error.response.data.message);
     }
     // return Promise.reject(error);
   }
