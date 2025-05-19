@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import logo from "../../assets/images/logo.svg";
 import StyledImageInline from "../components/Image";
 const LoginPage = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const validationSchema = Yup.object({
     email: Yup.string()
       .email("*Invalid email format")
@@ -22,7 +23,9 @@ const LoginPage = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      navigate('/dashboard')
+      console.log(values, "values");
+      // dispatch(userLogin());
+      navigate("/dashboard");
     },
   });
   return (
@@ -32,7 +35,7 @@ const LoginPage = () => {
         onSubmit={formik.handleSubmit}
       >
         <div className="main_logo_div">
-        <StyledImageInline src={logo} alt="logo" />
+          <StyledImageInline src={logo} alt="logo" />
         </div>
         <div className="d-flex justify-content-center">
           <div className="auth-heading-text">Login Admin Panel</div>
