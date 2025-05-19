@@ -10,6 +10,7 @@ import {
   createStaffRequest,
   updateStaffRequest,
 } from "../../features/staff/StaffSlice";
+import { fetchMachineRequest } from "../../features/machine/MachineSlice";
 import AddDeleteModal from "../modal/DeleteModal";
 
 const AssignedManagement = () => {
@@ -21,7 +22,16 @@ const AssignedManagement = () => {
   const [type, setType] = useState("ADD");
   const [parentMessage, setParentMessage] = useState("");
   const [dataType, setDataType] = useState("STAFF");
-  const staff = useSelector((state) => state?.staff?.data);
+  const staff = useSelector((state) =>
+    state?.staff?.data.map(({ _id, name, role }) => ({ id: _id, name, role }))
+  );
+  const machine = useSelector((state) =>
+    state?.machine?.data?.map(({ _id, machine_model }) => ({
+      id: _id,
+      machine_model,
+    }))
+  );
+  console.log(staff, machine);
   const handleButtonClick = useCallback((dataFromChild) => {
     setParentMessage(dataFromChild);
   }, []);
@@ -42,6 +52,7 @@ const AssignedManagement = () => {
   );
   useEffect(() => {
     dispatch(fetchStaffRequest());
+    dispatch(fetchMachineRequest());
   }, [dispatch]);
 
   const handleDelete = (row) => {
@@ -93,6 +104,8 @@ const AssignedManagement = () => {
           setDataForUpdate({});
           setType("ADD");
         }}
+        machine={machine}
+        staff={staff}
         onSubmit={handleDataFromModal}
       />
       <AddDeleteModal

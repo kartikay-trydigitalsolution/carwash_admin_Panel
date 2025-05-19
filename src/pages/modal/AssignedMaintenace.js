@@ -1,6 +1,14 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
-const AssignMaintenanceModal = ({ show, onClose, onSubmit, data, type }) => {
+const AssignMaintenanceModal = ({
+  show,
+  onClose,
+  onSubmit,
+  data,
+  type,
+  staff,
+  machine,
+}) => {
   const validationSchema = Yup.object({
     name: Yup.string().required("*Name is required"),
     email: Yup.string()
@@ -52,9 +60,12 @@ const AssignMaintenanceModal = ({ show, onClose, onSubmit, data, type }) => {
           <form onSubmit={formik.handleSubmit}>
             <div className="space-y-4">
               <select id="role" type="text" className="form-input w-full ps-3">
-                <option>Staff Name</option>
-                <option>Staff1</option>
-                <option>Staff2</option>
+                <option value="" disabled>
+                  Staff Name
+                </option>
+                {staff?.map((s) => (
+                  <option value={s._id}>{s.name}</option>
+                ))}
               </select>
               <select id="role" type="text" className="form-input w-full ps-3">
                 <option>Role</option>
