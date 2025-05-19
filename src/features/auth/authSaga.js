@@ -1,9 +1,9 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 import axios from "../../api/api";
 import {
-  fetchLoginRequest,
-  fetchLoginSuccess,
-  fetchLoginFailure,
+  loginRequest,
+  loginSuccess,
+  loginFailure,
 } from "./authSlice"; // update path as needed
 
 // Worker Saga
@@ -13,17 +13,17 @@ function* handleLogin(action) {
     if (!response) {
       return;
     }
-    yield put(fetchLoginSuccess(response));
+    yield put(loginSuccess(response));
     // optionally store token:
     localStorage.setItem("token", response.token);
   } catch (error) {
     yield put(
-      fetchLoginFailure(error.response?.data?.message || "Login failed")
+      loginFailure(error.response?.data?.message || "Login failed")
     );
   }
 }
 
 // Watcher Saga
 export function* watchAuthSaga() {
-  yield takeLatest(fetchLoginRequest.type, handleLogin);
+  yield takeLatest(loginRequest.type, handleLogin);
 }

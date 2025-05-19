@@ -4,10 +4,8 @@ import logo from "../../assets/images/logo.svg";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import StyledImageInline from "../components/Image";
-const ForgotPasswordPage=()=> {
+const ForgotPasswordPage = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const validationSchema = Yup.object({
     email: Yup.string()
       .email("*Invalid email format")
@@ -19,7 +17,8 @@ const ForgotPasswordPage=()=> {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      navigate("/otp-verify");
+      console.log(values);
+      // navigate("/otp-verify");
     },
   });
   return (
@@ -29,7 +28,7 @@ const ForgotPasswordPage=()=> {
         onSubmit={formik.handleSubmit}
       >
         <div className="main_logo_div">
-        <StyledImageInline src={logo} alt="logo" />
+          <StyledImageInline src={logo} alt="logo" />
         </div>
         <div className="d-flex justify-content-center">
           <div className="auth-heading-text">Forgot Password</div>
@@ -54,6 +53,6 @@ const ForgotPasswordPage=()=> {
       </form>
     </div>
   );
-}
+};
 
 export default ForgotPasswordPage;

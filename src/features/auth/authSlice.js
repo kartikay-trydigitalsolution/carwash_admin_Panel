@@ -10,24 +10,35 @@ const authSlice = createSlice({
     error: null,
   },
   reducers: {
-    fetchLoginRequest: (state) => {
+    loginRequest: (state) => {
       state.loading = true;
       state.error = null;
     },
-    fetchLoginSuccess: (state, action) => {
+    loginSuccess: (state, action) => {
       state.loading = false;
       state.userData = action.payload?.data?.user;
       state.usertokken = action.payload?.data?.token;
       state.isLogging = true;
     },
-    fetchLoginFailure: (state, action) => {
+    loginFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    otpMailRequest: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    otpMailSucess: (state) => {
+      state.loading = false;
+    },
+    otpMailFailed: (state, action) => {
       state.loading = false;
       state.error = action.payload;
     },
   },
 });
 
-export const { fetchLoginRequest, fetchLoginSuccess, fetchLoginFailure } =
+export const { loginRequest, loginSuccess, loginFailure, otpMailRequest } =
   authSlice.actions;
 
 export default authSlice.reducer;
