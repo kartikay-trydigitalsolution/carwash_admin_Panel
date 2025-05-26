@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
+import { toast } from "react-toastify";
 
-const OTPInput = ({ length = 6, onOtpChange, inputStyle, containerStyle }) => {
+const OTPInput = ({ length = 4, onOtpChange, inputStyle, containerStyle }) => {
   const [otp, setOtp] = useState(Array(length).fill(""));
   const inputRefs = useRef([]);
-
   useEffect(() => {
     if (inputRefs.current[0]) {
       inputRefs.current[0].focus();
@@ -24,7 +24,6 @@ const OTPInput = ({ length = 6, onOtpChange, inputStyle, containerStyle }) => {
     } else if (!value && index > 0) {
       inputRefs.current[index - 1]?.focus(); // Move back if deleting in the middle
     }
-
     if (onOtpChange) {
       onOtpChange(newOtp.join(""));
     }

@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/images/logo.svg";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import OTPInput from "./OtpInput";
 import StyledImageInline from "../components/Image";
+import { otpVerifyRequest } from "../../features/auth/authSlice";
 
 const OTPVerifyPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [otpValue, setOtpValue] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -17,7 +20,6 @@ const OTPVerifyPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     let success = true;
-
     // Trim whitespace just in case
     const trimmedOtp = otpValue.trim();
 
@@ -35,16 +37,8 @@ const OTPVerifyPage = () => {
       toast.error("OTP must contain only numbers");
       success = false;
     }
-
     if (success == true) {
-      // Simulate a successful submission
-      setIsSubmitting(true);
-      toast.success("OTP Verified!");
-
-      // Mock navigation after verification
-      setTimeout(() => {
-        navigate("/change-password"); // replace with actual route
-      }, 1000);
+      dispatch(otpVerifyRequest(otpValue));
     }
   };
 
@@ -66,7 +60,7 @@ const OTPVerifyPage = () => {
         className="bg-white py-5 px-4 rounded shadow-sm width_500"
       >
         <div className="main_logo_div text-center">
-        <StyledImageInline src={logo} alt="logo" />
+          <StyledImageInline src={logo} alt="logo" />
         </div>
 
         <div className="d-flex justify-content-center">

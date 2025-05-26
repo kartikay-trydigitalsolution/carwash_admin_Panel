@@ -7,6 +7,7 @@ const authSlice = createSlice({
     usertokken: "",
     isLogging: false,
     loading: false,
+    success: false,
     error: null,
   },
   reducers: {
@@ -24,21 +25,57 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    otpMailRequest: (state) => {
+    forgetPasswordRequest: (state) => {
       state.loading = true;
       state.error = null;
     },
-    otpMailSucess: (state) => {
+    forgetPasswordSuccess: (state) => {
       state.loading = false;
+      state.success = true;
     },
-    otpMailFailed: (state, action) => {
+    forgetPasswordFailure: (state, action) => {
       state.loading = false;
+      state.error = action.payload;
+    },
+    forgetPasswordRequest: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    forgetPasswordSuccess: (state) => {
+      state.loading = false;
+      state.success = true;
+    },
+    forgetPasswordFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    otpVerifyRequest: (state) => {
+      state.loading = true;
+      state.success = false;
+      state.error = null;
+    },
+    otpVerifySuccess: (state) => {
+      state.loading = false;
+      state.success = true;
+    },
+    otpVerifyFailure: (state, action) => {
+      state.loading = false;
+      state.success = false;
       state.error = action.payload;
     },
   },
 });
 
-export const { loginRequest, loginSuccess, loginFailure, otpMailRequest } =
-  authSlice.actions;
+export const {
+  loginRequest,
+  loginSuccess,
+  loginFailure,
+  forgetPasswordSuccess,
+  forgetPasswordRequest,
+  forgetPasswordFailure,
+  otpVerifyRequest,
+  otpVerifySuccess,
+  otpVerifyFailure,
+} = authSlice.actions;
 
 export default authSlice.reducer;
