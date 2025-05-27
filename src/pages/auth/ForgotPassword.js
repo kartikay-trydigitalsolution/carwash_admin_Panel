@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import StyledImageInline from "../components/Image";
 import { useDispatch } from "react-redux";
 
-import { forgetPasswordRequest } from "../../features/auth/authSlice";
+import { forgetPasswordRequest } from "../../features/auth/AuthSlice";
 const ForgotPasswordPage = () => {
   const navigate = useNavigate();
   const params = useParams();

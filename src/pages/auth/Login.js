@@ -5,7 +5,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import logo from "../../assets/images/logo.svg";
 import StyledImageInline from "../components/Image";
-import { loginRequest } from "../../features/auth/authSlice";
+import { loginRequest } from "../../features/auth/AuthSlice";
 const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();

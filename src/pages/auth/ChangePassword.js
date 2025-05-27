@@ -4,7 +4,7 @@ import logo from "../../assets/images/logo.svg";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import StyledImageInline from "../components/Image";
-import { newPasswordRequest } from "../../features/auth/authSlice";
+import { newPasswordRequest } from "../../features/auth/AuthSlice";
 import { useDispatch } from "react-redux";
 const ChangePasswordPage = () => {
   const navigate = useNavigate();

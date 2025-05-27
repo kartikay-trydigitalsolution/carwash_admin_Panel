@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import OTPInput from "./OtpInput";
 import StyledImageInline from "../components/Image";
-import { otpVerifyRequest } from "../../features/auth/authSlice";
+import { otpVerifyRequest } from "../../features/auth/AuthSlice";
 
 const OTPVerifyPage = () => {
   const navigate = useNavigate();

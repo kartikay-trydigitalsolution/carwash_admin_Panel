@@ -14,7 +14,7 @@ import {
   newPasswordRequest,
   newPasswordSuccess,
   newPasswordFailure,
-} from "./authSlice"; // update path as needed
+} from "./AuthSlice"; // update path as needed
 
 // Worker Saga
 function* handleLogin(action) {
