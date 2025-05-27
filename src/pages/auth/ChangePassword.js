@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, {  useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import logo from "../../assets/images/logo.svg";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import StyledImageInline from "../components/Image";
 import { newPasswordRequest } from "../../features/auth/AuthSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 const ChangePasswordPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const loginSuccess = useSelector((state) => state.auth.loginSuccess);
   const params = useParams();
   const validationSchema = Yup.object({
     newPassword: Yup.string()
@@ -18,6 +19,11 @@ const ChangePasswordPage = () => {
       .oneOf([Yup.ref(" newPassword"), null], "*Passwords must match")
       .required("*Confirm Password is required"),
   });
+  useEffect(() => {
+    if (loginSuccess) {
+      navigate("/");
+    }
+  }, [loginSuccess]);
   const formik = useFormik({
     initialValues: {
       newPassword: "",

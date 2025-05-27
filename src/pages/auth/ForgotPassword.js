@@ -4,18 +4,24 @@ import logo from "../../assets/images/logo.svg";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import StyledImageInline from "../components/Image";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { forgetPasswordRequest } from "../../features/auth/AuthSlice";
 const ForgotPasswordPage = () => {
   const navigate = useNavigate();
   const params = useParams();
   const dispatch = useDispatch();
+  const otpSuccess = useSelector((state) => state.auth.otpSuccess);
   const validationSchema = Yup.object({
     email: Yup.string()
       .email("*Invalid email format")
       .required("*Email is required"),
   });
+  useEffect(() => {
+    if (otpSuccess) {
+      navigate("/otp-verify");
+    }
+  }, [otpSuccess]);
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -23,12 +29,7 @@ const ForgotPasswordPage = () => {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       values = { ...values, id: params.id };
-      dispatch({
-        type: forgetPasswordRequest.type,
-        payload: values,
-        meta: { navigate },
-      });
-      // dispatch(forgetPasswordRequest(values, { navigate }));
+      dispatch(forgetPasswordRequest(values));
     },
   });
   return (

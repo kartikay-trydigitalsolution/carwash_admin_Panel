@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/images/logo.svg";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,11 +12,16 @@ const OTPVerifyPage = () => {
   const dispatch = useDispatch();
   const [otpValue, setOtpValue] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const resetSuccess = useSelector((state) => state.auth.resetSuccess);
+  const otpEmail = useSelector((state) => state.auth.otpEmail);
   const handleOtpChange = (otp) => {
     setOtpValue(otp);
   };
-
+  useEffect(() => {
+    if (resetSuccess) {
+      navigate(`/change-password/${otpEmail}`);
+    }
+  }, [resetSuccess]);
   const handleSubmit = (e) => {
     e.preventDefault();
     let success = true;
@@ -37,12 +42,8 @@ const OTPVerifyPage = () => {
       toast.error("OTP must contain only numbers");
       success = false;
     }
-    if (success == true) {
-      dispatch({
-        type: otpVerifyRequest.type,
-        payload: { otp: otpValue },
-        meta: { navigate },
-      });
+    if (success === true) {
+      dispatch(otpVerifyRequest({ otp: otpValue }));
     }
   };
 

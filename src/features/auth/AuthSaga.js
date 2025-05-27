@@ -1,6 +1,5 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 import axios from "../../api/api";
-import { useNavigate } from "react-router-dom";
 import {
   loginRequest,
   loginSuccess,
@@ -12,8 +11,8 @@ import {
   otpVerifySuccess,
   otpVerifyFailure,
   newPasswordRequest,
-  newPasswordSuccess,
-  newPasswordFailure,
+  // newPasswordSuccess,
+  // newPasswordFailure,
 } from "./AuthSlice"; // update path as needed
 
 // Worker Saga
@@ -42,7 +41,6 @@ function* handleForgetPassword(action) {
       return;
     }
     yield put(forgetPasswordSuccess(response));
-    action.meta?.navigate?.("/otp-verify");
   } catch (error) {
     yield put(
       forgetPasswordFailure(
@@ -59,7 +57,6 @@ function* handleOtpCheck(action) {
       return;
     }
     yield put(otpVerifySuccess(response));
-    action.meta?.navigate?.(`/change-password/${response?.data?.data}`);
   } catch (error) {
     yield put(
       otpVerifyFailure(error.response?.data?.message || "OTP verify failed!")
@@ -78,7 +75,6 @@ function* handleSetNewPassword(action) {
       return;
     }
     yield put(otpVerifySuccess(response));
-    action.meta?.navigate?.(`/`);
   } catch (error) {
     yield put(
       otpVerifyFailure(error.response?.data?.message || "OTP verify failed!")

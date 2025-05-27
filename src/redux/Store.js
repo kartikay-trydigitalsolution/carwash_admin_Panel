@@ -1,15 +1,33 @@
 import { configureStore } from "@reduxjs/toolkit";
 import createSagaMiddleware from "redux-saga";
-import { persistStore, persistReducer } from "redux-persist";
+import { persistStore, persistReducer, createTransform } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import rootReducer from "./RootReducer";
 import rootSaga from "./RootSaga";
 
+const saveSubsetFilter = createTransform(
+  // inbound: before saving to storage
+  (inboundState, key) => {
+    const whitelist = ["userData", "isLogging", "usertokken"];
+    return Object.keys(inboundState)
+      .filter((k) => whitelist.includes(k))
+      .reduce((obj, k) => {
+        obj[k] = inboundState[k];
+        return obj;
+      }, {});
+  },
+  // outbound: when loading from storage
+  (outboundState, key) => {
+    return outboundState;
+  },
+  { whitelist: ["auth"] } // only applies to auth slice
+);
 // 🔐 Persist config for only auth
 const persistConfig = {
   key: "root",
   storage,
   whitelist: ["auth"], // only auth will be persisted
+  transforms: [saveSubsetFilter],
 };
 
 // 🧩 Apply persistReducer to combined rootReducer
@@ -28,10 +46,6 @@ const store = configureStore({
         ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
       },
     }).concat(sagaMiddleware),
-  serializableCheck: {
-    // Ignore specific paths or action types
-    ignoredActionPaths: ["meta.navigate"],
-  },
 });
 
 // ▶️ Run sagas
