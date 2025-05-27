@@ -38,7 +38,11 @@ const OTPVerifyPage = () => {
       success = false;
     }
     if (success == true) {
-      dispatch(otpVerifyRequest(otpValue));
+      dispatch({
+        type: otpVerifyRequest.type,
+        payload: { otp: otpValue },
+        meta: { navigate },
+      });
     }
   };
 

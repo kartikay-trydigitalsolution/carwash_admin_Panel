@@ -1,27 +1,35 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import logo from "../../assets/images/logo.svg";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import StyledImageInline from "../components/Image";
+import { newPasswordRequest } from "../../features/auth/authSlice";
+import { useDispatch } from "react-redux";
 const ChangePasswordPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const params = useParams();
   const validationSchema = Yup.object({
-    nPassword: Yup.string()
+    newPassword: Yup.string()
       .min(8, "*New Password must be at least 8 characters")
       .required("*New Password is required"),
-    cPassword: Yup.string()
-      .oneOf([Yup.ref(" nPassword"), null], "*Passwords must match")
+    confirmNewPassword: Yup.string()
+      .oneOf([Yup.ref(" newPassword"), null], "*Passwords must match")
       .required("*Confirm Password is required"),
   });
   const formik = useFormik({
     initialValues: {
-      nPassword: "",
-      cPassword: "",
+      newPassword: "",
+      confirmNewPassword: "",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      navigate("/");
+      dispatch({
+        type: newPasswordRequest.type,
+        payload: { ...values, id: params.id },
+        meta: { navigate },
+      });
     },
   });
   return (
@@ -38,28 +46,29 @@ const ChangePasswordPage = () => {
         </div>
         <div className="mb-3">
           <input
-            id="nPassword"
+            id="newPassword"
             type="password"
             className=" form-input"
             placeholder="New Password"
-            value={formik.values.nPassword}
+            value={formik.values.newPassword}
             onChange={formik.handleChange}
           />
-          {formik.touched.nPassword && formik.errors.nPassword ? (
-            <div className="red">{formik.errors.nPassword}</div>
+          {formik.touched.newPassword && formik.errors.newPassword ? (
+            <div className="red">{formik.errors.newPassword}</div>
           ) : null}
         </div>
         <div className="mb-3">
           <input
-            id="cPassword"
+            id="confirmNewPassword"
             type="text"
             className="form-input mb-1"
             placeholder="Confirm Password"
-            value={formik.values.cPassword}
+            value={formik.values.confirmNewPassword}
             onChange={formik.handleChange}
           />
-          {formik.touched.cPassword && formik.errors.cPassword ? (
-            <div className="red">{formik.errors.cPassword}</div>
+          {formik.touched.confirmNewPassword &&
+          formik.errors.confirmNewPassword ? (
+            <div className="red">{formik.errors.confirmNewPassword}</div>
           ) : null}
         </div>
         <button type="submit" className="logging-form-button  w-100">

@@ -11,6 +11,9 @@ import {
   otpVerifyRequest,
   otpVerifySuccess,
   otpVerifyFailure,
+  newPasswordRequest,
+  newPasswordSuccess,
+  newPasswordFailure,
 } from "./authSlice"; // update path as needed
 
 // Worker Saga
@@ -39,6 +42,7 @@ function* handleForgetPassword(action) {
       return;
     }
     yield put(forgetPasswordSuccess(response));
+    action.meta?.navigate?.("/otp-verify");
   } catch (error) {
     yield put(
       forgetPasswordFailure(
@@ -55,6 +59,26 @@ function* handleOtpCheck(action) {
       return;
     }
     yield put(otpVerifySuccess(response));
+    action.meta?.navigate?.(`/change-password/${response?.data?.data}`);
+  } catch (error) {
+    yield put(
+      otpVerifyFailure(error.response?.data?.message || "OTP verify failed!")
+    );
+  }
+}
+
+function* handleSetNewPassword(action) {
+  try {
+    const response = yield call(
+      axios.post,
+      "/auth/resetPassword",
+      action.payload
+    );
+    if (!response) {
+      return;
+    }
+    yield put(otpVerifySuccess(response));
+    action.meta?.navigate?.(`/`);
   } catch (error) {
     yield put(
       otpVerifyFailure(error.response?.data?.message || "OTP verify failed!")
@@ -67,4 +91,5 @@ export function* watchAuthSaga() {
   yield takeLatest(loginRequest.type, handleLogin);
   yield takeLatest(forgetPasswordRequest.type, handleForgetPassword);
   yield takeLatest(otpVerifyRequest.type, handleOtpCheck);
+  yield takeLatest(newPasswordRequest.type, handleSetNewPassword);
 }

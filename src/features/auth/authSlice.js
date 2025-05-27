@@ -31,7 +31,6 @@ const authSlice = createSlice({
     },
     forgetPasswordSuccess: (state) => {
       state.loading = false;
-      state.success = true;
     },
     forgetPasswordFailure: (state, action) => {
       state.loading = false;
@@ -43,7 +42,6 @@ const authSlice = createSlice({
     },
     forgetPasswordSuccess: (state) => {
       state.loading = false;
-      state.success = true;
     },
     forgetPasswordFailure: (state, action) => {
       state.loading = false;
@@ -51,16 +49,24 @@ const authSlice = createSlice({
     },
     otpVerifyRequest: (state) => {
       state.loading = true;
-      state.success = false;
       state.error = null;
     },
     otpVerifySuccess: (state) => {
       state.loading = false;
-      state.success = true;
     },
     otpVerifyFailure: (state, action) => {
       state.loading = false;
-      state.success = false;
+      state.error = action.payload;
+    },
+    newPasswordRequest: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    newPasswordSuccess: (state) => {
+      state.loading = false;
+    },
+    newPasswordFailure: (state, action) => {
+      state.loading = false;
       state.error = action.payload;
     },
   },
@@ -76,6 +82,9 @@ export const {
   otpVerifyRequest,
   otpVerifySuccess,
   otpVerifyFailure,
+  newPasswordRequest,
+  newPasswordSuccess,
+  newPasswordFailure,
 } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -28,6 +28,10 @@ const store = configureStore({
         ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
       },
     }).concat(sagaMiddleware),
+  serializableCheck: {
+    // Ignore specific paths or action types
+    ignoredActionPaths: ["meta.navigate"],
+  },
 });
 
 // ▶️ Run sagas

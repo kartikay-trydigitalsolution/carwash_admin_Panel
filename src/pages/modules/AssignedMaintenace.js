@@ -31,7 +31,6 @@ const AssignedManagement = () => {
       machine_model,
     }))
   );
-  console.log(staff, machine);
   const handleButtonClick = useCallback((dataFromChild) => {
     setParentMessage(dataFromChild);
   }, []);
