@@ -119,9 +119,9 @@ const AddStaffModal = ({ show, onClose, onSubmit, data, type }) => {
                 value={formik.values.password}
                 aria-label="password"
               />
-              {formik.touched.password && formik.errors.password ? (
+              {formik.touched.password && formik.errors.password && (
                 <div className="red">{formik.errors.password}</div>
-              ) : null}
+              )}
               <input
                 id="confirmPassword"
                 name="confirmPassword"

@@ -40,7 +40,6 @@ const AddDeleteModal = ({
               : type === "MACHINE"
               ? data.machine_sr_no
               : "NONE"}
-            ?
           </div>
         </div>
 

@@ -54,9 +54,9 @@ const ForgotPasswordPage = () => {
             onChange={formik.handleChange}
             aria-label="Email address"
           />
-          {formik.touched.email && formik.errors.email ? (
+          {formik.touched.email && formik.errors.email && (
             <div className="red">{formik.errors.email}</div>
-          ) : null}
+          )}
         </div>
         <button type="submit" className="logging-form-button  w-100">
           SEND CODE

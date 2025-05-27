@@ -51,9 +51,9 @@ const AddMachineModal = ({ show, onClose, onSubmit, data, type }) => {
                 value={formik.values.machine_model}
                 aria-label="machine_model"
               />
-              {formik.touched.machine_model && formik.errors.machine_model ? (
+              {formik.touched.machine_model && formik.errors.machine_model && (
                 <div className="red">{formik.errors.machine_model}</div>
-              ) : null}
+              )}
               <input
                 id="machine_sr_no"
                 type="text"
@@ -65,9 +65,9 @@ const AddMachineModal = ({ show, onClose, onSubmit, data, type }) => {
                 value={formik.values.machine_sr_no}
                 aria-label="machine_sr_no"
               />
-              {formik.touched.machine_sr_no && formik.errors.machine_sr_no ? (
+              {formik.touched.machine_sr_no && formik.errors.machine_sr_no && (
                 <div className="red">{formik.errors.machine_sr_no}</div>
-              ) : null}
+              )}
               <input
                 id="location"
                 type="text"
@@ -79,9 +79,9 @@ const AddMachineModal = ({ show, onClose, onSubmit, data, type }) => {
                 value={formik.values.location}
                 aria-label="location"
               />
-              {formik.touched.location && formik.errors.location ? (
+              {formik.touched.location && formik.errors.location && (
                 <div className="red">{formik.errors.location}</div>
-              ) : null}
+              )}
 
               <select
                 id="operation_status"

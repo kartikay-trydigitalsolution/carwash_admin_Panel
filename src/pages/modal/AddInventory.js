@@ -52,9 +52,9 @@ const AddInventoryModal = ({ show, onClose, onSubmit, data, type }) => {
                 value={formik.values.itemName}
                 aria-label="itemName"
               />
-              {formik.touched.itemName && formik.errors.itemName ? (
+              {formik.touched.itemName && formik.errors.itemName && (
                 <div className="red">{formik.errors.itemName}</div>
-              ) : null}
+              )}
               <input
                 id="quantity"
                 type="number"
@@ -71,9 +71,9 @@ const AddInventoryModal = ({ show, onClose, onSubmit, data, type }) => {
                 value={formik.values.quantity}
                 aria-label="quantity"
               />
-              {formik.touched.quantity && formik.errors.quantity ? (
+              {formik.touched.quantity && formik.errors.quantity && (
                 <div className="red">{formik.errors.quantity}</div>
-              ) : null}
+              )}
               <input
                 id="usedQuantity"
                 type="number"
@@ -90,9 +90,9 @@ const AddInventoryModal = ({ show, onClose, onSubmit, data, type }) => {
                 value={formik.values.usedQuantity}
                 aria-label="usedQuantity"
               />
-              {formik.touched.usedQuantity && formik.errors.usedQuantity ? (
+              {formik.touched.usedQuantity && formik.errors.usedQuantity && (
                 <div className="red">{formik.errors.usedQuantity}</div>
-              ) : null}
+              )}
               <select
                 id="notification"
                 name="notification"
@@ -121,9 +121,9 @@ const AddInventoryModal = ({ show, onClose, onSubmit, data, type }) => {
                 value={formik.values.remarks}
                 aria-label="remarks"
               />
-              {formik.touched.remarks && formik.errors.remarks ? (
+              {formik.touched.remarks && formik.errors.remarks && (
                 <div className="red">{formik.errors.remarks}</div>
-              ) : null}
+              )}
             </div>
           </form>
         </div>
