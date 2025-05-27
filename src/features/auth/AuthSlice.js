@@ -7,7 +7,10 @@ const authSlice = createSlice({
     usertokken: "",
     isLogging: false,
     loading: false,
-    success: false,
+    otpSuccess: false,
+    resetSuccess: false,
+    loginSuccess: false,
+    otpEmail: "",
     error: null,
   },
   reducers: {
@@ -28,40 +31,60 @@ const authSlice = createSlice({
     forgetPasswordRequest: (state) => {
       state.loading = true;
       state.error = null;
+      state.otpSuccess = false;
+      state.loginSuccess = false;
     },
     forgetPasswordSuccess: (state) => {
       state.loading = false;
-      state.success = true;
+      state.loginSuccess = false;
+      state.otpSuccess = true;
     },
     forgetPasswordFailure: (state, action) => {
       state.loading = false;
-      state.error = action.payload;
-    },
-    forgetPasswordRequest: (state) => {
-      state.loading = true;
-      state.error = null;
-    },
-    forgetPasswordSuccess: (state) => {
-      state.loading = false;
-      state.success = true;
-    },
-    forgetPasswordFailure: (state, action) => {
-      state.loading = false;
+      state.otpSuccess = false;
+      state.loginSuccess = false;
       state.error = action.payload;
     },
     otpVerifyRequest: (state) => {
       state.loading = true;
-      state.success = false;
       state.error = null;
+      state.otpSuccess = false;
+      state.loginSuccess = false;
+      state.resetSuccess = false;
     },
-    otpVerifySuccess: (state) => {
+    otpVerifySuccess: (state, action) => {
       state.loading = false;
-      state.success = true;
+      state.otpSuccess = false;
+      state.resetSuccess = true;
+      state.loginSuccess = false;
+      state.otpEmail = action.payload.data.data;
     },
     otpVerifyFailure: (state, action) => {
       state.loading = false;
-      state.success = false;
       state.error = action.payload;
+      state.loginSuccess = false;
+      state.otpSuccess = false;
+      state.resetSuccess = false;
+    },
+    newPasswordRequest: (state) => {
+      state.loading = true;
+      state.error = null;
+      state.loginSuccess = false;
+      state.otpSuccess = false;
+      state.resetSuccess = false;
+    },
+    newPasswordSuccess: (state) => {
+      state.loading = false;
+      state.otpSuccess = false;
+      state.resetSuccess = false;
+      state.loginSuccess = true;
+    },
+    newPasswordFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+      state.otpSuccess = false;
+      state.loginSuccess = false;
+      state.resetSuccess = false;
     },
   },
 });
@@ -76,6 +99,9 @@ export const {
   otpVerifyRequest,
   otpVerifySuccess,
   otpVerifyFailure,
+  newPasswordRequest,
+  newPasswordSuccess,
+  newPasswordFailure,
 } = authSlice.actions;
 
 export default authSlice.reducer;

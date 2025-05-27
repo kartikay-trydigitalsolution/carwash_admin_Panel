@@ -20,7 +20,6 @@ import PrivateRoute from "./PrivateRoute";
 import { Toaster } from "sonner";
 function App() {
   const isLogging = useSelector((state) => state.auth.isLogging);
-  console.log(isLogging, "isLogging");
   return (
     <BrowserRouter>
       <Toaster position="top-center" />
@@ -32,7 +31,7 @@ function App() {
         />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/otp-verify" element={<OTPVerifyPage />} />
-        <Route path="/change-password" element={<ChangePasswordPage />} />
+        <Route path="/change-password/:id" element={<ChangePasswordPage />} />
         <Route
           path="/dashboard"
           element={

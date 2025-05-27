@@ -1,36 +1,37 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import logo from "../../assets/images/logo.svg";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import StyledImageInline from "../components/Image";
 import { useDispatch, useSelector } from "react-redux";
-import { forgetPasswordRequest } from "../../features/auth/authSlice";
+
+import { forgetPasswordRequest } from "../../features/auth/AuthSlice";
 const ForgotPasswordPage = () => {
   const navigate = useNavigate();
+  const params = useParams();
   const dispatch = useDispatch();
-  const { success } = useSelector((state) => state.auth);
+  const otpSuccess = useSelector((state) => state.auth.otpSuccess);
   const validationSchema = Yup.object({
     email: Yup.string()
       .email("*Invalid email format")
       .required("*Email is required"),
   });
+  useEffect(() => {
+    if (otpSuccess) {
+      navigate("/otp-verify");
+    }
+  }, [otpSuccess]);
   const formik = useFormik({
     initialValues: {
       email: "",
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      console.log(values);
+      values = { ...values, id: params.id };
       dispatch(forgetPasswordRequest(values));
     },
   });
-
-  useEffect(() => {
-    if (success) {
-      navigate("/otp-verify");
-    }
-  }, [success, navigate]);
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 auth-form-wrap">
       <form

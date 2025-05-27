@@ -1,6 +1,5 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 import axios from "../../api/api";
-import { useNavigate } from "react-router-dom";
 import {
   loginRequest,
   loginSuccess,
@@ -11,7 +10,10 @@ import {
   otpVerifyRequest,
   otpVerifySuccess,
   otpVerifyFailure,
-} from "./authSlice"; // update path as needed
+  newPasswordRequest,
+  // newPasswordSuccess,
+  // newPasswordFailure,
+} from "./AuthSlice"; // update path as needed
 
 // Worker Saga
 function* handleLogin(action) {
@@ -62,9 +64,28 @@ function* handleOtpCheck(action) {
   }
 }
 
+function* handleSetNewPassword(action) {
+  try {
+    const response = yield call(
+      axios.post,
+      "/auth/resetPassword",
+      action.payload
+    );
+    if (!response) {
+      return;
+    }
+    yield put(otpVerifySuccess(response));
+  } catch (error) {
+    yield put(
+      otpVerifyFailure(error.response?.data?.message || "OTP verify failed!")
+    );
+  }
+}
+
 // Watcher Saga
 export function* watchAuthSaga() {
   yield takeLatest(loginRequest.type, handleLogin);
   yield takeLatest(forgetPasswordRequest.type, handleForgetPassword);
   yield takeLatest(otpVerifyRequest.type, handleOtpCheck);
+  yield takeLatest(newPasswordRequest.type, handleSetNewPassword);
 }

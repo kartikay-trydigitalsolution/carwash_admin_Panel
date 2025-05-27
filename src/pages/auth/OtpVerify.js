@@ -1,22 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/images/logo.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import OTPInput from "./OtpInput";
 import StyledImageInline from "../components/Image";
-import { otpVerifyRequest } from "../../features/auth/authSlice";
+import { otpVerifyRequest } from "../../features/auth/AuthSlice";
 
 const OTPVerifyPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [otpValue, setOtpValue] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const resetSuccess = useSelector((state) => state.auth.resetSuccess);
+  const otpEmail = useSelector((state) => state.auth.otpEmail);
   const handleOtpChange = (otp) => {
     setOtpValue(otp);
   };
-
+  useEffect(() => {
+    if (resetSuccess) {
+      navigate(`/change-password/${otpEmail}`);
+    }
+  }, [resetSuccess]);
   const handleSubmit = (e) => {
     e.preventDefault();
     let success = true;
@@ -37,8 +42,8 @@ const OTPVerifyPage = () => {
       toast.error("OTP must contain only numbers");
       success = false;
     }
-    if (success == true) {
-      dispatch(otpVerifyRequest(otpValue));
+    if (success === true) {
+      dispatch(otpVerifyRequest({ otp: otpValue }));
     }
   };
 
