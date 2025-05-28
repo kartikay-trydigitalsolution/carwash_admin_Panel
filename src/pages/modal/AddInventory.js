@@ -1,6 +1,11 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 const AddInventoryModal = ({ show, onClose, onSubmit, data, type }) => {
+  const notification_status_option = [
+    { name: "Available", value: "available" },
+    { name: "Low", value: "low" },
+    { name: "Very Low", value: "very_low" },
+  ];
   const validationSchema = Yup.object({
     itemName: Yup.string().required("*Item name is required"),
     quantity: Yup.number().required("*Quantity no. is required"),
@@ -104,9 +109,9 @@ const AddInventoryModal = ({ show, onClose, onSubmit, data, type }) => {
                 <option value="" disabled>
                   Notification Status
                 </option>
-                <option value="very_low">Very Low</option>
-                <option value="low">Low</option>
-                <option value="available">Available</option>
+                {notification_status_option?.map((n_s) => {
+                  return <option value={n_s.value}>{n_s.name}</option>;
+                })}
               </select>
               {formik.touched.notification && formik.errors.notification && (
                 <div className="red">{formik.errors.notification}</div>

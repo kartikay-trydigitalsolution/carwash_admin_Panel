@@ -2,6 +2,10 @@ import { memo } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 const AddStaffModal = ({ show, onClose, onSubmit, data, type }) => {
+  const role_option = [
+    { name: "Role1", value: "Role1" },
+    { name: "Role2", value: "Role2" },
+  ];
   const validationSchema = Yup.object({
     name: Yup.string().required("*Name is required"),
     email: Yup.string()
@@ -102,8 +106,9 @@ const AddStaffModal = ({ show, onClose, onSubmit, data, type }) => {
                 <option value="" disabled>
                   Select a role…
                 </option>
-                <option value="Role1">Role1</option>
-                <option value="Role2">Role2</option>
+                {role_option?.map((r_o) => {
+                  return <option value={r_o.value}>{r_o.name}</option>;
+                })}
               </select>
               {formik.touched.role && formik.errors.role && (
                 <div className="red">{formik.errors.role}</div>

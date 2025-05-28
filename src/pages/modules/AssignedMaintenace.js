@@ -4,12 +4,8 @@ import DataTableHeaderContainer from "../components/DataTableHeaderContainer";
 import DataTableComponent from "../datatable/DataTable";
 import AssignMaintenanceModal from "../modal/AssignedMaintenace";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchStaffRequest,
-  deleteStaffRequest,
-  createStaffRequest,
-  updateStaffRequest,
-} from "../../features/staff/StaffSlice";
+import { fetchStaffRequest } from "../../features/staff/StaffSlice";
+import { createAssignTaskRequest } from "../../features/assignTask/AssignTaskSlice";
 import { fetchMachineRequest } from "../../features/machine/MachineSlice";
 import AddDeleteModal from "../modal/DeleteModal";
 
@@ -26,10 +22,14 @@ const AssignedManagement = () => {
     state?.staff?.data.map(({ _id, name, role }) => ({ id: _id, name, role }))
   );
   const machine = useSelector((state) =>
-    state?.machine?.data?.map(({ _id, machine_model }) => ({
-      id: _id,
-      machine_model,
-    }))
+    state?.machine?.data?.map(
+      ({ _id, machine_sr_no, location, machine_model }) => ({
+        id: _id,
+        machine_sr_no,
+        location,
+        machine_model,
+      })
+    )
   );
   const handleButtonClick = useCallback((dataFromChild) => {
     setParentMessage(dataFromChild);
@@ -41,8 +41,8 @@ const AssignedManagement = () => {
     (data) => {
       // dispatch(createRequest(data));
       data.type === "UPDATE"
-        ? dispatch(updateStaffRequest(data))
-        : dispatch(createStaffRequest(data));
+        ? dispatch()
+        : dispatch(createAssignTaskRequest(data));
       setShowModal(false);
       setType("ADD");
       setDataForUpdate({});
@@ -67,7 +67,7 @@ const AssignedManagement = () => {
 
   const handleDeleteModal = useCallback(
     (id) => {
-      dispatch(deleteStaffRequest(id));
+      // dispatch(deleteStaffRequest(id));
       setShowDeleteModal(false);
       dispatch(fetchStaffRequest());
     },

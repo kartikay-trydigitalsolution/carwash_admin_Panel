@@ -2,6 +2,11 @@ import { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 const AddMachineModal = ({ show, onClose, onSubmit, data, type }) => {
+  const operation_status_option = [
+    { name: "In Maintenance", value: "in_maintenance" },
+    { name: "Inactive", value: "inactive" },
+    { name: "Active", value: "active" },
+  ];
   const validationSchema = Yup.object({
     machine_model: Yup.string().required("*Machine Model is required"),
     machine_sr_no: Yup.string().required("*Machine Sr. No. is required"),
@@ -94,9 +99,11 @@ const AddMachineModal = ({ show, onClose, onSubmit, data, type }) => {
                 <option value="" disabled>
                   Operational Status
                 </option>
-                <option value="active">Active</option>
-                <option value="inactive">In Active</option>
-                <option value="in_maintenance">In Maintenance</option>
+                {operation_status_option?.map((o_s_o) => {
+                  return <option value={o_s_o.value}>{o_s_o.name}</option>;
+                })}
+                {/* <option value="inactive">In Active</option>
+                <option value="in_maintenance">In Maintenance</option> */}
               </select>
               {formik.touched.operation_status &&
                 formik.errors.operation_status && (
