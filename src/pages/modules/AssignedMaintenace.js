@@ -1,11 +1,14 @@
 // src/pages/dashboard/DashboardHome.jsx
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect, useMemo } from "react";
 import DataTableHeaderContainer from "../components/DataTableHeaderContainer";
 import DataTableComponent from "../datatable/DataTable";
 import AssignMaintenanceModal from "../modal/AssignedMaintenace";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchStaffRequest } from "../../features/staff/StaffSlice";
-import { createAssignTaskRequest } from "../../features/assignTask/AssignTaskSlice";
+import {
+  createAssignTaskRequest,
+  fetchAssignTaskRequest,
+} from "../../features/assignTask/AssignTaskSlice";
 import { fetchMachineRequest } from "../../features/machine/MachineSlice";
 import AddDeleteModal from "../modal/DeleteModal";
 
@@ -17,10 +20,35 @@ const AssignedManagement = () => {
   const [dataForDelete, setDataForDelete] = useState({});
   const [type, setType] = useState("ADD");
   const [parentMessage, setParentMessage] = useState("");
-  const [dataType, setDataType] = useState("STAFF");
+  const [dataType, setDataType] = useState("ASSIGN_TASK");
   const staff = useSelector((state) =>
     state?.staff?.data.map(({ _id, name, role }) => ({ id: _id, name, role }))
   );
+  const assignTask = useSelector((state) => state?.assignTask?.data);
+  const taskCountByStaff = useMemo(() => {
+    if (!Array.isArray(assignTask)) return [];
+
+    const grouped = assignTask.reduce((acc, item) => {
+      const staffId = item.staffId._id;
+
+      if (!acc[staffId]) {
+        acc[staffId] = {
+          staffId: staffId,
+          name: item.staffId.name,
+          email: item.staffId.email,
+          role: item.staffId.role,
+          taskCount: 0,
+        };
+      }
+
+      acc[staffId].taskCount += 1;
+      return acc;
+    }, {});
+
+    return Object.values(grouped);
+  }, [assignTask]);
+
+  console.log(taskCountByStaff);
   const machine = useSelector((state) =>
     state?.machine?.data?.map(
       ({ _id, machine_sr_no, location, machine_model }) => ({
@@ -52,6 +80,7 @@ const AssignedManagement = () => {
   useEffect(() => {
     dispatch(fetchStaffRequest());
     dispatch(fetchMachineRequest());
+    dispatch(fetchAssignTaskRequest());
   }, [dispatch]);
 
   const handleDelete = (row) => {
@@ -123,7 +152,7 @@ const AssignedManagement = () => {
             buttonTitle={"Assign Task"}
           />
           <DataTableComponent
-            dataTableData={staff?.length > 0 ? staff : []}
+            dataTableData={taskCountByStaff?.length > 0 ? taskCountByStaff : []}
             onDelete={handleDelete}
             onUpdate={(row) => handleUpdate(row)}
             dataTableType={dataType}

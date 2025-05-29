@@ -15,7 +15,7 @@ const assignTaskSlice = createSlice({
     },
     fetchAssignTaskSuccess: (state, action) => {
       state.loading = false;
-      state.data = action.payload?.AssignTask;
+      state.data = action.payload?.assignTask;
     },
     fetchAssignTaskFailure: (state, action) => {
       state.loading = false;
@@ -28,7 +28,7 @@ const assignTaskSlice = createSlice({
     createAssignTaskSuccess: (state, action) => {
       state.loading = false;
       state.success = true;
-      state.data.push(action.payload.assignTask);
+      state.data.push(action.payload.task);
     },
     createAssignTaskFailure: (state, action) => {
       state.loading = false;

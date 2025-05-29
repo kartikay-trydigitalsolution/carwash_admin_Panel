@@ -1,6 +1,7 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import TextInput from "../components/TextInput";
+import { useState } from "react";
 const AssignMaintenanceModal = ({
   show,
   onClose,
@@ -10,32 +11,72 @@ const AssignMaintenanceModal = ({
   staff,
   machine,
 }) => {
-  const validationSchema = Yup.object({
-    staffId: Yup.string().required("*Staff is required"),
-    machineId: Yup.string().required("*Staff is required"),
-    due_date: Yup.string().required("*Due Date is required"),
-    isCheckListForService: Yup.boolean(),
-    isCheckToolKit: Yup.boolean(),
-  }).test(
-    "only-one-selected",
-    "*Select either Checklist for Servicing or Tool Kit — not both",
-    function (values) {
-      const { isCheckListForService, isCheckToolKit } = values;
+  const service_type_option = [
+    { name: "Complaint", value: "Complaint" },
+    { name: "Servicing", value: "Servicing" },
+    { name: "Installation", value: "Installation" },
+  ];
+  const validationSchema = Yup.object()
+    .shape({
+      staffId: Yup.string().required("*Staff is required"),
+      machineId: Yup.string().required("*Machine is required"),
+      due_date: Yup.date()
+        .required("*Due Date is required")
+        .min(
+          new Date(new Date().setHours(0, 0, 0, 0)),
+          "*Due Date must be today or later"
+        ),
+      isCheckListForService: Yup.boolean(),
+      isCheckToolKit: Yup.boolean(),
+      telephone: Yup.string().when("isCheckListForService", {
+        is: true,
+        then: (schema) =>
+          schema
+            .required("*Required")
+            .matches(/^(?:\+65\s?)?(?:6|8|9)\d{7}$/, "*Invalid Phone"),
+        otherwise: (schema) => schema.notRequired(),
+      }),
+      service_type: Yup.string().when("isCheckListForService", {
+        is: true,
+        then: (schema) => schema.required("*Required"),
+        otherwise: (schema) => schema.notRequired(),
+      }),
+    })
+    .test(
+      "only-one-selected",
+      "*Select either Checklist for Servicing or Tool Kit — not both",
+      function (values) {
+        const { isCheckListForService, isCheckToolKit } = values;
+        const onlyOneSelected =
+          (isCheckListForService && !isCheckToolKit) ||
+          (!isCheckListForService && isCheckToolKit);
 
-      if (
-        (isCheckListForService && !isCheckToolKit) ||
-        (!isCheckListForService && isCheckToolKit)
-      ) {
-        return true;
+        if (onlyOneSelected) {
+          return true;
+        }
+        return this.createError({
+          path: "isCheckListForService",
+          message:
+            "*Select either Checklist for Servicing or Tool Kit — not both",
+        });
       }
-      // Error if none or both are selected
-      return this.createError({
-        path: "isCheckListForService", // or show on a general field or both fields
-        message:
-          "*Select either Checklist for Servicing or Tool Kit — Not Both",
-      });
-    }
-  );
+    );
+  // const checkTelephoneIsThere = (phone) => {
+  //   if (formik.values.isCheckListForService) {
+  //     const trimmedPhone = String(formik.values.telephone || "").trim();
+  //     const phoneRegex = /^(?:\+65\s?)?(?:6|8|9)\d{7}$/;
+  //     if (!trimmedPhone) {
+  //       setIsTelephoneText("*Required");
+  //       setIsTelephoneValid(false);
+  //     } else if (!phoneRegex.test(trimmedPhone)) {
+  //       setIsTelephoneText("*Invalid Phone");
+  //       setIsTelephoneValid(false);
+  //     } else {
+  //       setIsTelephoneText("");
+  //       setIsTelephoneValid(true);
+  //     }
+  //   }
+  // };
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -48,15 +89,20 @@ const AssignMaintenanceModal = ({
     },
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
+      // checkTelephoneIsThere();
       // console.log(values);
+      // if (isTelephoneValid) {
       onSubmit(
         type === "UPDATE" ? { ...values, id: data._id, type: type } : values
       );
       resetForm();
+      // }
     },
   });
-  const selectedStaffRole = staff.find((s) => s.id === formik.values.staffId);
-  const selectedMachine = machine.find((m) => m.id === formik.values.machineId);
+  const selectedStaffRole = staff.find((s) => s?.id === formik.values.staffId);
+  const selectedMachine = machine.find(
+    (m) => m?.id === formik.values.machineId
+  );
   if (!show) return null;
   return (
     <div className="absolute inset-0 bg-[#00000099] flex items-center justify-center p-4 z-50">
@@ -84,7 +130,7 @@ const AssignMaintenanceModal = ({
                   Select Staff{" "}
                 </option>
                 {staff?.map((s) => (
-                  <option value={s.id}>{s.name}</option>
+                  <option value={s?.id}>{s?.name}</option>
                 ))}
               </select>
               {formik.touched.staffId && formik.errors.staffId && (
@@ -117,7 +163,7 @@ const AssignMaintenanceModal = ({
                   Select Machine Sr. No.{" "}
                 </option>
                 {machine?.map((m) => (
-                  <option value={m.id}>{m.machine_sr_no}</option>
+                  <option value={m?.id}>{m?.machine_sr_no}</option>
                 ))}
               </select>
               {formik.touched.machineId && formik.errors.machineId && (
@@ -132,7 +178,7 @@ const AssignMaintenanceModal = ({
                   disabled
                 >
                   {machine?.map((s) => (
-                    <option value={selectedMachine.id}>
+                    <option value={selectedMachine?.id}>
                       {selectedMachine.machine_model}
                     </option>
                   ))}
@@ -147,7 +193,7 @@ const AssignMaintenanceModal = ({
                   disabled
                 >
                   {machine?.map((s) => (
-                    <option value={selectedMachine.id}>
+                    <option value={selectedMachine?.id}>
                       {selectedMachine.location}
                     </option>
                   ))}
@@ -167,49 +213,94 @@ const AssignMaintenanceModal = ({
               {formik.touched.due_date && formik.errors.due_date && (
                 <div className="red">{formik.errors.due_date}</div>
               )}
-              <div>
-                <div className="content_header mb-2">
-                  Can Select Muliple Options{" "}
-                </div>
-                <div className="form-check custom-checkbox-color">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id="isCheckListForService"
-                    name="isCheckListForService"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    checked={formik.values.isCheckListForService}
-                  />
-                  <label
-                    className="form-check-label"
-                    htmlFor="isCheckListForService"
-                  >
-                    Checklist For Servicing And Maintenance of Coin Operated
-                    Water Dispensers
-                  </label>
-                </div>
-
-                <div className="form-check custom-checkbox-color">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id="isCheckToolKit"
-                    name="isCheckToolKit"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    checked={formik.values.isCheckToolKit}
-                  />
-                  <label className="form-check-label" htmlFor="isCheckToolKit">
-                    Tool Box Meeting
-                  </label>
-                </div>
-                {formik.errors.isCheckListForService && (
-                  <div className="red">
-                    {formik.errors.isCheckListForService}
-                  </div>
-                )}
+              <div className="content_header mb-2">
+                Can Select Muliple Options{" "}
               </div>
+              <div className="form-check custom-checkbox-color">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="isCheckListForService"
+                  name="isCheckListForService"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  checked={formik.values.isCheckListForService}
+                />
+                <label
+                  className="form-check-label"
+                  htmlFor="isCheckListForService"
+                >
+                  Checklist For Servicing And Maintenance of Coin Operated Water
+                  Dispensers
+                </label>
+              </div>
+
+              <div className="form-check custom-checkbox-color">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="isCheckToolKit"
+                  name="isCheckToolKit"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  checked={formik.values.isCheckToolKit}
+                />
+                <label className="form-check-label" htmlFor="isCheckToolKit">
+                  Tool Box Meeting
+                </label>
+              </div>
+              {formik.errors.isCheckListForService && (
+                <div className="red">{formik.errors.isCheckListForService}</div>
+              )}
+              {formik.values.isCheckListForService && (
+                <>
+                  <input
+                    id="telephone"
+                    type="number"
+                    name="telephone"
+                    className="form-input w-full ps-3"
+                    placeholder="Telephone"
+                    onChange={(e) => {
+                      formik.handleChange(e); // 🔹 Keep Formik in sync
+                      // checkTelephoneIsThere(e); // 🔹 Your second function
+                    }}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.telephone}
+                    aria-label="telephone"
+                  />
+                  {formik.touched.telephone && formik.errors.telephone && (
+                    <div className="red">{formik.errors.telephone}</div>
+                  )}
+                  {/* {!isTelephoneValid ? (
+                    <div className="red">{isTelephoneText}</div>
+                  ) : (
+                    ""
+                  )} */}
+                </>
+              )}
+              {formik.values.isCheckListForService && (
+                <>
+                  <select
+                    id="service_type"
+                    name="service_type"
+                    className="form-input w-full ps-2"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.service_type}
+                  >
+                    <option value="" disabled>
+                      Service Status
+                    </option>
+                    {service_type_option?.map((n_s) => {
+                      return <option value={n_s.value}>{n_s.name}</option>;
+                    })}
+                  </select>
+                  {formik.touched.service_type &&
+                    formik.errors.telephoneservice_type && (
+                      <div className="red">{formik.errors.service_type}</div>
+                    )}
+                </>
+              )}
             </div>
           </form>
         </div>

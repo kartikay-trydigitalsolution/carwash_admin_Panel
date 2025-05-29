@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import DataTable from "react-data-table-component";
+import moment from "moment";
 
 const DataTableComponent = ({
   dataTableData,
@@ -205,6 +206,48 @@ const DataTableComponent = ({
       ),
     },
   ];
+  const assignAdminColumns = [
+    {
+      name: "Due Date",
+      selector: (row) => moment(row.due_date).format("DD-MM-YYYY"),
+      sortable: true,
+    },
+    {
+      name: "Name",
+      selector: (row) => row.name,
+      sortable: true,
+    },
+    { name: "Role", selector: (row) => row.role, sortable: true },
+    { name: "Task Count", selector: (row) => row.taskCount, sortable: true },
+    // {
+    //   name: "Status",
+    //   cell: (row) => (
+    //     <span
+    //       className={`px-3 py-1 rounded-full text-sm font-semibold
+    //       ${row.status === "Active" ? "bg-[#EBF9F1] text-[#1F9254]" : ""}
+    //       ${row.status === "Inactive" ? "bg-[#A30D111A] text-[#A30D11]" : ""}
+    //       ${
+    //         row.status === "Not Available"
+    //           ? "bg-orange-100 text-orange-500"
+    //           : ""
+    //       }
+    //     `}
+    //     >
+    //       {row.status}
+    //     </span>
+    //   ),
+    // },
+    {
+      name: "Action",
+      cell: (row) => (
+        <div className="flex gap-2 d-flex justify-content-center">
+          <button variant="outline" size="icon" onClick={() => handleEdit(row)}>
+            <i className="fas fa-eye"></i>
+          </button>
+        </div>
+      ),
+    },
+  ];
 
   const inventoryColumns = [
     {
@@ -224,7 +267,6 @@ const DataTableComponent = ({
       cell: (row) => {
         const statusRaw = row.notification || "Unknown";
         const status = statusRaw.toLowerCase();
-
         const statusMap = {
           available: "bg-light-green text-success",
           low: "bg-light-yellow text-warning",
@@ -316,6 +358,8 @@ const DataTableComponent = ({
             ? machineColumns
             : dataTableType == "INVENTORY"
             ? inventoryColumns
+            : dataTableType == "ASSIGN_TASK"
+            ? assignAdminColumns
             : machineColumns
         }
         data={dataTableData}

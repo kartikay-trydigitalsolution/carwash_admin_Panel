@@ -10,7 +10,7 @@ const rootReducer = combineReducers({
   machine: machineReducer,
   inventory: inventoryReducer,
   auth: authReducer,
-  assign: assignTaskReducer,
+  assignTask: assignTaskReducer,
 });
 
 export default rootReducer;

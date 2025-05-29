@@ -18,7 +18,7 @@ import {
 // FETCH
 function* fetchAssignTaskSaga() {
   try {
-    const response = yield call(axios.get, "/AssignTask/AssignTask");
+    const response = yield call(axios.get, "/assignTask/assignTask");
     yield put(fetchAssignTaskSuccess(response.data));
   } catch (error) {
     yield put(fetchAssignTaskFailure(error.message));

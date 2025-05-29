@@ -7,7 +7,9 @@ const AddStaffModal = ({ show, onClose, onSubmit, data, type }) => {
     { name: "Role2", value: "Role2" },
   ];
   const validationSchema = Yup.object({
-    name: Yup.string().required("*Name is required"),
+    name: Yup.string()
+      .required("*Name is required")
+      .matches(/^[A-Za-z\s]+$/, "*Name must contain only letters"),
     email: Yup.string()
       .email("*Invalid email format")
       .required("*Email is required"),
