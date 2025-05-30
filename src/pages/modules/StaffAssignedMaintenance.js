@@ -1,10 +1,10 @@
 // src/pages/dashboard/DashboardHome.jsx
-import { useCallback, useState, useEffect, useMemo } from "react";
+import { useCallback, useState, useEffect } from "react";
 import DataTableHeaderContainer from "../components/DataTableHeaderContainer";
 import DataTableComponent from "../datatable/DataTable";
 import AssignMaintenanceModal from "../modal/AssignedMaintenace";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { fetchStaffRequest } from "../../features/staff/StaffSlice";
 import {
   createAssignTaskRequest,
@@ -13,43 +13,42 @@ import {
 import { fetchMachineRequest } from "../../features/machine/MachineSlice";
 import AddDeleteModal from "../modal/DeleteModal";
 
-const AssignedManagement = () => {
+const StaffAssignedManagement = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const params = useParams();
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [dataForUpdate, setDataForUpdate] = useState({});
   const [dataForDelete, setDataForDelete] = useState({});
   const [type, setType] = useState("ADD");
   const [parentMessage, setParentMessage] = useState("");
-  const [dataType, setDataType] = useState("ASSIGN_TASK");
+  const [dataType, setDataType] = useState("STAFF_ASSIGN_TASK");
   const staff = useSelector((state) =>
     state?.staff?.data.map(({ _id, name, role }) => ({ id: _id, name, role }))
   );
-  const assignTask = useSelector((state) => state?.assignTask?.data);
-  const taskCountByStaff = useMemo(() => {
-    if (!Array.isArray(assignTask)) return [];
+  const assignTask = useSelector((state) =>
+    state?.assignTask?.data.filter((a_s) => a_s.staffId._id == params.id)
+  );
+  //   const taskCountByStaff = useMemo(() => {
+  //     if (!Array.isArray(assignTask)) return [];
+  //     const grouped = assignTask.reduce((acc, item) => {
+  //       const staffId = item.staffId._id;
+  //       if (!acc[staffId]) {
+  //         acc[staffId] = {
+  //           staffId: staffId,
+  //           name: item.staffId.name,
+  //           email: item.staffId.email,
+  //           role: item.staffId.role,
+  //           taskCount: 0,
+  //         };
+  //       }
+  //       acc[staffId].taskCount += 1;
+  //       return acc;
+  //     }, {});
 
-    const grouped = assignTask.reduce((acc, item) => {
-      const staffId = item.staffId._id;
-
-      if (!acc[staffId]) {
-        acc[staffId] = {
-          staffId: staffId,
-          name: item.staffId.name,
-          email: item.staffId.email,
-          role: item.staffId.role,
-          taskCount: 0,
-        };
-      }
-
-      acc[staffId].taskCount += 1;
-      return acc;
-    }, {});
-
-    return Object.values(grouped);
-  }, [assignTask]);
-
+  //     return Object.values(grouped);
+  //   }, [assignTask]);
   const machine = useSelector((state) =>
     state?.machine?.data?.map(
       ({ _id, machine_sr_no, location, machine_model }) => ({
@@ -87,11 +86,6 @@ const AssignedManagement = () => {
   const handleDelete = (row) => {
     setShowDeleteModal(true);
     setDataForDelete(row);
-  };
-
-  const handleUpdate = (data) => {
-    console.log(data);
-    navigate(`/dashboard/staff-assigned-management/${data.staffId}`);
   };
 
   const handleDeleteModal = useCallback(
@@ -151,10 +145,11 @@ const AssignedManagement = () => {
             title={"Assigned Staff"}
             buttonTitle={"Assign Task"}
           />
+          {console.log(assignTask)}
           <DataTableComponent
-            dataTableData={taskCountByStaff?.length > 0 ? taskCountByStaff : []}
+            dataTableData={assignTask?.length > 0 ? assignTask : []}
             onDelete={handleDelete}
-            onUpdate={(row) => handleUpdate(row)}
+            // onUpdate={(row) => handleUpdate(row)}
             dataTableType={dataType}
           />
         </div>
@@ -163,4 +158,4 @@ const AssignedManagement = () => {
   );
 };
 
-export default AssignedManagement;
+export default StaffAssignedManagement;

@@ -6,6 +6,7 @@ const authSlice = createSlice({
     userData: [],
     usertokken: "",
     isLogging: false,
+    userRole: "",
     loading: false,
     otpSuccess: false,
     resetSuccess: false,
@@ -22,6 +23,7 @@ const authSlice = createSlice({
       state.loading = false;
       state.userData = action.payload?.data?.user;
       state.usertokken = action.payload?.data?.token;
+      state.userRole = action.payload?.data?.user?.role;
       state.isLogging = true;
     },
     loginFailure: (state, action) => {

@@ -102,6 +102,23 @@ const DataTableComponent = ({
       ),
     },
   ];
+  const staffAssignedTask = [
+    {
+      name: "Date",
+      selector: (row) => row.due_date,
+      sortable: true,
+    },
+    {
+      name: "Machine Model",
+      selector: (row) => row.machineId.machine_model,
+      sortable: true,
+    },
+    {
+      name: "Location",
+      selector: (row) => row.machineId.location,
+      sortable: true,
+    },
+  ];
 
   const machineColumns = [
     {
@@ -360,6 +377,8 @@ const DataTableComponent = ({
             ? inventoryColumns
             : dataTableType == "ASSIGN_TASK"
             ? assignAdminColumns
+            : dataTableType == "STAFF_ASSIGN_TASK"
+            ? staffAssignedTask
             : machineColumns
         }
         data={dataTableData}
