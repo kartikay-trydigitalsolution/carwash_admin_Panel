@@ -143,8 +143,8 @@ const AssignedManagement = () => {
         onDelete={handleDeleteModal}
         type={dataType}
       />
-      <div className="p-5 w-100">
-        <div className="card shadow-sm border-0 pt-4 datatable_wrapper">
+      <div className="p-5 w-full flex justify-center">
+        <div className="card shadow-sm border-0 pt-4 datatable_wrapper w-full max-w-screen-lg">
           <DataTableHeaderContainer
             onButtonClick={handleButtonClick}
             onAddButtonClick={handleModelClick}

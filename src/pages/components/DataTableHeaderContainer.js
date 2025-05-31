@@ -31,9 +31,13 @@ const DataTableHeaderContainer = ({
               placeholder="Search..."
             />
           </div>
-          <button className="add-button" onClick={handleModelClick}>
-            {buttonTitle}
-          </button>
+          {buttonTitle ? (
+            <button className="add-button" onClick={handleModelClick}>
+              {buttonTitle}
+            </button>
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </div>

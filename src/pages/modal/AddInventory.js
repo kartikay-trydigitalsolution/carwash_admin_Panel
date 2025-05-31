@@ -7,11 +7,27 @@ const AddInventoryModal = ({ show, onClose, onSubmit, data, type }) => {
     { name: "Very Low", value: "very_low" },
   ];
   const validationSchema = Yup.object({
-    itemName: Yup.string().required("*Item name is required"),
+    itemName: Yup.string()
+      .trim()
+      .min(5, "*Item name must be at least 5 characters")
+      .max(25, "*Item name not more than 25 characters")
+      .required("*Item name is required"),
     quantity: Yup.number().required("*Quantity no. is required"),
-    usedQuantity: Yup.number().required("*Used quantity is required"),
+    usedQuantity: Yup.number()
+      .required("*Used quantity is required")
+      .typeError("*Used quantity must be a number")
+      .test(
+        "max-used-quantity",
+        "*Used quantity cannot be more than total quantity",
+        function (value) {
+          const { quantity } = this.parent;
+          if (typeof quantity !== "number" || typeof value !== "number")
+            return true;
+          return value <= quantity;
+        }
+      ),
     notification: Yup.string().required("*Notification is required"),
-    remarks: Yup.string(),
+    remarks: Yup.string().trim(),
   });
   const formik = useFormik({
     enableReinitialize: true,

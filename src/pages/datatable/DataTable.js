@@ -40,10 +40,15 @@ const DataTableComponent = ({
         // borderRadius: "8px", // ✅ Rounded row corners
         paddingTop: "12px",
         paddingBottom: "12px",
+        whiteSpace: "normal",
       }),
     },
     cells: {
       style: {
+        whiteSpace: "normal", // allow multi-line wrapping
+        wordBreak: "break-word", // break long words if needed
+        overflow: "visible", // prevent clipping
+        textOverflow: "unset",
         border: "none", // ✅ Remove cell borders
       },
     },
@@ -104,8 +109,8 @@ const DataTableComponent = ({
   ];
   const staffAssignedTask = [
     {
-      name: "Date",
-      selector: (row) => row.due_date,
+      name: "Due Date",
+      selector: (row) => moment(row.due_date).format("DD-MM-YYYY"),
       sortable: true,
     },
     {
@@ -114,9 +119,67 @@ const DataTableComponent = ({
       sortable: true,
     },
     {
+      name: "Task",
+      selector: (row) =>
+        row.isCheckListForService
+          ? "Checklist For Servicing And Maintenance of Coin Operated Water Dispensers"
+          : "Tool Box Meeting",
+      sortable: true,
+    },
+    {
+      name: "Machine Sr. No.",
+      selector: (row) => row.machineId.machine_sr_no,
+      sortable: true,
+    },
+    {
       name: "Location",
       selector: (row) => row.machineId.location,
       sortable: true,
+    },
+    {
+      name: "Status",
+      sortable: true,
+      cell: (row) => {
+        const statusRaw = row.machineId.operation_status || "Unknown";
+        const status = statusRaw.toLowerCase();
+
+        const statusMap = {
+          active: "bg-light-green text-success",
+          in_maintenance: "bg-light-yellow text-warning",
+          inactive: "bg-light-red text-danger",
+        };
+
+        // Capitalize first letter
+        const formatStatus = (str) =>
+          str.charAt(0).toUpperCase() + str.slice(1);
+
+        return (
+          <span
+            className={`rounded-pill px-3 py-1 fw-semibold ${
+              statusMap[status] || "bg-secondary text-white"
+            }`}
+          >
+            {formatStatus(status)}
+          </span>
+        );
+      },
+    },
+    {
+      name: "Action",
+      cell: (row) => (
+        <div className="flex gap-2 d-flex justify-content-center">
+          <button variant="outline" size="icon" onClick={() => handleEdit(row)}>
+            <i className="fas fa-eye"></i>
+          </button>
+          <button
+            variant="destructive"
+            size="icon"
+            onClick={() => handleDelete(row)}
+          >
+            <i className="fas fa-trash-alt img-fluid border-0 shadow-none"></i>
+          </button>
+        </div>
+      ),
     },
   ];
 
@@ -224,11 +287,10 @@ const DataTableComponent = ({
     },
   ];
   const assignAdminColumns = [
-    {
-      name: "Due Date",
-      selector: (row) => moment(row.due_date).format("DD-MM-YYYY"),
-      sortable: true,
-    },
+    // {
+    //   name: "Sr. no.",
+    //   cell: (row, index) => `${index + 1}.`,
+    // },
     {
       name: "Name",
       selector: (row) => row.name,
@@ -324,7 +386,7 @@ const DataTableComponent = ({
     //     </span>
     //   ),
     // },
-    { name: "remarks", selector: (row) => row.remarks },
+    { name: "remarks", selector: (row) => row.remarks || "-" },
     {
       name: "Action",
       cell: (row) => (

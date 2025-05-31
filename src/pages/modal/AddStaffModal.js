@@ -6,21 +6,45 @@ const AddStaffModal = ({ show, onClose, onSubmit, data, type }) => {
     { name: "Role1", value: "Role1" },
     { name: "Role2", value: "Role2" },
   ];
+  const emailRegex =
+    /^[a-zA-Z0-9._%+-]+@[a-zA-Z.-]+\.(com|net|org|edu|gov|co|in|uk|us|io|info|biz|me)$/i;
   const validationSchema = Yup.object({
     name: Yup.string()
+      .trim()
+      .min(3, "*Name must be at least 3 characters")
+      .max(25, "*Name not more than 25 characters")
       .required("*Name is required")
       .matches(/^[A-Za-z\s]+$/, "*Name must contain only letters"),
     email: Yup.string()
+      .trim()
+      .required("*Email is required")
       .email("*Invalid email format")
-      .required("*Email is required"),
+      .test(
+        "email-regex",
+        "*Email domain can only contain letters, dots, and dashes",
+        (value) => (value ? emailRegex.test(value) : false)
+      ),
     role: Yup.string().required("*Role is required"),
     phone: Yup.string()
-      .matches(/^\+?[1-9]\d{1,14}$/, "*Invalid phone number")
-      .required("*Phone number is required"),
+      .trim()
+      .required("*Phone number is required")
+      .matches(/^\+?[1-9]\d{7,14}$/, "*Invalid phone number format") // E.164 format with minimum 8 digits
+      .test(
+        "no-repeating-digits",
+        "*Phone number cannot consist of repeating digits",
+        (value) => {
+          if (!value) return false;
+          const digits = value.replace(/\D/g, ""); // Remove non-digit characters
+          return !/^(\d)\1+$/.test(digits); // Check for repeating digits
+        }
+      ),
     password: Yup.string()
+      .trim()
       .min(8, "*Password must be at least 8 characters")
+      .max(15, "*Password not more than 15 characters")
       .required("*Password is required"),
     confirmPassword: Yup.string()
+      .trim()
       .oneOf([Yup.ref("password"), null], "*Passwords must match")
       .required("*Confirm password is required"),
   });

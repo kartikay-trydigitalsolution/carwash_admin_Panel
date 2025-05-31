@@ -8,9 +8,21 @@ const AddMachineModal = ({ show, onClose, onSubmit, data, type }) => {
     { name: "Active", value: "active" },
   ];
   const validationSchema = Yup.object({
-    machine_model: Yup.string().required("*Machine Model is required"),
-    machine_sr_no: Yup.string().required("*Machine Sr. No. is required"),
-    location: Yup.string().required("*location is required"),
+    machine_model: Yup.string()
+      .trim()
+      .min(5, "*Model must be at least 5 characters")
+      .max(20, "*Model not more than 20 characters")
+      .required("*Machine Model is required"),
+    machine_sr_no: Yup.string()
+      .trim()
+      .min(5, "*Serial Number must be at least 5 characters")
+      .max(20, "*Serial Number not more than 20 characters")
+      .required("*Machine Sr. No. is required"),
+    location: Yup.string()
+      .trim()
+      .min(10, "*Address must be at least 10 characters")
+      .max(50, "*Address not more than 50 characters")
+      .required("*location is required"),
     operation_status: Yup.string().required("*location is required"),
   });
   const formik = useFormik({

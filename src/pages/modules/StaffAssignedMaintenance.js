@@ -143,7 +143,7 @@ const StaffAssignedManagement = () => {
             onButtonClick={handleButtonClick}
             onAddButtonClick={handleModelClick}
             title={"Assigned Staff"}
-            buttonTitle={"Assign Task"}
+            // buttonTitle={"Assign Task"}
           />
           {console.log(assignTask)}
           <DataTableComponent
