@@ -8,7 +8,7 @@ import rootSaga from "./RootSaga";
 const saveSubsetFilter = createTransform(
   // inbound: before saving to storage
   (inboundState, key) => {
-    const whitelist = ["userData", "isLogging", "usertokken"];
+    const whitelist = ["userData", "isLogging", "usertokken", "userRole"];
     return Object.keys(inboundState)
       .filter((k) => whitelist.includes(k))
       .reduce((obj, k) => {

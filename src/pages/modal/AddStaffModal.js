@@ -3,8 +3,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 const AddStaffModal = ({ show, onClose, onSubmit, data, type }) => {
   const role_option = [
-    { name: "Role1", value: "Role1" },
-    { name: "Role2", value: "Role2" },
+    { name: "Technician", value: "Technician" },
+    { name: "Inventory", value: "Inventory" },
   ];
   const emailRegex =
     /^[a-zA-Z0-9._%+-]+@[a-zA-Z.-]+\.(com|net|org|edu|gov|co|in|uk|us|io|info|biz|me)$/i;

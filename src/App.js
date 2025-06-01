@@ -20,7 +20,7 @@ import MaintenanceRecordManagement from "./pages/modules/MaintenanceRecordManage
 import PrivateRoute from "./PrivateRoute";
 import { Toaster } from "sonner";
 function App() {
-  const isLogging = useSelector((state) => state.auth.isLogging);
+  const isLogging = useSelector((state) => state?.auth?.isLogging);
   return (
     <BrowserRouter>
       <Toaster position="top-center" />

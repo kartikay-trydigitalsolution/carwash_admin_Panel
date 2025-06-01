@@ -1,25 +1,27 @@
 import { createSlice } from "@reduxjs/toolkit";
-
+import { act } from "react";
+const initialState = {
+  userData: [],
+  usertokken: "",
+  isLogging: false,
+  userRole: "",
+  loading: false,
+  otpSuccess: false,
+  resetSuccess: false,
+  loginSuccess: false,
+  otpEmail: "",
+  error: null,
+};
 const authSlice = createSlice({
   name: "auth",
-  initialState: {
-    userData: [],
-    usertokken: "",
-    isLogging: false,
-    userRole: "",
-    loading: false,
-    otpSuccess: false,
-    resetSuccess: false,
-    loginSuccess: false,
-    otpEmail: "",
-    error: null,
-  },
+  initialState,
   reducers: {
     loginRequest: (state) => {
       state.loading = true;
       state.error = null;
     },
     loginSuccess: (state, action) => {
+      console.log(action.payload.data.user.role);
       state.loading = false;
       state.userData = action.payload?.data?.user;
       state.usertokken = action.payload?.data?.token;
@@ -88,6 +90,7 @@ const authSlice = createSlice({
       state.loginSuccess = false;
       state.resetSuccess = false;
     },
+    logoutRequest: () => initialState,
   },
 });
 
@@ -104,6 +107,7 @@ export const {
   newPasswordRequest,
   newPasswordSuccess,
   newPasswordFailure,
+  logoutRequest,
 } = authSlice.actions;
 
 export default authSlice.reducer;
