@@ -13,7 +13,7 @@ import {
 import AddDeleteModal from "../modal/DeleteModal";
 const MachineManagement = () => {
   const dispatch = useDispatch();
-  const [parentMessage, setParentMessage] = useState("");
+  const [filterData, setFilterData] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [dataForUpdate, setDataForUpdate] = useState({});
@@ -21,9 +21,21 @@ const MachineManagement = () => {
   const [type, setType] = useState("ADD");
   const [dataType, setDataType] = useState("MACHINE");
   const machines = useSelector((state) => state?.machine?.data);
-  const handleButtonClick = useCallback((dataFromChild) => {
-    setParentMessage(dataFromChild);
-  }, []);
+  const filteredMachines = machines?.filter((item) => {
+    const fieldsToCheck = [
+      "machine_model",
+      "maintenance_alerts",
+      "operation_status",
+      "location",
+      "machine_sr_no",
+    ];
+    return fieldsToCheck.some((key) =>
+      item[key]?.toString().toLowerCase().includes(filterData.toLowerCase())
+    );
+  });
+  const handleDataFromChild = (data) => {
+    setFilterData(data);
+  };
   const handleModelClick = useCallback((dataFromChild) => {
     setShowModal(true);
   }, []);
@@ -84,13 +96,13 @@ const MachineManagement = () => {
       <div className="p-5 w-100">
         <div className="card shadow-sm border-0 pt-4 datatable_wrapper">
           <DataTableHeaderContainer
-            onButtonClick={handleButtonClick}
+            onInputChange={handleDataFromChild}
             onAddButtonClick={handleModelClick}
             title={"Machines Details"}
             buttonTitle={"Add Machine"}
           />
           <DataTableComponent
-            dataTableData={machines?.length > 0 ? machines : []}
+            dataTableData={filteredMachines?.length > 0 ? filteredMachines : []}
             onDelete={handleDelete}
             onUpdate={(row) => handleUpdate(row)}
             dataTableType={dataType}

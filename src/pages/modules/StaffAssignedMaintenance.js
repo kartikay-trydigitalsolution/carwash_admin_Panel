@@ -2,15 +2,13 @@
 import { useCallback, useState, useEffect } from "react";
 import DataTableHeaderContainer from "../components/DataTableHeaderContainer";
 import DataTableComponent from "../datatable/DataTable";
-import AssignMaintenanceModal from "../modal/AssignedMaintenace";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { fetchStaffRequest } from "../../features/staff/StaffSlice";
 import {
-  createAssignTaskRequest,
   fetchAssignTaskRequest,
+  deleteAssignTaskRequest,
 } from "../../features/assignTask/AssignTaskSlice";
-import { fetchMachineRequest } from "../../features/machine/MachineSlice";
 import AddDeleteModal from "../modal/DeleteModal";
 
 const StaffAssignedManagement = () => {
@@ -19,67 +17,40 @@ const StaffAssignedManagement = () => {
   const params = useParams();
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [dataForUpdate, setDataForUpdate] = useState({});
   const [dataForDelete, setDataForDelete] = useState({});
   const [type, setType] = useState("ADD");
-  const [parentMessage, setParentMessage] = useState("");
+  const [filterData, setFilterData] = useState("");
   const [dataType, setDataType] = useState("STAFF_ASSIGN_TASK");
-  const staff = useSelector((state) =>
-    state?.staff?.data.map(({ _id, name, role }) => ({ id: _id, name, role }))
+  const staffDetails = useSelector((state) =>
+    state?.staff?.data?.find((a_s) => a_s?._id == params?.id)
   );
   const assignTask = useSelector((state) =>
-    state?.assignTask?.data.filter((a_s) => a_s.staffId._id == params.id)
+    state?.assignTask?.data.filter((a_s) => a_s.staffId?._id == params?.id)
   );
-  //   const taskCountByStaff = useMemo(() => {
-  //     if (!Array.isArray(assignTask)) return [];
-  //     const grouped = assignTask.reduce((acc, item) => {
-  //       const staffId = item.staffId._id;
-  //       if (!acc[staffId]) {
-  //         acc[staffId] = {
-  //           staffId: staffId,
-  //           name: item.staffId.name,
-  //           email: item.staffId.email,
-  //           role: item.staffId.role,
-  //           taskCount: 0,
-  //         };
-  //       }
-  //       acc[staffId].taskCount += 1;
-  //       return acc;
-  //     }, {});
+  const filteredTask = assignTask?.filter((item) => {
+    const fieldsToCheck = [
+      item.staffId?.name,
+      item.staffId?.email,
+      item.machineId?.machine_model,
+      item.machineId?.machine_sr_no,
+      item.machineId?.location,
+      item.machineId?.operation_status,
+      item.machineId?.maintenance_alerts,
+      item.due_date,
+    ];
 
-  //     return Object.values(grouped);
-  //   }, [assignTask]);
-  const machine = useSelector((state) =>
-    state?.machine?.data?.map(
-      ({ _id, machine_sr_no, location, machine_model }) => ({
-        id: _id,
-        machine_sr_no,
-        location,
-        machine_model,
-      })
-    )
-  );
-  const handleButtonClick = useCallback((dataFromChild) => {
-    setParentMessage(dataFromChild);
-  }, []);
+    return fieldsToCheck.some((field) =>
+      field?.toString().toLowerCase().includes(filterData.toLowerCase())
+    );
+  });
+  const handleSatffDataFromChild = (data) => {
+    setFilterData(data);
+  };
   const handleModelClick = useCallback((dataFromChild) => {
     setShowModal(true);
   }, []);
-  const handleDataFromModal = useCallback(
-    (data) => {
-      // dispatch(createRequest(data));
-      data.type === "UPDATE"
-        ? dispatch()
-        : dispatch(createAssignTaskRequest(data));
-      setShowModal(false);
-      setType("ADD");
-      setDataForUpdate({});
-    },
-    [dispatch]
-  );
   useEffect(() => {
     dispatch(fetchStaffRequest());
-    dispatch(fetchMachineRequest());
     dispatch(fetchAssignTaskRequest());
   }, [dispatch]);
 
@@ -90,46 +61,13 @@ const StaffAssignedManagement = () => {
 
   const handleDeleteModal = useCallback(
     (id) => {
-      // dispatch(deleteStaffRequest(id));
+      dispatch(deleteAssignTaskRequest(id));
       setShowDeleteModal(false);
-      dispatch(fetchStaffRequest());
     },
     [dispatch]
   );
   return (
-    // <>
-    //   {showModal && (
-    //     <AssignMaintenanceModal
-    //       show={showModal}
-    //       onClose={() => setShowModal(false)}
-    //     />
-    //   )}
-    //   <div className="p-5 w-100">
-    //     <div className="card shadow-sm border-0 pt-4 datatable_wrapper">
-    //       <DataTableHeaderContainer
-    //         onButtonClick={handleButtonClick}
-    //         onAddButtonClick={handleModelClick}
-    //         title={"Assigned Staff"}
-    //         buttonTitle={"Assign Task"}
-    //       />
-    //       <DataTableComponent />
-    //     </div>
-    //   </div>
-    // </>
     <>
-      <AssignMaintenanceModal
-        data={dataForUpdate}
-        type={type}
-        show={showModal}
-        onClose={() => {
-          setShowModal(false);
-          setDataForUpdate({});
-          setType("ADD");
-        }}
-        machine={machine}
-        staff={staff}
-        onSubmit={handleDataFromModal}
-      />
       <AddDeleteModal
         data={dataForDelete}
         showDelete={showDeleteModal}
@@ -140,14 +78,13 @@ const StaffAssignedManagement = () => {
       <div className="p-5 w-100">
         <div className="card shadow-sm border-0 pt-4 datatable_wrapper">
           <DataTableHeaderContainer
-            onButtonClick={handleButtonClick}
+            onInputChange={handleSatffDataFromChild}
             onAddButtonClick={handleModelClick}
-            title={"Assigned Staff"}
+            title={`${staffDetails?.name.toUpperCase()} TASKS`}
             // buttonTitle={"Assign Task"}
           />
-          {console.log(assignTask)}
           <DataTableComponent
-            dataTableData={assignTask?.length > 0 ? assignTask : []}
+            dataTableData={filteredTask?.length > 0 ? filteredTask : []}
             onDelete={handleDelete}
             // onUpdate={(row) => handleUpdate(row)}
             dataTableType={dataType}

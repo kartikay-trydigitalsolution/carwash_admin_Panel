@@ -19,12 +19,18 @@ const StaffManagement = () => {
   const [dataForUpdate, setDataForUpdate] = useState({});
   const [dataForDelete, setDataForDelete] = useState({});
   const [type, setType] = useState("ADD");
-  const [parentMessage, setParentMessage] = useState("");
+  const [filterData, setFilterData] = useState("");
   const [dataType, setDataType] = useState("STAFF");
   const staff = useSelector((state) => state?.staff?.data);
-  const handleButtonClick = useCallback((dataFromChild) => {
-    setParentMessage(dataFromChild);
-  }, []);
+  const filteredStaff = staff?.filter((item) => {
+    const fieldsToCheck = ["name", "email", "phone", "role"];
+    return fieldsToCheck.some((key) =>
+      item[key]?.toString().toLowerCase().includes(filterData.toLowerCase())
+    );
+  });
+  const handleDataFromChild = (data) => {
+    setFilterData(data);
+  };
   const handleModelClick = useCallback((dataFromChild) => {
     setShowModal(true);
   }, []);
@@ -86,13 +92,13 @@ const StaffManagement = () => {
       <div className="p-5 w-100">
         <div className="card shadow-sm border-0 pt-4 datatable_wrapper">
           <DataTableHeaderContainer
-            onButtonClick={handleButtonClick}
+            onInputChange={handleDataFromChild}
             onAddButtonClick={handleModelClick}
             title={"Staff List"}
             buttonTitle={"Add Staff"}
           />
           <DataTableComponent
-            dataTableData={staff?.length > 0 ? staff : []}
+            dataTableData={filteredStaff?.length > 0 ? filteredStaff : []}
             onDelete={handleDelete}
             onUpdate={(row) => handleUpdate(row)}
             dataTableType={dataType}

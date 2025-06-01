@@ -17,28 +17,24 @@ const AssignedManagement = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [dataForUpdate, setDataForUpdate] = useState({});
-  const [dataForDelete, setDataForDelete] = useState({});
   const [type, setType] = useState("ADD");
-  const [parentMessage, setParentMessage] = useState("");
+  const [filterData, setFilterData] = useState("");
   const [dataType, setDataType] = useState("ASSIGN_TASK");
   const staff = useSelector((state) =>
-    state?.staff?.data.map(({ _id, name, role }) => ({ id: _id, name, role }))
+    state?.staff?.data?.map(({ _id, name, role }) => ({ id: _id, name, role }))
   );
   const assignTask = useSelector((state) => state?.assignTask?.data);
   const taskCountByStaff = useMemo(() => {
     if (!Array.isArray(assignTask)) return [];
-
-    const grouped = assignTask.reduce((acc, item) => {
-      const staffId = item.staffId._id;
-
+    const grouped = assignTask?.reduce((acc, item) => {
+      const staffId = item?.staffId?._id;
       if (!acc[staffId]) {
         acc[staffId] = {
           staffId: staffId,
-          name: item.staffId.name,
-          email: item.staffId.email,
-          role: item.staffId.role,
+          name: item?.staffId?.name,
+          email: item?.staffId?.email,
+          role: item?.staffId?.role,
           taskCount: 0,
         };
       }
@@ -60,15 +56,14 @@ const AssignedManagement = () => {
       })
     )
   );
-  const handleButtonClick = useCallback((dataFromChild) => {
-    setParentMessage(dataFromChild);
-  }, []);
+  const handleDataFromChild = (data) => {
+    setFilterData(data);
+  };
   const handleModelClick = useCallback((dataFromChild) => {
     setShowModal(true);
   }, []);
   const handleDataFromModal = useCallback(
     (data) => {
-      // dispatch(createRequest(data));
       data.type === "UPDATE"
         ? dispatch()
         : dispatch(createAssignTaskRequest(data));
@@ -84,44 +79,12 @@ const AssignedManagement = () => {
     dispatch(fetchAssignTaskRequest());
   }, [dispatch]);
 
-  const handleDelete = (row) => {
-    setShowDeleteModal(true);
-    setDataForDelete(row);
-  };
-
   const handleUpdate = (data) => {
     console.log(data);
     navigate(`/dashboard/staff-assigned-management/${data.staffId}`);
   };
 
-  const handleDeleteModal = useCallback(
-    (id) => {
-      // dispatch(deleteStaffRequest(id));
-      setShowDeleteModal(false);
-      dispatch(fetchStaffRequest());
-    },
-    [dispatch]
-  );
   return (
-    // <>
-    //   {showModal && (
-    //     <AssignMaintenanceModal
-    //       show={showModal}
-    //       onClose={() => setShowModal(false)}
-    //     />
-    //   )}
-    //   <div className="p-5 w-100">
-    //     <div className="card shadow-sm border-0 pt-4 datatable_wrapper">
-    //       <DataTableHeaderContainer
-    //         onButtonClick={handleButtonClick}
-    //         onAddButtonClick={handleModelClick}
-    //         title={"Assigned Staff"}
-    //         buttonTitle={"Assign Task"}
-    //       />
-    //       <DataTableComponent />
-    //     </div>
-    //   </div>
-    // </>
     <>
       <AssignMaintenanceModal
         data={dataForUpdate}
@@ -132,28 +95,20 @@ const AssignedManagement = () => {
           setDataForUpdate({});
           setType("ADD");
         }}
-        machine={machine}
-        staff={staff}
+        machine={machine?.length > 0 ? machine : []}
+        staff={staff?.length > 0 ? staff : []}
         onSubmit={handleDataFromModal}
-      />
-      <AddDeleteModal
-        data={dataForDelete}
-        showDelete={showDeleteModal}
-        onCloseDelete={() => setShowDeleteModal(false)}
-        onDelete={handleDeleteModal}
-        type={dataType}
       />
       <div className="p-5 w-full flex justify-center">
         <div className="card shadow-sm border-0 pt-4 datatable_wrapper w-full max-w-screen-lg">
           <DataTableHeaderContainer
-            onButtonClick={handleButtonClick}
+            onInputChange={handleDataFromChild}
             onAddButtonClick={handleModelClick}
             title={"Assigned Staff"}
             buttonTitle={"Assign Task"}
           />
           <DataTableComponent
             dataTableData={taskCountByStaff?.length > 0 ? taskCountByStaff : []}
-            onDelete={handleDelete}
             onUpdate={(row) => handleUpdate(row)}
             dataTableType={dataType}
           />
