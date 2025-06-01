@@ -25,6 +25,8 @@ const AddDeleteModal = ({
               ? "Staff"
               : type === "MACHINE"
               ? "MACHINE"
+              : type === "STAFF_ASSIGN_TASK"
+              ? "ASSIGN TASK"
               : "NONE"}
           </h2>
         </div>

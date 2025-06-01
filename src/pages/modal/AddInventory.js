@@ -49,8 +49,8 @@ const AddInventoryModal = ({ show, onClose, onSubmit, data, type }) => {
   if (!show) return null;
 
   return (
-    <div className="absolute inset-0 bg-[#00000099] flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg w-full max-w-xl">
+    <div className="fixed inset-0 bg-[#00000099] flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-lg w-full max-w-xl max-h-[90vh] flex flex-col">
         {/* Header */}
         <div className=" py-4 border-b">
           <h2 className="text-xl font-semibold text-center modal-text">
@@ -59,7 +59,7 @@ const AddInventoryModal = ({ show, onClose, onSubmit, data, type }) => {
         </div>
 
         {/* Body */}
-        <div className="p-6 overflow-y-auto flex-1">
+        <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
           <form onSubmit={formik.handleSubmit} id="inventoryForm">
             <div className="space-y-4">
               <input

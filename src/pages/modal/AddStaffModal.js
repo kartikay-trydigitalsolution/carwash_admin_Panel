@@ -68,17 +68,17 @@ const AddStaffModal = ({ show, onClose, onSubmit, data, type }) => {
   });
   if (!show) return null;
   return (
-    <div className="absolute inset-0 bg-[#00000099] flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg w-full max-w-xl">
+    <div className="fixed inset-0 bg-[#00000099] flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-lg w-full max-w-xl max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className=" py-4 border-b">
+        <div className="py-4 border-b">
           <h2 className="text-xl font-semibold text-center modal-text">
             {type === "UPDATE" ? "Update Staff" : "Add Staff"}
           </h2>
         </div>
 
         {/* Body */}
-        <div className="p-6 overflow-y-auto flex-1">
+        <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
           <form id="staffForm" onSubmit={formik.handleSubmit}>
             <div className="space-y-4">
               <input
@@ -167,6 +167,7 @@ const AddStaffModal = ({ show, onClose, onSubmit, data, type }) => {
                 formik.errors.confirmPassword && (
                   <div className="red">{formik.errors.confirmPassword}</div>
                 )}
+              {/* All your input fields remain unchanged */}
             </div>
           </form>
         </div>
@@ -179,16 +180,16 @@ const AddStaffModal = ({ show, onClose, onSubmit, data, type }) => {
               onClose();
               formik.resetForm();
             }}
-            className="px-4 py-2 text-white bg-[#000000] hover:bg-[#00000] rounded-md modal-footer-btn"
+            className="px-4 py-2 text-white bg-[#000000] hover:bg-[#000000] rounded-md modal-footer-btn"
           >
             Cancel
           </button>
           <button
             form="staffForm"
             type="submit"
-            className="px-4 py-2 bg-[#005FAF] text-white hover:bg-[#005FAF] rounded-md modal-footer-btn"
+            className="px-4 py-2 bg-[#005FAF] text-white hover:bg-[#004c8c] rounded-md modal-footer-btn"
           >
-            {type === "UPDATE" ? "UPATE" : "Create Staff"}
+            {type === "UPDATE" ? "UPDATE" : "Create Staff"}
           </button>
         </div>
       </div>
