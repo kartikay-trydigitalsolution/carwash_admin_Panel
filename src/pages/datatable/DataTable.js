@@ -142,17 +142,14 @@ const DataTableComponent = ({
       cell: (row) => {
         const statusRaw = row.machineId.operation_status || "Unknown";
         const status = statusRaw.toLowerCase();
-
         const statusMap = {
           active: "bg-light-green text-success",
           in_maintenance: "bg-light-yellow text-warning",
           inactive: "bg-light-red text-danger",
         };
-
         // Capitalize first letter
         const formatStatus = (str) =>
           str.charAt(0).toUpperCase() + str.slice(1);
-
         return (
           <span
             className={`rounded-pill px-3 py-1 fw-semibold ${

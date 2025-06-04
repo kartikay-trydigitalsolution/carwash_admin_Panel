@@ -66,6 +66,9 @@ const StaffAssignedManagement = () => {
     },
     [dispatch]
   );
+  const handleUpdate = (data) => {
+    navigate(`/dashboard/service-form/${data._id}`);
+  };
   return (
     <>
       <AddDeleteModal
@@ -86,7 +89,7 @@ const StaffAssignedManagement = () => {
           <DataTableComponent
             dataTableData={filteredTask?.length > 0 ? filteredTask : []}
             onDelete={handleDelete}
-            // onUpdate={(row) => handleUpdate(row)}
+            onUpdate={(row) => handleUpdate(row)}
             dataTableType={dataType}
           />
         </div>
