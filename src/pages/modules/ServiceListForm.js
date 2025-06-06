@@ -670,9 +670,22 @@ const StaffAssignedManagement = () => {
                               type="checkbox"
                               id="isWaterMeterReading"
                               name="isWaterMeterReading"
-                              onChange={formik.handleChange}
+                              // onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               checked={formik.values.isWaterMeterReading}
+                              onChange={(e) => {
+                                const checked = e.target.checked;
+
+                                formik.setFieldValue(
+                                  "isWaterMeterReading",
+                                  checked
+                                );
+
+                                // If unchecked, clear waterMeterReading
+                                if (!checked) {
+                                  formik.setFieldValue("waterMeterReading", "");
+                                }
+                              }}
                             />
                             Water Meter Reading:
                           </label>
@@ -693,6 +706,9 @@ const StaffAssignedManagement = () => {
                             onBlur={formik.handleBlur}
                             value={formik.values.waterMeterReading}
                             aria-label="waterMeterReading"
+                            disabled={
+                              formik.values.isWaterMeterReading ? false : true
+                            }
                           />
                           {formik.touched.waterMeterReading &&
                             formik.errors.waterMeterReading && (

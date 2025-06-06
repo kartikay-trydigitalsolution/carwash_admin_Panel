@@ -16,6 +16,11 @@
   overflow-x: auto;
 }
 
+/*piechart css */ 
+.VictoryContainer{
+  height: auto !important;
+}
+
 /* Scrollbar styling for WebKit-based browsers */
 .datatable_wrapper::-webkit-scrollbar {
   height: 6px !important; /* Makes scrollbar thinner */

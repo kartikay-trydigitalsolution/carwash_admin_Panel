@@ -24,7 +24,7 @@ const MachineAnalyticsChart = () => {
   const colors = ["#B46FFF", "#3A78F2", "#F2994A", "#27AE60"];
 
   return (
-    <div style={{ width: 450 }}>
+    <div >
       <h3 className="ps-3 pe-3">Machine Analytics</h3>
       <VictoryChart
         domainPadding={30}
