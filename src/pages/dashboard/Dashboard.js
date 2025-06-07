@@ -56,7 +56,7 @@ const DashboardHome = () => {
           </div>
         </div>
         <div className="col-lg-4 mb-4">
-          <div className="card shadow-sm p-3 border-0">
+          <div className="card shadow-sm p-3 border-0 h-100">
             <h6 className="mb-3 ms-3 me-3">Visual Indicators</h6>
             <ClientsPieChart />
           </div>

@@ -23,7 +23,6 @@ const ClientsPieChart = () => {
   return (
     <div>
       <h3 className="ps-3 pe-3">Clients</h3>
-      <div height={150}></div>
 
       {/* <VictoryPie
         width={250} // Adjust width as needed

@@ -1,5 +1,7 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import TextInput from "../components/TextInput";
+import { useState } from "react";
 const AssignMaintenanceModal = ({
   show,
   onClose,
@@ -9,45 +11,102 @@ const AssignMaintenanceModal = ({
   staff,
   machine,
 }) => {
-  const validationSchema = Yup.object({
-    name: Yup.string().required("*Name is required"),
-    email: Yup.string()
-      .email("*Invalid email format")
-      .required("*Email is required"),
-    role: Yup.string().required("*Role is required"),
-    phone: Yup.string()
-      .matches(/^\+?[1-9]\d{1,14}$/, "*Invalid phone number")
-      .required("*Phone number is required"),
-    password: Yup.string()
-      .min(8, "*Password must be at least 8 characters")
-      .required("*Password is required"),
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref("password"), null], "*Passwords must match")
-      .required("*Confirm password is required"),
-  });
+  const service_type_option = [
+    { name: "Complaint", value: "Complaint" },
+    { name: "Servicing", value: "Servicing" },
+    { name: "Installation", value: "Installation" },
+  ];
+  const validationSchema = Yup.object()
+    .shape({
+      staffId: Yup.string().required("*Staff is required"),
+      machineId: Yup.string().required("*Machine is required"),
+      due_date: Yup.date()
+        .required("*Due Date is required")
+        .min(
+          new Date(new Date().setHours(0, 0, 0, 0)),
+          "*Due Date must be today or later"
+        ),
+      isCheckListForService: Yup.boolean(),
+      isCheckToolKit: Yup.boolean(),
+      telephone: Yup.string().when("isCheckListForService", {
+        is: true,
+        then: (schema) =>
+          schema
+            .required("*Required")
+            .matches(/^(?:\+65\s?)?(?:6|8|9)\d{7}$/, "*Invalid Phone"),
+        otherwise: (schema) => schema.notRequired(),
+      }),
+      service_type: Yup.string().when("isCheckListForService", {
+        is: true,
+        then: (schema) => schema.required("*Required"),
+        otherwise: (schema) => schema.notRequired(),
+      }),
+    })
+    .test(
+      "only-one-selected",
+      "*Select either Checklist for Servicing or Tool Kit — not both",
+      function (values) {
+        const { isCheckListForService, isCheckToolKit } = values;
+        const onlyOneSelected =
+          (isCheckListForService && !isCheckToolKit) ||
+          (!isCheckListForService && isCheckToolKit);
+
+        if (onlyOneSelected) {
+          return true;
+        }
+        return this.createError({
+          path: "isCheckListForService",
+          message:
+            "*Select either Checklist for Servicing or Tool Kit — not both",
+        });
+      }
+    );
+  // const checkTelephoneIsThere = (phone) => {
+  //   if (formik.values.isCheckListForService) {
+  //     const trimmedPhone = String(formik.values.telephone || "").trim();
+  //     const phoneRegex = /^(?:\+65\s?)?(?:6|8|9)\d{7}$/;
+  //     if (!trimmedPhone) {
+  //       setIsTelephoneText("*Required");
+  //       setIsTelephoneValid(false);
+  //     } else if (!phoneRegex.test(trimmedPhone)) {
+  //       setIsTelephoneText("*Invalid Phone");
+  //       setIsTelephoneValid(false);
+  //     } else {
+  //       setIsTelephoneText("");
+  //       setIsTelephoneValid(true);
+  //     }
+  //   }
+  // };
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      name: data?.name || "",
-      email: data?.email || "",
-      password: data?.password || "",
-      confirmPassword: data?.password || "",
-      role: data?.role || "",
-      phone: data?.phone || "",
+      staffId: data?.staffId || "",
+      machineId: data?.machineId || "",
+      due_date: data?.due_date || "",
+      isCheckListForService: data?.isCheckListForService || false,
+      isCheckToolKit: data.isCheckToolKit || false,
     },
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
+      // checkTelephoneIsThere();
+      // console.log(values);
+      // if (isTelephoneValid) {
       onSubmit(
         type === "UPDATE" ? { ...values, id: data._id, type: type } : values
       );
       resetForm();
+      // }
     },
   });
+  const selectedStaffRole = staff.find((s) => s?.id === formik.values.staffId);
+  const selectedMachine = machine.find(
+    (m) => m?.id === formik.values.machineId
+  );
   if (!show) return null;
-
   return (
-    <div className="absolute inset-0 bg-[#00000099] flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg w-full max-w-xl">
+    <div className="fixed inset-0 bg-[#00000099] flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-lg w-full max-w-xl max-h-[90vh] flex flex-col">
         {/* Header */}
         <div className=" py-4 border-b">
           <h2 className="text-xl font-semibold text-center modal-text">
@@ -56,62 +115,192 @@ const AssignMaintenanceModal = ({
         </div>
 
         {/* Body */}
-        <div className="p-6 overflow-y-auto flex-1">
-          <form onSubmit={formik.handleSubmit}>
+        <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
+          <form onSubmit={formik.handleSubmit} id="assignForm">
             <div className="space-y-4">
-              <select id="role" type="text" className="form-input w-full ps-3">
+              <select
+                id="staffId"
+                name="staffId"
+                className="form-input w-full ps-2"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.staffId}
+              >
                 <option value="" disabled>
-                  Staff Name
+                  Select Staff{" "}
                 </option>
                 {staff?.map((s) => (
-                  <option value={s._id}>{s.name}</option>
+                  <option value={s?.id}>{s?.name}</option>
                 ))}
               </select>
-              <select id="role" type="text" className="form-input w-full ps-3">
-                <option>Role</option>
-                <option>Role1</option>
-                <option>Role2</option>
+              {formik.touched.staffId && formik.errors.staffId && (
+                <div className="red">{formik.errors.staffId}</div>
+              )}
+              {selectedStaffRole && (
+                <select
+                  id="staffRole"
+                  name="staffRole"
+                  className="form-input w-full ps-2"
+                  value={formik.values.staffId}
+                  disabled
+                >
+                  {staff?.map((s) => (
+                    <option value={selectedStaffRole.role}>
+                      {selectedStaffRole.role}
+                    </option>
+                  ))}
+                </select>
+              )}
+              <select
+                id="machineId"
+                name="machineId"
+                className="form-input w-full ps-2"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.machineId}
+              >
+                <option value="" disabled>
+                  Select Machine Sr. No.{" "}
+                </option>
+                {machine?.map((m) => (
+                  <option value={m?.id}>{m?.machine_sr_no}</option>
+                ))}
               </select>
-              <select id="role" type="text" className="form-input w-full ps-3">
-                <option>Machine ID</option>
-                <option>Machine1</option>
-                <option>Machine2</option>
-              </select>
+              {formik.touched.machineId && formik.errors.machineId && (
+                <div className="red">{formik.errors.machineId}</div>
+              )}
+              {selectedMachine && (
+                <select
+                  id="machineModel"
+                  name="machineModel"
+                  className="form-input w-full ps-2"
+                  value={formik.values.machineModel}
+                  disabled
+                >
+                  {machine?.map((s) => (
+                    <option value={selectedMachine?.id}>
+                      {selectedMachine.machine_model}
+                    </option>
+                  ))}
+                </select>
+              )}
+              {selectedMachine && (
+                <select
+                  id="machineLocation"
+                  name="machineLocation"
+                  className="form-input w-full ps-2"
+                  value={formik.values.id}
+                  disabled
+                >
+                  {machine?.map((s) => (
+                    <option value={selectedMachine?.id}>
+                      {selectedMachine.location}
+                    </option>
+                  ))}
+                </select>
+              )}
               <input
-                id="date"
+                id="due_date"
                 type="date"
+                name="due_date"
                 className="form-input w-full ps-4"
-                placeholder="Select a date"
+                placeholder="Due Date"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.machine_model}
+                aria-label="due_date"
               />
-              <div>
-                <div className="content_header mb-2">
-                  Can Select Muliple Options{" "}
-                </div>
-                <div className="form-check custom-checkbox-color">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                    checked
-                  />
-                  <label className="form-check-label" for="flexCheckDefault">
-                    Checklist For Servicing And Maintenance of Coin Operated
-                    Water Dispensers
-                  </label>
-                </div>
-                <div className="form-check custom-checkbox-color">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckChecked"
-                  />
-                  <label className="form-check-label" for="flexCheckChecked">
-                    Tool Box Meeting
-                  </label>
-                </div>
+              {formik.touched.due_date && formik.errors.due_date && (
+                <div className="red">{formik.errors.due_date}</div>
+              )}
+              <div className="content_header mb-2">
+                Can Select Muliple Options{" "}
               </div>
+              <div className="form-check custom-checkbox-color">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="isCheckListForService"
+                  name="isCheckListForService"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  checked={formik.values.isCheckListForService}
+                />
+                <label
+                  className="form-check-label"
+                  htmlFor="isCheckListForService"
+                >
+                  Checklist For Servicing And Maintenance of Coin Operated Water
+                  Dispensers
+                </label>
+              </div>
+
+              <div className="form-check custom-checkbox-color">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="isCheckToolKit"
+                  name="isCheckToolKit"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  checked={formik.values.isCheckToolKit}
+                />
+                <label className="form-check-label" htmlFor="isCheckToolKit">
+                  Tool Box Meeting
+                </label>
+              </div>
+              {formik.errors.isCheckListForService && (
+                <div className="red">{formik.errors.isCheckListForService}</div>
+              )}
+              {formik.values.isCheckListForService && (
+                <>
+                  <input
+                    id="telephone"
+                    type="number"
+                    name="telephone"
+                    className="form-input w-full ps-3"
+                    placeholder="Telephone"
+                    onChange={(e) => {
+                      formik.handleChange(e); // 🔹 Keep Formik in sync
+                      // checkTelephoneIsThere(e); // 🔹 Your second function
+                    }}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.telephone}
+                    aria-label="telephone"
+                  />
+                  {formik.touched.telephone && formik.errors.telephone && (
+                    <div className="red">{formik.errors.telephone}</div>
+                  )}
+                  {/* {!isTelephoneValid ? (
+                    <div className="red">{isTelephoneText}</div>
+                  ) : (
+                    ""
+                  )} */}
+                </>
+              )}
+              {formik.values.isCheckListForService && (
+                <>
+                  <select
+                    id="service_type"
+                    name="service_type"
+                    className="form-input w-full ps-2"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.service_type}
+                  >
+                    <option value="" disabled>
+                      Service Status
+                    </option>
+                    {service_type_option?.map((n_s) => {
+                      return <option value={n_s.value}>{n_s.name}</option>;
+                    })}
+                  </select>
+                  {formik.touched.service_type &&
+                    formik.errors.telephoneservice_type && (
+                      <div className="red">{formik.errors.service_type}</div>
+                    )}
+                </>
+              )}
             </div>
           </form>
         </div>
@@ -127,10 +316,10 @@ const AssignMaintenanceModal = ({
           </button>
           <button
             type="submit"
-            form="yourFormId"
+            form="assignForm"
             className="px-4 py-2 bg-[#005FAF] text-white hover:bg-[#005FAF] rounded-md modal-footer-btn"
           >
-            Create Staff
+            Assign Task
           </button>
         </div>
       </div>

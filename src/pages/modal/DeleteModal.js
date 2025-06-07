@@ -24,7 +24,9 @@ const AddDeleteModal = ({
               : type === "STAFF"
               ? "Staff"
               : type === "MACHINE"
-              ? "MACHINE"
+              ? "Machine"
+              : type === "STAFF_ASSIGN_TASK"
+              ? "Assign Task"
               : "NONE"}
           </h2>
         </div>
@@ -32,15 +34,20 @@ const AddDeleteModal = ({
         {/* Body */}
         <div className="p-6 overflow-y-auto flex-1">
           <div className="space-y-4">
+            {console.log(
+              type,
+              `${data?.machineId?.machine_model} task for ${data?.staffId?.name}`
+            )}
             Are you sure you want to delete this record for{" "}
             {type === "INVENTORY"
-              ? data.itemName
+              ? data?.itemName
               : type === "STAFF"
-              ? data.name
+              ? data?.name
               : type === "MACHINE"
-              ? data.machine_sr_no
+              ? data?.machine_sr_no
+              : type === "STAFF_ASSIGN_TASK"
+              ? `${data?.machineId?.machine_model} task for ${data?.staffId?.name}`
               : "NONE"}
-            ?
           </div>
         </div>
 

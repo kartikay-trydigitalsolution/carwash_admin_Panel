@@ -15,7 +15,7 @@ const RecepientListManagement = () => {
     <div className="p-5 w-100">
       <div className="card shadow-sm border-0 pt-4 datatable_wrapper">
         <DataTableHeaderContainer
-          onButtonClick={handleButtonClick}
+          onInputChange={handleButtonClick}
           title={"Recipient List Management"}
           buttonTitle={"Add Recipient"}
         />

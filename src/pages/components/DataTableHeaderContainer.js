@@ -1,15 +1,14 @@
 import React from "react";
 
 const DataTableHeaderContainer = ({
-  onButtonClick,
+  onInputChange,
   onAddButtonClick,
   title,
   buttonTitle,
 }) => {
-  const handleClick = () => {
-    const message = "Hello from the child!";
-    onButtonClick(message);
-  };
+  // const handleClick = (e) => {
+  //   onButtonClick(e.target.value);
+  // };
   const handleModelClick = () => {
     onAddButtonClick({ type: "Dashboard" });
   };
@@ -25,15 +24,19 @@ const DataTableHeaderContainer = ({
             </button>
             <input
               className="datatable_input"
-              onClick={handleClick}
-              id="search-input"
+              onChange={(e) => onInputChange(e.target.value)}
+              // id="search-input"
               name="q"
               placeholder="Search..."
             />
           </div>
-          <button className="add-button" onClick={handleModelClick}>
-            {buttonTitle}
-          </button>
+          {buttonTitle ? (
+            <button className="add-button" onClick={handleModelClick}>
+              {buttonTitle}
+            </button>
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </div>

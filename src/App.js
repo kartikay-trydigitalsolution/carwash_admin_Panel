@@ -10,8 +10,10 @@ import DashboardLayout from "./pages/dashboardLayout/DashboardLayout";
 import DashboardHome from "./pages/dashboard/Dashboard";
 import StaffManagement from "./pages/modules/StaffManagement";
 import Settings from "./pages/components/Settings";
+import ServiceForm from "./pages/modules/ServiceListForm";
 import "bootstrap/dist/css/bootstrap.min.css";
 import AssignedManagement from "./pages/modules/AssignedMaintenace";
+import StaffAssignedManagement from "./pages/modules/StaffAssignedMaintenance";
 import MachineManagement from "./pages/modules/MachineManagement";
 import InventoryManagement from "./pages/modules/InventoryManagement";
 import RecepientListManagement from "./pages/modules/RecepientListManagement";
@@ -19,7 +21,7 @@ import MaintenanceRecordManagement from "./pages/modules/MaintenanceRecordManage
 import PrivateRoute from "./PrivateRoute";
 import { Toaster } from "sonner";
 function App() {
-  const isLogging = useSelector((state) => state.auth.isLogging);
+  const isLogging = useSelector((state) => state?.auth?.isLogging);
   return (
     <BrowserRouter>
       <Toaster position="top-center" />
@@ -43,6 +45,11 @@ function App() {
           <Route index element={<DashboardHome />} />
           <Route path="staff-management" element={<StaffManagement />} />
           <Route path="assigned-management" element={<AssignedManagement />} />
+          <Route path="service-form/:id" element={<ServiceForm />} />
+          <Route
+            path="staff-assigned-management/:id"
+            element={<StaffAssignedManagement />}
+          />
           <Route path="machine-management" element={<MachineManagement />} />
           <Route
             path="inventory-management"

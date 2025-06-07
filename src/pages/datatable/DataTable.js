@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import DataTable from "react-data-table-component";
+import moment from "moment";
 
 const DataTableComponent = ({
   dataTableData,
@@ -39,10 +40,15 @@ const DataTableComponent = ({
         // borderRadius: "8px", // ✅ Rounded row corners
         paddingTop: "12px",
         paddingBottom: "12px",
+        whiteSpace: "normal",
       }),
     },
     cells: {
       style: {
+        whiteSpace: "normal", // allow multi-line wrapping
+        wordBreak: "break-word", // break long words if needed
+        overflow: "visible", // prevent clipping
+        textOverflow: "unset",
         border: "none", // ✅ Remove cell borders
       },
     },
@@ -89,6 +95,78 @@ const DataTableComponent = ({
         <div className="flex gap-2 d-flex justify-content-center">
           <button variant="outline" size="icon" onClick={() => handleEdit(row)}>
             <i className="fas fa-edit"></i>
+          </button>
+          <button
+            variant="destructive"
+            size="icon"
+            onClick={() => handleDelete(row)}
+          >
+            <i className="fas fa-trash-alt img-fluid border-0 shadow-none"></i>
+          </button>
+        </div>
+      ),
+    },
+  ];
+  const staffAssignedTask = [
+    {
+      name: "Due Date",
+      selector: (row) => moment(row.due_date).format("DD-MM-YYYY"),
+      sortable: true,
+    },
+    {
+      name: "Machine Model",
+      selector: (row) => row.machineId.machine_model,
+      sortable: true,
+    },
+    {
+      name: "Task",
+      selector: (row) =>
+        row.isCheckListForService
+          ? "Checklist For Servicing And Maintenance of Coin Operated Water Dispensers"
+          : "Tool Box Meeting",
+      sortable: true,
+    },
+    {
+      name: "Machine Sr. No.",
+      selector: (row) => row.machineId.machine_sr_no,
+      sortable: true,
+    },
+    {
+      name: "Location",
+      selector: (row) => row.machineId.location,
+      sortable: true,
+    },
+    {
+      name: "Status",
+      sortable: true,
+      cell: (row) => {
+        const statusRaw = row.machineId.operation_status || "Unknown";
+        const status = statusRaw.toLowerCase();
+        const statusMap = {
+          active: "bg-light-green text-success",
+          in_maintenance: "bg-light-yellow text-warning",
+          inactive: "bg-light-red text-danger",
+        };
+        // Capitalize first letter
+        const formatStatus = (str) =>
+          str.charAt(0).toUpperCase() + str.slice(1);
+        return (
+          <span
+            className={`rounded-pill px-3 py-1 fw-semibold ${
+              statusMap[status] || "bg-secondary text-white"
+            }`}
+          >
+            {formatStatus(status)}
+          </span>
+        );
+      },
+    },
+    {
+      name: "Action",
+      cell: (row) => (
+        <div className="flex gap-2 d-flex justify-content-center">
+          <button variant="outline" size="icon" onClick={() => handleEdit(row)}>
+            <i className="fas fa-eye"></i>
           </button>
           <button
             variant="destructive"
@@ -205,6 +283,47 @@ const DataTableComponent = ({
       ),
     },
   ];
+  const assignAdminColumns = [
+    // {
+    //   name: "Sr. no.",
+    //   cell: (row, index) => `${index + 1}.`,
+    // },
+    {
+      name: "Name",
+      selector: (row) => row.name,
+      sortable: true,
+    },
+    { name: "Role", selector: (row) => row.role, sortable: true },
+    { name: "Task Count", selector: (row) => row.taskCount, sortable: true },
+    // {
+    //   name: "Status",
+    //   cell: (row) => (
+    //     <span
+    //       className={`px-3 py-1 rounded-full text-sm font-semibold
+    //       ${row.status === "Active" ? "bg-[#EBF9F1] text-[#1F9254]" : ""}
+    //       ${row.status === "Inactive" ? "bg-[#A30D111A] text-[#A30D11]" : ""}
+    //       ${
+    //         row.status === "Not Available"
+    //           ? "bg-orange-100 text-orange-500"
+    //           : ""
+    //       }
+    //     `}
+    //     >
+    //       {row.status}
+    //     </span>
+    //   ),
+    // },
+    {
+      name: "Action",
+      cell: (row) => (
+        <div className="flex gap-2 d-flex justify-content-center">
+          <button variant="outline" size="icon" onClick={() => handleEdit(row)}>
+            <i className="fas fa-eye"></i>
+          </button>
+        </div>
+      ),
+    },
+  ];
 
   const inventoryColumns = [
     {
@@ -224,7 +343,6 @@ const DataTableComponent = ({
       cell: (row) => {
         const statusRaw = row.notification || "Unknown";
         const status = statusRaw.toLowerCase();
-
         const statusMap = {
           available: "bg-light-green text-success",
           low: "bg-light-yellow text-warning",
@@ -265,7 +383,7 @@ const DataTableComponent = ({
     //     </span>
     //   ),
     // },
-    { name: "remarks", selector: (row) => row.remarks },
+    { name: "remarks", selector: (row) => row.remarks || "-" },
     {
       name: "Action",
       cell: (row) => (
@@ -316,6 +434,10 @@ const DataTableComponent = ({
             ? machineColumns
             : dataTableType == "INVENTORY"
             ? inventoryColumns
+            : dataTableType == "ASSIGN_TASK"
+            ? assignAdminColumns
+            : dataTableType == "STAFF_ASSIGN_TASK"
+            ? staffAssignedTask
             : machineColumns
         }
         data={dataTableData}

@@ -2,19 +2,49 @@ import { memo } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 const AddStaffModal = ({ show, onClose, onSubmit, data, type }) => {
+  const role_option = [
+    { name: "Technician", value: "Technician" },
+    { name: "Inventory", value: "Inventory" },
+  ];
+  const emailRegex =
+    /^[a-zA-Z0-9._%+-]+@[a-zA-Z.-]+\.(com|net|org|edu|gov|co|in|uk|us|io|info|biz|me)$/i;
   const validationSchema = Yup.object({
-    name: Yup.string().required("*Name is required"),
+    name: Yup.string()
+      .trim()
+      .min(3, "*Name must be at least 3 characters")
+      .max(25, "*Name not more than 25 characters")
+      .required("*Name is required")
+      .matches(/^[A-Za-z\s]+$/, "*Name must contain only letters"),
     email: Yup.string()
+      .trim()
+      .required("*Email is required")
       .email("*Invalid email format")
-      .required("*Email is required"),
+      .test(
+        "email-regex",
+        "*Email domain can only contain letters, dots, and dashes",
+        (value) => (value ? emailRegex.test(value) : false)
+      ),
     role: Yup.string().required("*Role is required"),
     phone: Yup.string()
-      .matches(/^\+?[1-9]\d{1,14}$/, "*Invalid phone number")
-      .required("*Phone number is required"),
+      .trim()
+      .required("*Phone number is required")
+      .matches(/^\+?[1-9]\d{7,14}$/, "*Invalid phone number format") // E.164 format with minimum 8 digits
+      .test(
+        "no-repeating-digits",
+        "*Phone number cannot consist of repeating digits",
+        (value) => {
+          if (!value) return false;
+          const digits = value.replace(/\D/g, ""); // Remove non-digit characters
+          return !/^(\d)\1+$/.test(digits); // Check for repeating digits
+        }
+      ),
     password: Yup.string()
+      .trim()
       .min(8, "*Password must be at least 8 characters")
+      .max(15, "*Password not more than 15 characters")
       .required("*Password is required"),
     confirmPassword: Yup.string()
+      .trim()
       .oneOf([Yup.ref("password"), null], "*Passwords must match")
       .required("*Confirm password is required"),
   });
@@ -38,17 +68,17 @@ const AddStaffModal = ({ show, onClose, onSubmit, data, type }) => {
   });
   if (!show) return null;
   return (
-    <div className="absolute inset-0 bg-[#00000099] flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg w-full max-w-xl">
+    <div className="fixed inset-0 bg-[#00000099] flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-lg w-full max-w-xl max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className=" py-4 border-b">
+        <div className="py-4 border-b">
           <h2 className="text-xl font-semibold text-center modal-text">
             {type === "UPDATE" ? "Update Staff" : "Add Staff"}
           </h2>
         </div>
 
         {/* Body */}
-        <div className="p-6 overflow-y-auto flex-1">
+        <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
           <form id="staffForm" onSubmit={formik.handleSubmit}>
             <div className="space-y-4">
               <input
@@ -102,8 +132,9 @@ const AddStaffModal = ({ show, onClose, onSubmit, data, type }) => {
                 <option value="" disabled>
                   Select a role…
                 </option>
-                <option value="Role1">Role1</option>
-                <option value="Role2">Role2</option>
+                {role_option?.map((r_o) => {
+                  return <option value={r_o.value}>{r_o.name}</option>;
+                })}
               </select>
               {formik.touched.role && formik.errors.role && (
                 <div className="red">{formik.errors.role}</div>
@@ -119,9 +150,9 @@ const AddStaffModal = ({ show, onClose, onSubmit, data, type }) => {
                 value={formik.values.password}
                 aria-label="password"
               />
-              {formik.touched.password && formik.errors.password ? (
+              {formik.touched.password && formik.errors.password && (
                 <div className="red">{formik.errors.password}</div>
-              ) : null}
+              )}
               <input
                 id="confirmPassword"
                 name="confirmPassword"
@@ -136,6 +167,7 @@ const AddStaffModal = ({ show, onClose, onSubmit, data, type }) => {
                 formik.errors.confirmPassword && (
                   <div className="red">{formik.errors.confirmPassword}</div>
                 )}
+              {/* All your input fields remain unchanged */}
             </div>
           </form>
         </div>
@@ -148,16 +180,16 @@ const AddStaffModal = ({ show, onClose, onSubmit, data, type }) => {
               onClose();
               formik.resetForm();
             }}
-            className="px-4 py-2 text-white bg-[#000000] hover:bg-[#00000] rounded-md modal-footer-btn"
+            className="px-4 py-2 text-white bg-[#000000] hover:bg-[#000000] rounded-md modal-footer-btn"
           >
             Cancel
           </button>
           <button
             form="staffForm"
             type="submit"
-            className="px-4 py-2 bg-[#005FAF] text-white hover:bg-[#005FAF] rounded-md modal-footer-btn"
+            className="px-4 py-2 bg-[#005FAF] text-white hover:bg-[#004c8c] rounded-md modal-footer-btn"
           >
-            {type === "UPDATE" ? "UPATE" : "Create Staff"}
+            {type === "UPDATE" ? "UPDATE" : "Create Staff"}
           </button>
         </div>
       </div>

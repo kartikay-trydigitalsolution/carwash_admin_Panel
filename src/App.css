@@ -8,6 +8,60 @@
 .red {
   color: red;
 }
+/* This assumes you wrap the table inside a scrollable div with class "datatable_wrapper" */
+.custom-border-bottom {
+  border-bottom: 2px solid #f8f9fa;
+}
+.datatable_wrapper {
+  overflow-x: auto;
+}
+
+/*piechart css */ 
+.VictoryContainer{
+  height: auto !important;
+}
+
+/* Scrollbar styling for WebKit-based browsers */
+.datatable_wrapper::-webkit-scrollbar {
+  height: 6px !important; /* Makes scrollbar thinner */
+}
+.btn-custom-blue {
+  background-color: #005faf;
+  border-color: #005faf;
+  color: white;
+}
+.btn-custom-blue:hover {
+  background-color: #004080;
+  border-color: #004080;
+}
+input:focus {
+  box-shadow: none !important;
+  outline: none !important;
+}
+.signatureCanvas {
+  border: 1px solid black;
+  width: 100%;
+  min-height: 500px;
+}
+
+.datatable_wrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.datatable_wrapper::-webkit-scrollbar-thumb {
+  background-color: #aaa;
+  border-radius: 8px;
+}
+
+.datatable_wrapper::-webkit-scrollbar-thumb:hover {
+  background-color: #888;
+}
+
+/* Firefox scrollbar */
+.datatable_wrapper {
+  scrollbar-width: thin !important;
+  scrollbar-color: #aaa transparent;
+}
 
 .auth-heading-text {
   font-family: Inter;

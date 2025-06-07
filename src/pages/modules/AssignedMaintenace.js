@@ -1,48 +1,72 @@
 // src/pages/dashboard/DashboardHome.jsx
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect, useMemo } from "react";
 import DataTableHeaderContainer from "../components/DataTableHeaderContainer";
 import DataTableComponent from "../datatable/DataTable";
 import AssignMaintenanceModal from "../modal/AssignedMaintenace";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { fetchStaffRequest } from "../../features/staff/StaffSlice";
 import {
-  fetchStaffRequest,
-  deleteStaffRequest,
-  createStaffRequest,
-  updateStaffRequest,
-} from "../../features/staff/StaffSlice";
+  createAssignTaskRequest,
+  fetchAssignTaskRequest,
+} from "../../features/assignTask/AssignTaskSlice";
 import { fetchMachineRequest } from "../../features/machine/MachineSlice";
 import AddDeleteModal from "../modal/DeleteModal";
 
 const AssignedManagement = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [dataForUpdate, setDataForUpdate] = useState({});
-  const [dataForDelete, setDataForDelete] = useState({});
   const [type, setType] = useState("ADD");
-  const [parentMessage, setParentMessage] = useState("");
-  const [dataType, setDataType] = useState("STAFF");
+  const [filterData, setFilterData] = useState("");
+  const [dataType, setDataType] = useState("ASSIGN_TASK");
   const staff = useSelector((state) =>
-    state?.staff?.data.map(({ _id, name, role }) => ({ id: _id, name, role }))
+    state?.staff?.data?.map(({ _id, name, role }) => ({ id: _id, name, role }))
   );
+  const assignTask = useSelector((state) => state?.assignTask?.data);
+  const taskCountByStaff = useMemo(() => {
+    if (!Array.isArray(assignTask)) return [];
+    const grouped = assignTask?.reduce((acc, item) => {
+      const staffId = item?.staffId?._id;
+      if (!acc[staffId]) {
+        acc[staffId] = {
+          staffId: staffId,
+          name: item?.staffId?.name,
+          email: item?.staffId?.email,
+          role: item?.staffId?.role,
+          taskCount: 0,
+        };
+      }
+
+      acc[staffId].taskCount += 1;
+      return acc;
+    }, {});
+
+    return Object.values(grouped);
+  }, [assignTask]);
+
   const machine = useSelector((state) =>
-    state?.machine?.data?.map(({ _id, machine_model }) => ({
-      id: _id,
-      machine_model,
-    }))
+    state?.machine?.data?.map(
+      ({ _id, machine_sr_no, location, machine_model }) => ({
+        id: _id,
+        machine_sr_no,
+        location,
+        machine_model,
+      })
+    )
   );
-  const handleButtonClick = useCallback((dataFromChild) => {
-    setParentMessage(dataFromChild);
-  }, []);
+  const handleDataFromChild = (data) => {
+    setFilterData(data);
+  };
   const handleModelClick = useCallback((dataFromChild) => {
     setShowModal(true);
   }, []);
   const handleDataFromModal = useCallback(
     (data) => {
-      // dispatch(createRequest(data));
       data.type === "UPDATE"
-        ? dispatch(updateStaffRequest(data))
-        : dispatch(createStaffRequest(data));
+        ? dispatch()
+        : dispatch(createAssignTaskRequest(data));
       setShowModal(false);
       setType("ADD");
       setDataForUpdate({});
@@ -52,47 +76,15 @@ const AssignedManagement = () => {
   useEffect(() => {
     dispatch(fetchStaffRequest());
     dispatch(fetchMachineRequest());
+    dispatch(fetchAssignTaskRequest());
   }, [dispatch]);
 
-  const handleDelete = (row) => {
-    setShowDeleteModal(true);
-    setDataForDelete(row);
-  };
-
   const handleUpdate = (data) => {
-    setDataForUpdate(data);
-    setType("UPDATE");
-    setShowModal(true);
+    console.log(data);
+    navigate(`/dashboard/staff-assigned-management/${data.staffId}`);
   };
 
-  const handleDeleteModal = useCallback(
-    (id) => {
-      dispatch(deleteStaffRequest(id));
-      setShowDeleteModal(false);
-      dispatch(fetchStaffRequest());
-    },
-    [dispatch]
-  );
   return (
-    // <>
-    //   {showModal && (
-    //     <AssignMaintenanceModal
-    //       show={showModal}
-    //       onClose={() => setShowModal(false)}
-    //     />
-    //   )}
-    //   <div className="p-5 w-100">
-    //     <div className="card shadow-sm border-0 pt-4 datatable_wrapper">
-    //       <DataTableHeaderContainer
-    //         onButtonClick={handleButtonClick}
-    //         onAddButtonClick={handleModelClick}
-    //         title={"Assigned Staff"}
-    //         buttonTitle={"Assign Task"}
-    //       />
-    //       <DataTableComponent />
-    //     </div>
-    //   </div>
-    // </>
     <>
       <AssignMaintenanceModal
         data={dataForUpdate}
@@ -103,28 +95,20 @@ const AssignedManagement = () => {
           setDataForUpdate({});
           setType("ADD");
         }}
-        machine={machine}
-        staff={staff}
+        machine={machine?.length > 0 ? machine : []}
+        staff={staff?.length > 0 ? staff : []}
         onSubmit={handleDataFromModal}
       />
-      <AddDeleteModal
-        data={dataForDelete}
-        showDelete={showDeleteModal}
-        onCloseDelete={() => setShowDeleteModal(false)}
-        onDelete={handleDeleteModal}
-        type={dataType}
-      />
-      <div className="p-5 w-100">
-        <div className="card shadow-sm border-0 pt-4 datatable_wrapper">
+      <div className="p-5 w-full flex justify-center">
+        <div className="card shadow-sm border-0 pt-4 datatable_wrapper w-full max-w-screen-lg">
           <DataTableHeaderContainer
-            onButtonClick={handleButtonClick}
+            onInputChange={handleDataFromChild}
             onAddButtonClick={handleModelClick}
             title={"Assigned Staff"}
             buttonTitle={"Assign Task"}
           />
           <DataTableComponent
-            dataTableData={staff?.length > 0 ? staff : []}
-            onDelete={handleDelete}
+            dataTableData={taskCountByStaff?.length > 0 ? taskCountByStaff : []}
             onUpdate={(row) => handleUpdate(row)}
             dataTableType={dataType}
           />

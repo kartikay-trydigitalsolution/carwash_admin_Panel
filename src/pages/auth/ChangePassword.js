@@ -1,4 +1,4 @@
-import React, {  useEffect } from "react";
+import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import logo from "../../assets/images/logo.svg";
 import * as Yup from "yup";
@@ -59,9 +59,9 @@ const ChangePasswordPage = () => {
             value={formik.values.newPassword}
             onChange={formik.handleChange}
           />
-          {formik.touched.newPassword && formik.errors.newPassword ? (
+          {formik.touched.newPassword && formik.errors.newPassword && (
             <div className="red">{formik.errors.newPassword}</div>
-          ) : null}
+          )}
         </div>
         <div className="mb-3">
           <input
@@ -73,9 +73,9 @@ const ChangePasswordPage = () => {
             onChange={formik.handleChange}
           />
           {formik.touched.confirmNewPassword &&
-          formik.errors.confirmNewPassword ? (
-            <div className="red">{formik.errors.confirmNewPassword}</div>
-          ) : null}
+            formik.errors.confirmNewPassword && (
+              <div className="red">{formik.errors.confirmNewPassword}</div>
+            )}
         </div>
         <button type="submit" className="logging-form-button  w-100">
           SAVE
