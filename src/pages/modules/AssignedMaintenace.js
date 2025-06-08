@@ -42,7 +42,6 @@ const AssignedManagement = () => {
       acc[staffId].taskCount += 1;
       return acc;
     }, {});
-
     return Object.values(grouped);
   }, [assignTask]);
 

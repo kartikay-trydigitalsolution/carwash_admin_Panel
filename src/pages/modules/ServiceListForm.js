@@ -1,32 +1,36 @@
 // src/pages/dashboard/DashboardHome.jsx
-import { useCallback, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import DataTableHeaderContainer from "../components/DataTableHeaderContainer";
 import DataTableComponent from "../datatable/DataTable";
 import fotter_image from "../../assets/images/image 1.png";
 import left from "../../assets/images/staff_sign.png";
 import right from "../../assets/images/client_sign.png";
+import { useDispatch, useSelector } from "react-redux";
 import Popup from "reactjs-popup";
+import { useParams } from "react-router-dom";
 import SignaturePad from "react-signature-canvas";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { fetchAssignTaskRequest } from "../../features/assignTask/AssignTaskSlice";
+import { fetchMachineRequest } from "../../features/machine/MachineSlice";
+import { toast } from "react-toastify";
 
 const StaffAssignedManagement = () => {
   const [isStaffOpen, setIsStaffOpen] = useState(false);
   const [isClientOpen, setIsClientOpen] = useState(false);
   const [staffImageURL, setStaffImageURL] = useState(null); // create a state that will contain our image url
   const [clientImageURL, setClientImageURL] = useState(null); // create a state that will contain our image url
-
+  const params = useParams();
+  const isRole = useSelector((state) => state?.auth?.userRole);
+  const dispatch = useDispatch();
   const sigStaffCanvas = useRef({});
   const sigClientCanvas = useRef({});
-  function base64toBlob(base64Data, contentType = "image/png") {
-    const byteCharacters = atob(base64Data);
-    const byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
-    }
-    const byteArray = new Uint8Array(byteNumbers);
-    return new Blob([byteArray], { type: contentType });
-  }
+  useEffect(() => {
+    dispatch(fetchAssignTaskRequest());
+  }, [dispatch]);
+  const assignTask = useSelector((state) =>
+    state?.assignTask?.data?.find((t) => t?._id == params?.id)
+  );
   /* a function that uses the canvas ref to clear the canvas 
   via a method given by react-signature-canvas */
   const staffClear = () => sigStaffCanvas.current.clear();
@@ -35,15 +39,10 @@ const StaffAssignedManagement = () => {
   /* a function that uses the canvas ref to trim the canvas 
   from white spaces via a method given by react-signature-canvas
   then saves it in our state */
-  const staffSave = () => {
-    const base64Data = sigStaffCanvas?.current
-      ?.toDataURL("image/png")
-      .replace(/^data:image\/\w+;base64,/, "");
-    const imageBlob = base64toBlob(base64Data);
-    console.log(imageBlob, "data");
-    setStaffImageURL(imageBlob);
+  const staffSave = useCallback(() => {
+    setStaffImageURL(sigStaffCanvas?.current?.toDataURL("image/png"));
     setIsStaffOpen(false);
-  };
+  }, []);
 
   const clientSave = () => {
     setClientImageURL(sigClientCanvas?.current?.toDataURL("image/png"));
@@ -70,6 +69,12 @@ const StaffAssignedManagement = () => {
     totalizerMeterReadingAfterVaccum: Yup.number().required("*Required"),
     totalizerMeterReadingAfterJet: Yup.number().required("*Required"),
   });
+
+  const [checkboxValues, setCheckboxValues] = useState({
+    servicing: false,
+    complaint: false,
+    installation: false,
+  });
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -79,8 +84,8 @@ const StaffAssignedManagement = () => {
       isFourInOne: false,
       isFiveInOne: false,
       isCollection: false,
-      serialNumber: "",
-      modelNumber: "",
+      serialNumber: "" || assignTask?.machineId?.machine_sr_no,
+      modelNumber: "" || assignTask?.machineId?.machine_model,
       securityTag: "",
       switchOffTimer: "",
       isCheckTheOperationOfTheWaterDispenser: false,
@@ -132,13 +137,17 @@ const StaffAssignedManagement = () => {
       isNetsUnit: false,
       isNetsBd: false,
     },
-    validationSchema: validationSchema,
+    // validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
-      console.log(values);
-      // onSubmit(
-      //   // type === "UPDATE" ? { ...values, id: , type: type } : values
-      // );
-      // resetForm();
+      if (staffImageURL || clientImageURL == null) {
+        toast.error("Please sign the doucment first.");
+      }
+      dispatch()
+      // data.type === "UPDATE"
+        // ? dispatch(updateMachineRequest(data))
+        // : dispatch(createMachineRequest(data));
+      // onSubmit(type === "UPDATE" ? { ...values, type: type } : values);
+      resetForm();
     },
   });
   return (
@@ -181,12 +190,18 @@ const StaffAssignedManagement = () => {
                           Date Issued
                         </label>
                         <input
-                          id="machine_model1"
-                          type="date"
-                          name="machine_model1"
                           className="form-input flex-fill ps-3 m-2"
-                          placeholder="Date"
-                          aria-label="machine_model1"
+                          type="date"
+                          id="issue_date"
+                          name="issueDate"
+                          value={
+                            assignTask?.createdAt
+                              ? new Date(assignTask?.createdAt)
+                                  .toISOString()
+                                  .split("T")[0]
+                              : ""
+                          }
+                          disabled={isRole == "Admin" ? false : true}
                         />
                       </div>
                       <div className="col-md-4 col-sm-6">
@@ -196,13 +211,20 @@ const StaffAssignedManagement = () => {
                         >
                           Complete Date
                         </label>
+                        {console.log(isRole)}
                         <input
-                          id="machine_model2"
-                          type="Date"
-                          name="machine_model2"
                           className="form-input flex-fill ps-3 m-2"
-                          placeholder="Machine Model"
-                          aria-label="machine_model2"
+                          type="date"
+                          id="complete_date"
+                          name="completeDate"
+                          value={
+                            assignTask?.due_date
+                              ? new Date(assignTask?.due_date)
+                                  .toISOString()
+                                  .split("T")[0]
+                              : ""
+                          }
+                          disabled={isRole == "Admin" ? false : true}
                         />
                       </div>
                       <div className="col-md-4 col-sm-6">
@@ -213,12 +235,16 @@ const StaffAssignedManagement = () => {
                           Location
                         </label>
                         <input
-                          id="machine_model2"
-                          type="text"
-                          name="machine_model2"
                           className="form-input flex-fill ps-3 m-2"
-                          placeholder="Machine Model"
-                          aria-label="machine_model2"
+                          type="text"
+                          id="location"
+                          name="location"
+                          value={
+                            assignTask?.machineId?.location
+                              ? assignTask?.machineId?.location
+                              : ""
+                          }
+                          disabled={isRole == "Admin" ? false : true}
                         />
                       </div>
                     </div>
@@ -246,21 +272,25 @@ const StaffAssignedManagement = () => {
                             name="servicing"
                             id="servicing"
                             className="me-2"
+                            checked={checkboxValues.servicing}
                           />
                           Servicing
                         </label>
                       </div>
+
                       <div className="col-md-2 col-sm-3 d-flex align-items-center mt-5">
                         <label htmlFor="complaint" className="form-label m-2">
                           <input
                             type="checkbox"
-                            name="servicing"
+                            name="complaint"
                             id="complaint"
                             className="me-2"
+                            checked={checkboxValues.complaint}
                           />
                           Complaint
                         </label>
                       </div>
+
                       <div className="col-md-2 col-sm-3 d-flex align-items-center mt-5">
                         <label
                           htmlFor="installation"
@@ -271,6 +301,7 @@ const StaffAssignedManagement = () => {
                             name="installation"
                             id="installation"
                             className="me-2"
+                            checked={checkboxValues.installation}
                           />
                           Installation
                         </label>
@@ -1208,7 +1239,6 @@ const StaffAssignedManagement = () => {
 
                       {/* Right Static Signature Image */}
                       <div className="text-center">
-                        {console.log(clientImageURL)}
                         {clientImageURL && <div>Client Signature</div>}
                         {/* Trigger Image */}
                         <img

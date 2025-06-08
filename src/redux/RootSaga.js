@@ -4,6 +4,7 @@ import { watchMachineSaga } from "../features/machine/MachineSaga";
 import { watchInventorySaga } from "../features/inventory/InventorySaga";
 import { watchAuthSaga } from "../features/auth/AuthSaga";
 import { watchAssignTaskSaga } from "../features/assignTask/AssignTaskSaga";
+import { watchStaffAssignTaskSaga } from "../features/staffAssignTask/StaffAssignTaskSaga";
 
 export default function* rootSaga() {
   yield all([
@@ -12,5 +13,6 @@ export default function* rootSaga() {
     watchInventorySaga(),
     watchAuthSaga(),
     watchAssignTaskSaga(),
+    watchStaffAssignTaskSaga(),
   ]);
 }
