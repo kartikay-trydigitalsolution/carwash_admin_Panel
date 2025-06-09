@@ -12,7 +12,7 @@ import SignaturePad from "react-signature-canvas";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { fetchAssignTaskRequest } from "../../features/assignTask/AssignTaskSlice";
-import { fetchMachineRequest } from "../../features/machine/MachineSlice";
+import { createStaffAssignTaskRequest } from "../../features/staffAssignTask/StaffAssignTaskSlice";
 import { toast } from "react-toastify";
 
 const StaffAssignedManagement = () => {
@@ -75,6 +75,10 @@ const StaffAssignedManagement = () => {
     complaint: false,
     installation: false,
   });
+  const isValidDataUrl = (dataUrl) => {
+    const regex = /^data:image\/(png|jpeg|jpg|webp);base64,[A-Za-z0-9+/=]+$/;
+    return regex.test(dataUrl);
+  };
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -137,16 +141,23 @@ const StaffAssignedManagement = () => {
       isNetsUnit: false,
       isNetsBd: false,
     },
-    // validationSchema: validationSchema,
+    validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
-      if (staffImageURL || clientImageURL == null) {
-        toast.error("Please sign the doucment first.");
+      if (!isValidDataUrl(staffImageURL)) {
+        toast.error("Please sign the staff document first.");
+        return;
       }
-      dispatch()
-      // data.type === "UPDATE"
-        // ? dispatch(updateMachineRequest(data))
-        // : dispatch(createMachineRequest(data));
-      // onSubmit(type === "UPDATE" ? { ...values, type: type } : values);
+      if (!isValidDataUrl(clientImageURL)) {
+        toast.error("Please sign the client document first.");
+        return;
+      }
+      values = {
+        ...values,
+        taskId: params?.id,
+        staffSign: staffImageURL,
+        clientSign: clientImageURL,
+      };
+      dispatch(createStaffAssignTaskRequest(values));
       resetForm();
     },
   });

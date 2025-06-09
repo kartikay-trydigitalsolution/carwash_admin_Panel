@@ -99,14 +99,6 @@ const Sidebar = () => {
               Inventory Management
             </NavLink>
             <NavLink
-              to="/master-data"
-              className={({ isActive }) =>
-                `nav-link ${isActive ? "active" : ""}`
-              }
-            >
-              Master Data Management
-            </NavLink>
-            <NavLink
               to="/reports"
               className={({ isActive }) =>
                 `nav-link ${isActive ? "active" : ""}`
@@ -115,7 +107,7 @@ const Sidebar = () => {
               Reports & Analytics
             </NavLink>
             <NavLink
-              to="/profile-settings"
+              to="/dashboard/my-profile"
               className={({ isActive }) =>
                 `nav-link ${isActive ? "active" : ""}`
               }
@@ -143,7 +135,7 @@ const Sidebar = () => {
               My Assigned Maintenance
             </NavLink>
             <NavLink
-              to="/profile-settings"
+              to="/dashboard/my-profile"
               className={({ isActive }) =>
                 `nav-link ${isActive ? "active" : ""}`
               }
@@ -171,7 +163,7 @@ const Sidebar = () => {
               Inventory Management
             </NavLink>
             <NavLink
-              to="/profile-settings"
+              to="/dashboard/my-profile"
               className={({ isActive }) =>
                 `nav-link ${isActive ? "active" : ""}`
               }

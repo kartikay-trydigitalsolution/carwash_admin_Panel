@@ -18,6 +18,7 @@ import MachineManagement from "./pages/modules/MachineManagement";
 import InventoryManagement from "./pages/modules/InventoryManagement";
 import RecepientListManagement from "./pages/modules/RecepientListManagement";
 import MaintenanceRecordManagement from "./pages/modules/MaintenanceRecordManagement";
+import MyProfile from "./pages/modules/ProfilePage";
 import PrivateRoute from "./PrivateRoute";
 import { Toaster } from "sonner";
 function App() {
@@ -63,6 +64,7 @@ function App() {
             path="maintenance-record-management"
             element={<MaintenanceRecordManagement />}
           />
+          <Route path="my-profile" element={<MyProfile />} />
           <Route path="settings" element={<Settings />} />
         </Route>
         {/* <Route

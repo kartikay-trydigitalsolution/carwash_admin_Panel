@@ -1,16 +1,16 @@
-import React, { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+// src/pages/dashboard/DashboardHome.jsx
+import { useEffect, useState, useRef, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import logo from "../../assets/images/logo.svg";
-import * as Yup from "yup";
 import { useFormik } from "formik";
 import StyledImageInline from "../components/Image";
 import { newPasswordRequest } from "../../features/auth/AuthSlice";
-import { useDispatch, useSelector } from "react-redux";
-const ChangePasswordPage = () => {
-  const navigate = useNavigate();
+import * as Yup from "yup";
+import { toast } from "react-toastify";
+
+const ProfilePage = () => {
   const dispatch = useDispatch();
-  const loginSuccess = useSelector((state) => state.auth.loginSuccess);
-  const params = useParams();
+  const auth = useSelector((state) => state?.auth?.userData);
   const validationSchema = Yup.object({
     newPassword: Yup.string()
       .min(8, "*New Password must be at least 8 characters")
@@ -19,13 +19,10 @@ const ChangePasswordPage = () => {
       .oneOf([Yup.ref(" newPassword"), null], "*Passwords must match")
       .required("*Confirm Password is required"),
   });
-  useEffect(() => {
-    if (loginSuccess) {
-      navigate("/");
-    }
-  }, [loginSuccess]);
   const formik = useFormik({
     initialValues: {
+      name: auth.name || "",
+      email: auth.email || "",
       newPassword: "",
       confirmNewPassword: "",
     },
@@ -33,12 +30,12 @@ const ChangePasswordPage = () => {
     onSubmit: (values) => {
       dispatch({
         type: newPasswordRequest.type,
-        payload: { ...values, id: params.id }
+        payload: { ...values, id: auth._id },
       });
     },
   });
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100 auth-form-wrap">
+    <div className="d-flex justify-content-center align-items-center h-100">
       <form
         className="bg-white py-5 px-4 rounded shadow-sm width_500"
         onSubmit={formik.handleSubmit}
@@ -47,20 +44,43 @@ const ChangePasswordPage = () => {
           <StyledImageInline src={logo} alt="logo" />
         </div>
         <div className="d-flex justify-content-center">
-          <div className="auth-heading-text">Change Password</div>
+          <div className="auth-heading-text">Profile</div>
         </div>
         <div className="mb-3">
           <input
+            id="name"
+            type="name"
+            className="form-input"
+            placeholder="Name"
+            value={formik.values.name}
+            aria-label="name"
+            disabled={true}
+          />
+        </div>
+        <div className="mb-3">
+          <input
+            id="email"
+            type="email"
+            className="form-input"
+            placeholder="Email"
+            value={formik.values.email}
+            aria-label="Email"
+            disabled={true}
+          />
+        </div>
+        <div className="mb-4">
+          <input
             id="newPassword"
             type="password"
-            className=" form-input"
+            className="form-input"
             placeholder="New Password"
             value={formik.values.newPassword}
             onChange={formik.handleChange}
+            aria-label="newPassword"
           />
-          {formik.touched.newPassword && formik.errors.newPassword && (
+          {formik.touched.newPassword && formik.errors.newPassword ? (
             <div className="red">{formik.errors.newPassword}</div>
-          )}
+          ) : null}
         </div>
         <div className="mb-3">
           <input
@@ -77,11 +97,11 @@ const ChangePasswordPage = () => {
             )}
         </div>
         <button type="submit" className="logging-form-button  w-100">
-          SAVE
+          Change Password
         </button>
       </form>
     </div>
   );
 };
 
-export default ChangePasswordPage;
+export default ProfilePage;

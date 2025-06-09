@@ -101,7 +101,6 @@ const InventoryManagement = () => {
             title={"Inventory Details"}
             buttonTitle={"Add Items"}
           />
-          
           <DataTableComponent
             dataTableData={
               filteredInventries?.length > 0 ? filteredInventries : []
