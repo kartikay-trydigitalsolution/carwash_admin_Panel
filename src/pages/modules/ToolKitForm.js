@@ -4,12 +4,12 @@ import fotter_image from "../../assets/images/image 1.png";
 import left from "../../assets/images/staff_sign.png";
 import { useDispatch, useSelector } from "react-redux";
 import Popup from "reactjs-popup";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import SignaturePad from "react-signature-canvas";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { fetchAssignTaskRequest } from "../../features/assignTask/AssignTaskSlice";
-import { createStaffAssignTaskRequest } from "../../features/staffAssignTask/StaffAssignTaskSlice";
+import { createToolKitAssignTaskRequest } from "../../features/toolkitTask/ToolkitTaskSlice";
 import { toast } from "react-toastify";
 
 const ToolKitForm = () => {
@@ -18,6 +18,7 @@ const ToolKitForm = () => {
   const [staffImageURL, setStaffImageURL] = useState(null); // create a state that will contain our image url
   const params = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const sigStaffCanvas = useRef({});
   useEffect(() => {
     dispatch(fetchAssignTaskRequest());
@@ -142,9 +143,9 @@ const ToolKitForm = () => {
         sign: staffImageURL,
         dynamic: entries,
       };
-      console.log(values, "vlaues");
-      //   dispatch(createStaffAssignTaskRequest(values));
+      dispatch(createToolKitAssignTaskRequest(values));
       resetForm();
+      navigate("/");
     },
   });
   const [entries, setEntries] = useState([

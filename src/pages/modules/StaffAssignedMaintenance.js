@@ -70,6 +70,8 @@ const StaffAssignedManagement = () => {
     let url = null;
     if (!data.isCheckToolKit) {
       url = `/dashboard/service-form/${data._id}`;
+    } else {
+      url = `/dashboard/toolkit-form/${data._id}`;
     }
     navigate(url);
   };

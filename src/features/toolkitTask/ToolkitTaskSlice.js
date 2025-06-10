@@ -28,7 +28,7 @@ const toolkitAssignTaskSlice = createSlice({
     createToolKitAssignTaskSuccess: (state, action) => {
       state.loading = false;
       state.success = true;
-      state.data.push(action.payload.task);
+      state.data.push(action.payload);
     },
     createToolKitAssignTaskFailure: (state, action) => {
       state.loading = false;

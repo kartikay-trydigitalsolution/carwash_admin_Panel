@@ -24,7 +24,7 @@ function* createToolKitAssignTaskSaga(action) {
   try {
     const response = yield call(
       axios.post,
-      "/assigntask/assigntask",
+      "/toolkitAssignTask/toolkitAssignTask",
       action.payload
     );
     yield put(createToolKitAssignTaskSuccess(response.data));
