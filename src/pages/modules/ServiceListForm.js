@@ -1,7 +1,5 @@
 // src/pages/dashboard/DashboardHome.jsx
 import { useEffect, useState, useRef, useCallback } from "react";
-import DataTableHeaderContainer from "../components/DataTableHeaderContainer";
-import DataTableComponent from "../datatable/DataTable";
 import fotter_image from "../../assets/images/image 1.png";
 import left from "../../assets/images/staff_sign.png";
 import right from "../../assets/images/client_sign.png";
@@ -29,7 +27,7 @@ const StaffAssignedManagement = () => {
     dispatch(fetchAssignTaskRequest());
   }, [dispatch]);
   const assignTask = useSelector((state) =>
-    state?.assignTask?.data?.find((t) => t?._id == params?.id)
+    state?.assignTask?.data?.find((t) => t?._id === params?.id)
   );
   /* a function that uses the canvas ref to clear the canvas 
   via a method given by react-signature-canvas */
@@ -70,11 +68,11 @@ const StaffAssignedManagement = () => {
     totalizerMeterReadingAfterJet: Yup.number().required("*Required"),
   });
 
-  const [checkboxValues, setCheckboxValues] = useState({
-    servicing: false,
-    complaint: false,
-    installation: false,
-  });
+  // const [checkboxValues, setCheckboxValues] = useState({
+  //   servicing: false,
+  //   complaint: false,
+  //   installation: false,
+  // });
   const isValidDataUrl = (dataUrl) => {
     const regex = /^data:image\/(png|jpeg|jpg|webp);base64,[A-Za-z0-9+/=]+$/;
     return regex.test(dataUrl);
@@ -212,7 +210,7 @@ const StaffAssignedManagement = () => {
                                   .split("T")[0]
                               : ""
                           }
-                          disabled={isRole == "Admin" ? false : true}
+                          disabled={isRole === "Admin" ? false : true}
                         />
                       </div>
                       <div className="col-md-4 col-sm-6">
@@ -235,7 +233,7 @@ const StaffAssignedManagement = () => {
                                   .split("T")[0]
                               : ""
                           }
-                          disabled={isRole == "Admin" ? false : true}
+                          disabled={isRole === "Admin" ? false : true}
                         />
                       </div>
                       <div className="col-md-4 col-sm-6">
@@ -255,7 +253,7 @@ const StaffAssignedManagement = () => {
                               ? assignTask?.machineId?.location
                               : ""
                           }
-                          disabled={isRole == "Admin" ? false : true}
+                          disabled={isRole === "Admin" ? false : true}
                         />
                       </div>
                     </div>
@@ -274,6 +272,10 @@ const StaffAssignedManagement = () => {
                           className="form-input flex-fill ps-3 m-2"
                           placeholder="Telephone No"
                           aria-label="machine_model1"
+                          value={
+                            assignTask?.telephone ? assignTask?.telephone : ""
+                          }
+                          disabled={isRole === "Admin" ? false : true}
                         />
                       </div>
                       <div className="col-md-2 col-sm-3 d-flex align-items-center mt-5">
@@ -283,7 +285,12 @@ const StaffAssignedManagement = () => {
                             name="servicing"
                             id="servicing"
                             className="me-2"
-                            checked={checkboxValues.servicing}
+                            checked={
+                              assignTask?.service_type === "Servicing"
+                                ? true
+                                : false
+                            }
+                            disabled={isRole === "Admin" ? false : true}
                           />
                           Servicing
                         </label>
@@ -296,7 +303,12 @@ const StaffAssignedManagement = () => {
                             name="complaint"
                             id="complaint"
                             className="me-2"
-                            checked={checkboxValues.complaint}
+                            checked={
+                              assignTask?.service_type === "Complaint"
+                                ? true
+                                : false
+                            }
+                            disabled={isRole === "Admin" ? false : true}
                           />
                           Complaint
                         </label>
@@ -312,7 +324,12 @@ const StaffAssignedManagement = () => {
                             name="installation"
                             id="installation"
                             className="me-2"
-                            checked={checkboxValues.installation}
+                            checked={
+                              assignTask?.service_type === "Installation"
+                                ? true
+                                : false
+                            }
+                            disabled={isRole === "Admin" ? false : true}
                           />
                           Installation
                         </label>
@@ -1350,7 +1367,7 @@ const StaffAssignedManagement = () => {
                         Tel: 6465 0776 &nbsp; | &nbsp; Email: admin@qe.com.sg
                       </p>
                       <p class="mb-3">
-                        <a href="https://www.qe.com.sg/" target="_blank">
+                        <a href="https://www.qe.com.sg/">
                           https://www.qe.com.sg/
                         </a>
                       </p>

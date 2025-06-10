@@ -67,7 +67,11 @@ const StaffAssignedManagement = () => {
     [dispatch]
   );
   const handleUpdate = (data) => {
-    navigate(`/dashboard/service-form/${data._id}`);
+    let url = null;
+    if (!data.isCheckToolKit) {
+      url = `/dashboard/service-form/${data._id}`;
+    }
+    navigate(url);
   };
   return (
     <>

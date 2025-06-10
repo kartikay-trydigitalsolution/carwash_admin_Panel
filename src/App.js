@@ -11,6 +11,7 @@ import DashboardHome from "./pages/dashboard/Dashboard";
 import StaffManagement from "./pages/modules/StaffManagement";
 import Settings from "./pages/components/Settings";
 import ServiceForm from "./pages/modules/ServiceListForm";
+import ToolKitForm from "./pages/modules/ToolKitForm";
 import "bootstrap/dist/css/bootstrap.min.css";
 import AssignedManagement from "./pages/modules/AssignedMaintenace";
 import StaffAssignedManagement from "./pages/modules/StaffAssignedMaintenance";
@@ -47,6 +48,7 @@ function App() {
           <Route path="staff-management" element={<StaffManagement />} />
           <Route path="assigned-management" element={<AssignedManagement />} />
           <Route path="service-form/:id" element={<ServiceForm />} />
+          <Route path="toolkit-form/:id" element={<ToolKitForm />} />
           <Route
             path="staff-assigned-management/:id"
             element={<StaffAssignedManagement />}
