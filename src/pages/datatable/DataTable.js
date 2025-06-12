@@ -1,22 +1,29 @@
 import React, { useMemo, useState } from "react";
 import DataTable from "react-data-table-component";
 import moment from "moment";
+import document from "../../assets/images/document.png";
+import sms from "../../assets/images/sms.svg";
+import eye from "../../assets/images/eye.svg";
 
 const DataTableComponent = ({
   dataTableData,
   onDelete,
   onUpdate,
   onDownloadFile,
+  onEmailSend,
   dataTableType,
 }) => {
   const handleDelete = (row) => {
     onDelete?.(row); // or onDelete(row) if you're passing the full object
   };
-  const downloadFile = (row) => {
+  const handleDownload = (row) => {
     onDownloadFile?.(row);
   };
   const handleEdit = (row) => {
     onUpdate?.(row); // or onDelete(row) if you're passing the full object
+  };
+  const handleSendEmail = (row) => {
+    onEmailSend?.(row);
   };
   const customStyles = {
     table: {
@@ -115,12 +122,12 @@ const DataTableComponent = ({
   const recipientColumns = [
     {
       name: "Name",
-      selector: (row) => row.recipientName,
+      selector: (row) => row?.recipientName,
       sortable: true,
     },
-    { name: "Email", selector: (row) => row.recipientEmail, sortable: true },
-    { name: "Phone", selector: (row) => row.recipientPhone, sortable: true },
-    { name: "Location", selector: (row) => row.location, sortable: true },
+    { name: "Email", selector: (row) => row?.recipientEmail, sortable: true },
+    { name: "Phone", selector: (row) => row?.recipientPhone, sortable: true },
+    { name: "Location", selector: (row) => row?.location, sortable: true },
     {
       name: "Date",
       selector: (row) => moment(Date.now()).format("DD-MM-YYYY"),
@@ -220,10 +227,21 @@ const DataTableComponent = ({
       cell: (row) => (
         <div className="flex gap-2 d-flex justify-content-center">
           <button variant="outline" size="icon" onClick={() => handleEdit(row)}>
-            <i className="fas fa-download"></i>
+            <img src={eye} />
           </button>
-          <button variant="outline" size="icon" onClick={() => handleEdit(row)}>
-            <i className="fas fa-eye"></i>
+          <button
+            variant="outline"
+            size="icon"
+            onClick={() => handleSendEmail(row)}
+          >
+            <img src={sms} />
+          </button>
+          <button
+            variant="outline"
+            size="icon"
+            onClick={() => handleDownload(row)}
+          >
+            <img src={document} />
           </button>
         </div>
       ),

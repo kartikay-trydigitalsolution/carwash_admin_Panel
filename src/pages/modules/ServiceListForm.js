@@ -5,7 +5,7 @@ import left from "../../assets/images/staff_sign.png";
 import right from "../../assets/images/client_sign.png";
 import { useDispatch, useSelector } from "react-redux";
 import Popup from "reactjs-popup";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import SignaturePad from "react-signature-canvas";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -20,6 +20,7 @@ import {
 import { toast } from "react-toastify";
 
 const StaffAssignedManagement = () => {
+  const navigate = useNavigate();
   const [isStaffOpen, setIsStaffOpen] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
   const [staffAssignedTaskValues, setStaffAssignedTaskValues] = useState({});
@@ -216,6 +217,7 @@ const StaffAssignedManagement = () => {
         };
 
         dispatch(createStaffAssignTaskRequest(values));
+        navigate();
         resetForm();
       }
     },

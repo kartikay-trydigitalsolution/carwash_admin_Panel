@@ -6,6 +6,7 @@ import { watchAuthSaga } from "../features/auth/AuthSaga";
 import { watchAssignTaskSaga } from "../features/assignTask/AssignTaskSaga";
 import { watchStaffAssignTaskSaga } from "../features/staffAssignTask/StaffAssignTaskSaga";
 import {watchToolkitAssignTaskSaga} from "../features/toolkitTask/ToolkitTaskSaga";
+import { watchSendEmailSaga } from "../features/email/emailSaga";
 
 export default function* rootSaga() {
   yield all([
@@ -16,5 +17,6 @@ export default function* rootSaga() {
     watchAssignTaskSaga(),
     watchStaffAssignTaskSaga(),
     watchToolkitAssignTaskSaga(),
+    watchSendEmailSaga()
   ]);
 }

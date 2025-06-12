@@ -4,6 +4,7 @@ import DataTableComponent from "../datatable/DataTable";
 import { useCallback, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchStaffAssignTaskRequest } from "../../features/staffAssignTask/StaffAssignTaskSlice";
+import { sendEmailRequest } from "../../features/email/emailSlice";
 import AddDeleteModal from "../modal/DeleteModal";
 import { Navigate, useNavigate } from "react-router-dom";
 const MaintenanceRecordManagement = () => {
@@ -48,6 +49,13 @@ const MaintenanceRecordManagement = () => {
   const handleEye = (data) => {
     navigate("/");
   };
+  const handleEmail = (data) => {
+    let emailData = {
+      email: data?.taskId?.machineId?.recipientEmail,
+      taskId: data._id,
+    };
+    dispatch(sendEmailRequest(emailData));
+  };
   const handleDownload = (data) => {
     console.log(data);
   };
@@ -72,7 +80,8 @@ const MaintenanceRecordManagement = () => {
             title={"Maintenance Records"}
           />
           <DataTableComponent
-            onUpdate={() => handleEye}
+            onUpdate={handleEye}
+            onEmailSend={handleEmail}
             dataTableData={filteredTasks?.length > 0 ? filteredTasks : []}
             onDelete={handleDelete}
             dataTableType={dataType}
