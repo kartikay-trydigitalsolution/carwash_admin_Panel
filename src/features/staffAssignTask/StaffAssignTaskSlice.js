@@ -15,7 +15,7 @@ const staffAssignTaskSlice = createSlice({
     },
     fetchStaffAssignTaskSuccess: (state, action) => {
       state.loading = false;
-      state.data = action.payload?.assignTask;
+      state.data = action.payload?.staffAssignTask;
     },
     fetchStaffAssignTaskFailure: (state, action) => {
       state.loading = false;
@@ -34,6 +34,25 @@ const staffAssignTaskSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    updateStaffAssignedTaskRequest: (state) => {
+      state.loading = true;
+      state.success = null;
+    },
+    updateStaffAssignedTaskSuccess: (state, action) => {
+      state.loading = false;
+      state.success = true;
+      const updatedStaffAssignedTask = action.payload.data;
+      const index = state.data.findIndex(
+        (item) => item._id === updatedStaffAssignedTask._id
+      );
+      if (index !== -1) {
+        state.data[index] = updatedStaffAssignedTask;
+      }
+    },
+    updateStaffAssignedTaskFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
     resetStaffAssignTaskSuccess: (state) => {
       state.success = null;
     },
@@ -48,6 +67,9 @@ export const {
   createStaffAssignTaskSuccess,
   createStaffAssignTaskFailure,
   resetStaffAssignTaskSuccess,
+  updateStaffAssignedTaskRequest,
+  updateStaffAssignedTaskFailure,
+  updateStaffAssignedTaskSuccess,
 } = staffAssignTaskSlice.actions;
 
 export default staffAssignTaskSlice.reducer;

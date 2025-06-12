@@ -15,17 +15,15 @@ const StaffAssignedManagement = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const params = useParams();
-  const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [dataForDelete, setDataForDelete] = useState({});
-  const [type, setType] = useState("ADD");
   const [filterData, setFilterData] = useState("");
   const [dataType, setDataType] = useState("STAFF_ASSIGN_TASK");
   const staffDetails = useSelector((state) =>
-    state?.staff?.data?.find((a_s) => a_s?._id == params?.id)
+    state?.staff?.data?.find((a_s) => a_s?._id === params?.id)
   );
   const assignTask = useSelector((state) =>
-    state?.assignTask?.data.filter((a_s) => a_s.staffId?._id == params?.id)
+    state?.assignTask?.data.filter((a_s) => a_s.staffId?._id === params?.id)
   );
   const filteredTask = assignTask?.filter((item) => {
     const fieldsToCheck = [
@@ -46,9 +44,6 @@ const StaffAssignedManagement = () => {
   const handleSatffDataFromChild = (data) => {
     setFilterData(data);
   };
-  const handleModelClick = useCallback((dataFromChild) => {
-    setShowModal(true);
-  }, []);
   useEffect(() => {
     dispatch(fetchStaffRequest());
     dispatch(fetchAssignTaskRequest());
@@ -88,9 +83,7 @@ const StaffAssignedManagement = () => {
         <div className="card shadow-sm border-0 pt-4 datatable_wrapper">
           <DataTableHeaderContainer
             onInputChange={handleSatffDataFromChild}
-            onAddButtonClick={handleModelClick}
             title={`${staffDetails?.name.toUpperCase()} TASKS`}
-            // buttonTitle={"Assign Task"}
           />
           <DataTableComponent
             dataTableData={filteredTask?.length > 0 ? filteredTask : []}

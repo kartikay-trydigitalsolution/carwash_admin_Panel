@@ -7,6 +7,8 @@ const AddMachineModal = ({ show, onClose, onSubmit, data, type }) => {
     { name: "Inactive", value: "inactive" },
     { name: "Active", value: "active" },
   ];
+  const emailRegex =
+    /^[a-zA-Z0-9._%+-]+@[a-zA-Z.-]+\.(com|net|org|edu|gov|co|in|uk|us|io|info|biz|me)$/i;
   const validationSchema = Yup.object({
     machine_model: Yup.string()
       .trim()
@@ -24,6 +26,34 @@ const AddMachineModal = ({ show, onClose, onSubmit, data, type }) => {
       .max(50, "*Address not more than 50 characters")
       .required("*location is required"),
     operation_status: Yup.string().required("*location is required"),
+    recipientName: Yup.string()
+      .trim()
+      .min(3, "*Name must be at least 3 characters")
+      .max(25, "*Name not more than 25 characters")
+      .required("*Name is required")
+      .matches(/^[A-Za-z\s]+$/, "*Name must contain only letters"),
+    recipientEmail: Yup.string()
+      .trim()
+      .required("*Email is required")
+      .email("*Invalid email format")
+      .test(
+        "email-regex",
+        "*Email domain can only contain letters, dots, and dashes",
+        (value) => (value ? emailRegex.test(value) : false)
+      ),
+    recipientPhone: Yup.string()
+      .trim()
+      .required("*Phone number is required")
+      .matches(/^\+?[1-9]\d{7,14}$/, "*Invalid phone number format") // E.164 format with minimum 8 digits
+      .test(
+        "no-repeating-digits",
+        "*Phone number cannot consist of repeating digits",
+        (value) => {
+          if (!value) return false;
+          const digits = value.replace(/\D/g, ""); // Remove non-digit characters
+          return !/^(\d)\1+$/.test(digits); // Check for repeating digits
+        }
+      ),
   });
   const formik = useFormik({
     enableReinitialize: true,
@@ -32,6 +62,9 @@ const AddMachineModal = ({ show, onClose, onSubmit, data, type }) => {
       machine_sr_no: data?.machine_sr_no || "",
       location: data?.location || "",
       operation_status: data?.operation_status || "",
+      recipientName: data?.recipientName || "",
+      recipientPhone: data?.recipientPhone || "",
+      recipientEmail: data?.recipientEmail || "",
     },
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
@@ -120,6 +153,50 @@ const AddMachineModal = ({ show, onClose, onSubmit, data, type }) => {
               {formik.touched.operation_status &&
                 formik.errors.operation_status && (
                   <div className="red">{formik.errors.operation_status}</div>
+                )}
+              <input
+                id="recipientName"
+                type="text"
+                name="recipientName"
+                className="form-input w-full ps-3"
+                placeholder="Recipient Name"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.recipientName}
+                aria-label="recipientName"
+              />
+              {formik.touched.recipientName && formik.errors.recipientName && (
+                <div className="red">{formik.errors.recipientName}</div>
+              )}
+              <input
+                id="recipientPhone"
+                type="Number"
+                name="recipientPhone"
+                className="form-input w-full ps-3"
+                placeholder="Recipient Phone"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.recipientPhone}
+                aria-label="recipientPhone"
+              />
+              {formik.touched.recipientPhone &&
+                formik.errors.recipientPhone && (
+                  <div className="red">{formik.errors.recipientPhone}</div>
+                )}
+              <input
+                id="recipientEmail"
+                type="text"
+                name="recipientEmail"
+                className="form-input w-full ps-3"
+                placeholder="Recipient Email"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.recipientEmail}
+                aria-label="recipientEmail"
+              />
+              {formik.touched.recipientEmail &&
+                formik.errors.recipientEmail && (
+                  <div className="red">{formik.errors.recipientEmail}</div>
                 )}
             </div>
           </form>

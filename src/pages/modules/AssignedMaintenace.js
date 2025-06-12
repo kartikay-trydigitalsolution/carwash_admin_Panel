@@ -38,7 +38,6 @@ const AssignedManagement = () => {
           taskCount: 0,
         };
       }
-
       acc[staffId].taskCount += 1;
       return acc;
     }, {});

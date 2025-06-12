@@ -8,12 +8,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import SignaturePad from "react-signature-canvas";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { fetchAssignTaskRequest } from "../../features/assignTask/AssignTaskSlice";
+import { fetchToolKitAssignTaskRequest } from "../../features/toolkitTask/ToolkitTaskSlice";
 import { createToolKitAssignTaskRequest } from "../../features/toolkitTask/ToolkitTaskSlice";
 import { toast } from "react-toastify";
 
 const ToolKitForm = () => {
   const [isStaffOpen, setIsStaffOpen] = useState(false);
+  const [isUpdate, setIsUpdate] = useState(false);
   const [isAddNotes, setIsAddNotes] = useState(false);
   const [staffImageURL, setStaffImageURL] = useState(null); // create a state that will contain our image url
   const params = useParams();
@@ -21,10 +22,10 @@ const ToolKitForm = () => {
   const navigate = useNavigate();
   const sigStaffCanvas = useRef({});
   useEffect(() => {
-    dispatch(fetchAssignTaskRequest());
+    dispatch(fetchToolKitAssignTaskRequest());
   }, [dispatch]);
-  const assignTask = useSelector((state) =>
-    state?.assignTask?.data?.find((t) => t?._id === params?.id)
+  const toolkitAssignTask = useSelector((state) =>
+    state?.toolkitAssignTask?.data?.find((t) => t.taskId === params.id)
   );
   /* a function that uses the canvas ref to clear the canvas 
   via a method given by react-signature-canvas */
@@ -38,6 +39,13 @@ const ToolKitForm = () => {
     setIsStaffOpen(false);
   }, []);
 
+  useEffect(() => {
+    if (toolkitAssignTask && toolkitAssignTask.sign) {
+      setStaffImageURL(toolkitAssignTask?.sign);
+      setEntries(toolkitAssignTask?.dynamic);
+      setIsUpdate(true);
+    }
+  }, [toolkitAssignTask]);
   const validationSchema = Yup.object({
     // Language fields - optional booleans
     isOthersLang: Yup.boolean(),
@@ -115,16 +123,16 @@ const ToolKitForm = () => {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      isOthersLang: false,
-      isEnglish: false,
-      isMalay: false,
-      isMandarin: false,
-      jobDescription: "",
-      otherLang: "",
-      refNumber: "",
-      conductName: "",
-      conductRemark: "",
-      addNotes: "",
+      isOthersLang: toolkitAssignTask?.isOthersLang || false,
+      isEnglish: toolkitAssignTask?.isEnglish || false,
+      isMalay: toolkitAssignTask?.isMalay || false,
+      isMandarin: toolkitAssignTask?.isMandarin || false,
+      jobDescription: toolkitAssignTask?.jobDescription || "",
+      otherLang: toolkitAssignTask?.otherLang || "",
+      refNumber: toolkitAssignTask?.refNumber || "",
+      conductName: toolkitAssignTask?.conductName || "",
+      conductRemark: toolkitAssignTask?.conductRemark || "",
+      addNotes: toolkitAssignTask?.addNotes || "",
     },
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
@@ -218,6 +226,8 @@ const ToolKitForm = () => {
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             placeholder="Job Description"
+                            value={formik.values.jobDescription}
+                            disabled={isUpdate ? true : false}
                           />
                           {formik.touched.jobDescription &&
                             formik.errors.jobDescription && (
@@ -246,6 +256,7 @@ const ToolKitForm = () => {
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               checked={formik.values.isEnglish}
+                              disabled={isUpdate ? true : false}
                             />
                             English
                           </label>
@@ -264,6 +275,7 @@ const ToolKitForm = () => {
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               checked={formik.values.isMandarin}
+                              disabled={isUpdate ? true : false}
                             />
                             Mandarin
                           </label>
@@ -279,6 +291,7 @@ const ToolKitForm = () => {
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               checked={formik.values.isMalay}
+                              disabled={isUpdate ? true : false}
                             />
                             Malay
                           </label>
@@ -296,6 +309,7 @@ const ToolKitForm = () => {
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               checked={formik.values.isOthersLang}
+                              disabled={isUpdate ? true : false}
                             />
                             Others
                           </label>
@@ -320,6 +334,7 @@ const ToolKitForm = () => {
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               placeholder="Other language"
+                              disabled={isUpdate ? true : false}
                             />
                             {formik.touched.otherLang &&
                               formik.errors.otherLang && (
@@ -493,6 +508,7 @@ const ToolKitForm = () => {
                             onBlur={formik.handleBlur}
                             value={formik.values.refNumber}
                             aria-label="refNumber"
+                            disabled={isUpdate ? true : false}
                           />
                           {formik.touched.refNumber &&
                             formik.errors.refNumber && (
@@ -502,12 +518,16 @@ const ToolKitForm = () => {
                             )}
                         </div>
                         <div className="col-md-1 col-sm-3 d-flex align-items-center justify-content-center">
-                          <button
-                            className="btn btn-primary"
-                            onClick={() => setIsAddNotes(true)}
-                          >
-                            Add Notes
-                          </button>
+                          {isUpdate ? (
+                            ""
+                          ) : (
+                            <button
+                              className="btn btn-primary"
+                              onClick={() => setIsAddNotes(true)}
+                            >
+                              Add Notes
+                            </button>
+                          )}
                         </div>
                       </div>
                       {isAddNotes ? (
@@ -521,6 +541,7 @@ const ToolKitForm = () => {
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               placeholder="Add notes"
+                              disabled={isUpdate ? true : false}
                             />
                             {formik.touched.addNotes &&
                               formik.errors.addNotes && (
@@ -560,6 +581,7 @@ const ToolKitForm = () => {
                             onChange={(e) =>
                               handleChange(index, "name", e.target.value)
                             }
+                            disabled={isUpdate ? true : false}
                           />
                           <textarea
                             className="form-input w-full ps-3 m-2"
@@ -569,6 +591,7 @@ const ToolKitForm = () => {
                               handleChange(index, "remarks", e.target.value)
                             }
                             rows={3}
+                            disabled={isUpdate ? true : false}
                           />
                         </div>
 
@@ -589,73 +612,87 @@ const ToolKitForm = () => {
                             }}
                             onClick={() => setOpenSigIndex(index)}
                           />
-                          {entry.signature && (
-                            <button
-                              className="btn btn-sm btn-outline-primary mt-2"
-                              onClick={() =>
-                                handleChange(index, "signature", null)
-                              }
-                            >
-                              Clear Signature
-                            </button>
-                          )}
+                          {isUpdate
+                            ? ""
+                            : entry.signature && (
+                                <button
+                                  className="btn btn-sm btn-outline-primary mt-2"
+                                  onClick={() =>
+                                    handleChange(index, "signature", null)
+                                  }
+                                >
+                                  Clear Signature
+                                </button>
+                              )}
                         </div>
 
                         {/* Delete Button */}
-                        <div className="d-flex align-items-start pe-5">
-                          <i
-                            className="fas fa-trash-alt text-danger fs-4"
-                            style={{ cursor: "pointer" }}
-                            onClick={() => handleDelete(index)}
-                          ></i>
-                        </div>
+                        {isUpdate ? (
+                          ""
+                        ) : (
+                          <div className="d-flex align-items-start pe-5">
+                            <i
+                              className="fas fa-trash-alt text-danger fs-4"
+                              style={{ cursor: "pointer" }}
+                              onClick={() => handleDelete(index)}
+                            ></i>
+                          </div>
+                        )}
 
                         {/* Signature Popup */}
-                        <Popup
-                          modal
-                          open={openSigIndex === index}
-                          onClose={() => setOpenSigIndex(null)}
-                          closeOnDocumentClick={false}
-                        >
-                          {(close) => (
-                            <>
-                              <SignaturePad
-                                ref={(el) => (sigRefs.current[index] = el)}
-                                canvasProps={{ className: "signatureCanvas" }}
-                              />
-                              <div className="d-flex justify-content-center gap-2 mt-2">
-                                <button
-                                  className="btn btn-primary"
-                                  onClick={() => {
-                                    saveSignature(index);
-                                    close();
-                                  }}
-                                >
-                                  Save
-                                </button>
-                                <button
-                                  className="btn btn-secondary"
-                                  onClick={() => clearSignature(index)}
-                                >
-                                  Clear
-                                </button>
-                                <button
-                                  className="btn btn-danger"
-                                  onClick={close}
-                                >
-                                  Close
-                                </button>
-                              </div>
-                            </>
-                          )}
-                        </Popup>
+                        {isUpdate ? (
+                          ""
+                        ) : (
+                          <Popup
+                            modal
+                            open={openSigIndex === index}
+                            onClose={() => setOpenSigIndex(null)}
+                            closeOnDocumentClick={false}
+                          >
+                            {(close) => (
+                              <>
+                                <SignaturePad
+                                  ref={(el) => (sigRefs.current[index] = el)}
+                                  canvasProps={{ className: "signatureCanvas" }}
+                                />
+                                <div className="d-flex justify-content-center gap-2 mt-2">
+                                  <button
+                                    className="btn btn-primary"
+                                    onClick={() => {
+                                      saveSignature(index);
+                                      close();
+                                    }}
+                                  >
+                                    Save
+                                  </button>
+                                  <button
+                                    className="btn btn-secondary"
+                                    onClick={() => clearSignature(index)}
+                                  >
+                                    Clear
+                                  </button>
+                                  <button
+                                    className="btn btn-danger"
+                                    onClick={close}
+                                  >
+                                    Close
+                                  </button>
+                                </div>
+                              </>
+                            )}
+                          </Popup>
+                        )}
                       </div>
                     ))}
 
                     <div className="d-flex justify-content-center">
-                      <button className="btn btn-primary" onClick={handleAdd}>
-                        Add
-                      </button>
+                      {isUpdate ? (
+                        ""
+                      ) : (
+                        <button className="btn btn-primary" onClick={handleAdd}>
+                          Add
+                        </button>
+                      )}
                     </div>
                   </div>
                   <div className="section_5_container">
@@ -676,6 +713,8 @@ const ToolKitForm = () => {
                           placeholder="Name"
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
+                          value={formik.values.conductName}
+                          disabled={isUpdate ? true : false}
                         />
                         {formik.touched.conductName &&
                           formik.errors.conductName && (
@@ -691,6 +730,8 @@ const ToolKitForm = () => {
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
                           rows={3}
+                          value={formik.values.conductRemark}
+                          disabled={isUpdate ? true : false}
                         />
                         {formik.touched.conductRemark &&
                           formik.errors.conductRemark && (
@@ -717,64 +758,74 @@ const ToolKitForm = () => {
                           }}
                           onClick={() => setIsStaffOpen(true)}
                         />
-                        {staffImageURL && (
-                          <button
-                            className="btn btn-sm btn-outline-primary mt-2"
-                            onClick={() => setIsStaffOpen(true)}
-                          >
-                            Clear Signature
-                          </button>
-                        )}
+                        {isUpdate
+                          ? ""
+                          : staffImageURL && (
+                              <button
+                                className="btn btn-sm btn-outline-primary mt-2"
+                                onClick={() => setIsStaffOpen(true)}
+                              >
+                                Clear Signature
+                              </button>
+                            )}
                       </div>
 
                       {/* Signature Popup */}
-                      <Popup
-                        modal
-                        open={isStaffOpen}
-                        onClose={() => setIsStaffOpen(false)}
-                        closeOnDocumentClick={false}
-                      >
-                        {(staffclose) => (
-                          <>
-                            <SignaturePad
-                              ref={sigStaffCanvas}
-                              canvasProps={{ className: "signatureCanvas" }}
-                            />
-                            <div className="d-flex justify-content-center gap-2 mt-2">
-                              <button
-                                className="btn btn-primary"
-                                onClick={staffSave}
-                              >
-                                Save
-                              </button>
-                              <button
-                                className="btn btn-secondary"
-                                onClick={staffClear}
-                              >
-                                Clear
-                              </button>
-                              <button
-                                className="btn btn-danger"
-                                onClick={staffclose}
-                              >
-                                Close
-                              </button>
-                            </div>
-                          </>
-                        )}
-                      </Popup>
+                      {isUpdate ? (
+                        ""
+                      ) : (
+                        <Popup
+                          modal
+                          open={isStaffOpen}
+                          onClose={() => setIsStaffOpen(false)}
+                          closeOnDocumentClick={false}
+                        >
+                          {(staffclose) => (
+                            <>
+                              <SignaturePad
+                                ref={sigStaffCanvas}
+                                canvasProps={{ className: "signatureCanvas" }}
+                              />
+                              <div className="d-flex justify-content-center gap-2 mt-2">
+                                <button
+                                  className="btn btn-primary"
+                                  onClick={staffSave}
+                                >
+                                  Save
+                                </button>
+                                <button
+                                  className="btn btn-secondary"
+                                  onClick={staffClear}
+                                >
+                                  Clear
+                                </button>
+                                <button
+                                  className="btn btn-danger"
+                                  onClick={staffclose}
+                                >
+                                  Close
+                                </button>
+                              </div>
+                            </>
+                          )}
+                        </Popup>
+                      )}
                     </div>
                   </div>
 
                   <div className="section_6_container">
                     <div className="d-flex justify-content-center mt-3 px-2">
-                      <button
-                        aria-label="left"
-                        type="submit"
-                        className="btn-custom-blue rounded-lg px-4 py-3 fs-5 w-25 "
-                      >
-                        UPLOAD
-                      </button>
+                      {isUpdate ? (
+                        ""
+                      ) : (
+                        <button
+                          aria-label="left"
+                          type="submit"
+                          className="btn-custom-blue rounded-lg px-4 py-3 fs-5 w-25 "
+                        >
+                          UPLOAD
+                        </button>
+                      )}
                     </div>
                   </div>
                   <div className="section_7_container">

@@ -6,10 +6,14 @@ const DataTableComponent = ({
   dataTableData,
   onDelete,
   onUpdate,
+  onDownloadFile,
   dataTableType,
 }) => {
   const handleDelete = (row) => {
     onDelete?.(row); // or onDelete(row) if you're passing the full object
+  };
+  const downloadFile = (row) => {
+    onDownloadFile?.(row);
   };
   const handleEdit = (row) => {
     onUpdate?.(row); // or onDelete(row) if you're passing the full object
@@ -107,6 +111,22 @@ const DataTableComponent = ({
       ),
     },
   ];
+
+  const recipientColumns = [
+    {
+      name: "Name",
+      selector: (row) => row.recipientName,
+      sortable: true,
+    },
+    { name: "Email", selector: (row) => row.recipientEmail, sortable: true },
+    { name: "Phone", selector: (row) => row.recipientPhone, sortable: true },
+    { name: "Location", selector: (row) => row.location, sortable: true },
+    {
+      name: "Date",
+      selector: (row) => moment(Date.now()).format("DD-MM-YYYY"),
+      sortable: true,
+    },
+  ];
   const staffAssignedTask = [
     {
       name: "Due Date",
@@ -115,7 +135,7 @@ const DataTableComponent = ({
     },
     {
       name: "Machine Model",
-      selector: (row) => row.machineId.machine_model,
+      selector: (row) => row.machineId?.machine_model,
       sortable: true,
     },
     {
@@ -128,19 +148,19 @@ const DataTableComponent = ({
     },
     {
       name: "Machine Sr. No.",
-      selector: (row) => row.machineId.machine_sr_no,
+      selector: (row) => row.machineId?.machine_sr_no,
       sortable: true,
     },
     {
       name: "Location",
-      selector: (row) => row.machineId.location,
+      selector: (row) => row.machineId?.location,
       sortable: true,
     },
     {
       name: "Status",
       sortable: true,
       cell: (row) => {
-        const statusRaw = row.machineId.operation_status || "Unknown";
+        const statusRaw = row.machineId?.operation_status || "Unknown";
         const status = statusRaw.toLowerCase();
         const statusMap = {
           active: "bg-light-green text-success",
@@ -179,19 +199,49 @@ const DataTableComponent = ({
       ),
     },
   ];
+  const maintanancetask = [
+    {
+      name: "Technician",
+      selector: (row) => row?.taskId?.staffId?.name,
+      sortable: true,
+    },
+    {
+      name: "Machine Sr. No.",
+      selector: (row) => row?.taskId?.machineId?.machine_sr_no,
+      sortable: true,
+    },
+    {
+      name: "Date",
+      selector: (row) => moment(Date.now()).format("DD-MM-YYYY"),
+      sortable: true,
+    },
+    {
+      name: "Action",
+      cell: (row) => (
+        <div className="flex gap-2 d-flex justify-content-center">
+          <button variant="outline" size="icon" onClick={() => handleEdit(row)}>
+            <i className="fas fa-download"></i>
+          </button>
+          <button variant="outline" size="icon" onClick={() => handleEdit(row)}>
+            <i className="fas fa-eye"></i>
+          </button>
+        </div>
+      ),
+    },
+  ];
 
   const machineColumns = [
     {
       name: "Machine Model",
-      selector: (row) => row.machine_model,
+      selector: (row) => row?.machine_model,
       sortable: true,
     },
     {
       name: "Machine Serial No.",
-      selector: (row) => row.machine_sr_no,
+      selector: (row) => row?.machine_sr_no,
       sortable: true,
     },
-    { name: "Location", selector: (row) => row.location, sortable: true },
+    { name: "Location", selector: (row) => row?.location, sortable: true },
     {
       name: "Operational Status",
       sortable: true,
@@ -438,6 +488,10 @@ const DataTableComponent = ({
             ? assignAdminColumns
             : dataTableType == "STAFF_ASSIGN_TASK"
             ? staffAssignedTask
+            : dataTableType == "RECEPIENTSDATA"
+            ? recipientColumns
+            : dataTableType == "MAINTANCERECORD"
+            ? maintanancetask
             : machineColumns
         }
         data={dataTableData}

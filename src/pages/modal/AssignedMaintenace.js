@@ -28,14 +28,6 @@ const AssignMaintenanceModal = ({
         ),
       isCheckListForService: Yup.boolean(),
       isCheckToolKit: Yup.boolean(),
-      telephone: Yup.string().when("isCheckListForService", {
-        is: true,
-        then: (schema) =>
-          schema
-            .required("*Required")
-            .matches(/^(?:\+65\s?)?(?:6|8|9)\d{7}$/, "*Invalid Phone"),
-        otherwise: (schema) => schema.notRequired(),
-      }),
       service_type: Yup.string().when("isCheckListForService", {
         is: true,
         then: (schema) => schema.required("*Required"),
@@ -61,22 +53,6 @@ const AssignMaintenanceModal = ({
         });
       }
     );
-  // const checkTelephoneIsThere = (phone) => {
-  //   if (formik.values.isCheckListForService) {
-  //     const trimmedPhone = String(formik.values.telephone || "").trim();
-  //     const phoneRegex = /^(?:\+65\s?)?(?:6|8|9)\d{7}$/;
-  //     if (!trimmedPhone) {
-  //       setIsTelephoneText("*Required");
-  //       setIsTelephoneValid(false);
-  //     } else if (!phoneRegex.test(trimmedPhone)) {
-  //       setIsTelephoneText("*Invalid Phone");
-  //       setIsTelephoneValid(false);
-  //     } else {
-  //       setIsTelephoneText("");
-  //       setIsTelephoneValid(true);
-  //     }
-  //   }
-  // };
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -89,14 +65,10 @@ const AssignMaintenanceModal = ({
     },
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
-      // checkTelephoneIsThere();
-      // console.log(values);
-      // if (isTelephoneValid) {
       onSubmit(
         type === "UPDATE" ? { ...values, id: data._id, type: type } : values
       );
       resetForm();
-      // }
     },
   });
   const selectedStaffRole = staff.find((s) => s?.id === formik.values.staffId);
@@ -179,7 +151,7 @@ const AssignMaintenanceModal = ({
                 >
                   {machine?.map((s) => (
                     <option value={selectedMachine?.id}>
-                      {selectedMachine.machine_model}
+                      {selectedMachine?.machine_model}
                     </option>
                   ))}
                 </select>
@@ -251,32 +223,6 @@ const AssignMaintenanceModal = ({
               </div>
               {formik.errors.isCheckListForService && (
                 <div className="red">{formik.errors.isCheckListForService}</div>
-              )}
-              {formik.values.isCheckListForService && (
-                <>
-                  <input
-                    id="telephone"
-                    type="number"
-                    name="telephone"
-                    className="form-input w-full ps-3"
-                    placeholder="Telephone"
-                    onChange={(e) => {
-                      formik.handleChange(e); // 🔹 Keep Formik in sync
-                      // checkTelephoneIsThere(e); // 🔹 Your second function
-                    }}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.telephone}
-                    aria-label="telephone"
-                  />
-                  {formik.touched.telephone && formik.errors.telephone && (
-                    <div className="red">{formik.errors.telephone}</div>
-                  )}
-                  {/* {!isTelephoneValid ? (
-                    <div className="red">{isTelephoneText}</div>
-                  ) : (
-                    ""
-                  )} */}
-                </>
               )}
               {formik.values.isCheckListForService && (
                 <>

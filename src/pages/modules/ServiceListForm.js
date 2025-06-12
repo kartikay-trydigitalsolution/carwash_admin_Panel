@@ -7,14 +7,22 @@ import { useDispatch, useSelector } from "react-redux";
 import Popup from "reactjs-popup";
 import { useParams } from "react-router-dom";
 import SignaturePad from "react-signature-canvas";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { fetchAssignTaskRequest } from "../../features/assignTask/AssignTaskSlice";
-import { createStaffAssignTaskRequest } from "../../features/staffAssignTask/StaffAssignTaskSlice";
+import { fetchStaffAssignTaskRequest } from "../../features/staffAssignTask/StaffAssignTaskSlice";
+import {
+  createStaffAssignTaskRequest,
+  updateStaffAssignedTaskRequest,
+} from "../../features/staffAssignTask/StaffAssignTaskSlice";
 import { toast } from "react-toastify";
 
 const StaffAssignedManagement = () => {
   const [isStaffOpen, setIsStaffOpen] = useState(false);
+  const [isUpdate, setIsUpdate] = useState(false);
+  const [staffAssignedTaskValues, setStaffAssignedTaskValues] = useState({});
   const [isClientOpen, setIsClientOpen] = useState(false);
   const [staffImageURL, setStaffImageURL] = useState(null); // create a state that will contain our image url
   const [clientImageURL, setClientImageURL] = useState(null); // create a state that will contain our image url
@@ -25,10 +33,23 @@ const StaffAssignedManagement = () => {
   const sigClientCanvas = useRef({});
   useEffect(() => {
     dispatch(fetchAssignTaskRequest());
+    dispatch(fetchStaffAssignTaskRequest());
   }, [dispatch]);
   const assignTask = useSelector((state) =>
     state?.assignTask?.data?.find((t) => t?._id === params?.id)
   );
+  const staffAssignedTask = useSelector((state) =>
+    state?.staffAssignTask?.data?.find((t) => t?.taskId?._id === params?.id)
+  );
+
+  useEffect(() => {
+    if (staffAssignedTask) {
+      setStaffAssignedTaskValues(staffAssignedTask);
+      setClientImageURL(staffAssignedTask?.clientSign);
+      setStaffImageURL(staffAssignedTask?.staffSign);
+      setIsUpdate(true);
+    }
+  }, [staffAssignedTask]);
   /* a function that uses the canvas ref to clear the canvas 
   via a method given by react-signature-canvas */
   const staffClear = () => sigStaffCanvas.current.clear();
@@ -41,6 +62,30 @@ const StaffAssignedManagement = () => {
     setStaffImageURL(sigStaffCanvas?.current?.toDataURL("image/png"));
     setIsStaffOpen(false);
   }, []);
+
+  const contentRef = useRef();
+  const finalSubmit = async () => {
+    const input = contentRef.current;
+
+    await document.fonts.ready; // wait for fonts
+
+    const canvas = await html2canvas(input, {
+      useCORS: true,
+      scale: 2,
+      scrollY: -window.scrollY,
+    });
+    const imgData = canvas.toDataURL("image/png");
+    const pxToMm = (px) => px * 0.264583;
+    const imgWidthMm = pxToMm(canvas.width);
+    const imgHeightMm = pxToMm(canvas.height);
+    const pdf = new jsPDF("p", "mm", [imgHeightMm, imgWidthMm]);
+    pdf.addImage(imgData, "PNG", 0, 0, imgWidthMm, imgHeightMm);
+    const blob = pdf.output("blob");
+    const formData = new FormData();
+    formData.append("pdfUrl", blob, "output.pdf");
+    formData.append("id", staffAssignedTask?._id);
+    dispatch(updateStaffAssignedTaskRequest(formData));
+  };
 
   const clientSave = () => {
     setClientImageURL(sigClientCanvas?.current?.toDataURL("image/png"));
@@ -80,88 +125,104 @@ const StaffAssignedManagement = () => {
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-      isWaterDispenser: false,
-      isTwoInOne: false,
-      isThreeInOne: false,
-      isFourInOne: false,
-      isFiveInOne: false,
-      isCollection: false,
+      isWaterDispenser: staffAssignedTaskValues?.isWaterDispenser || false,
+      isTwoInOne: staffAssignedTaskValues?.isTwoInOne || false,
+      isThreeInOne: staffAssignedTaskValues?.isThreeInOne || false,
+      isFourInOne: staffAssignedTaskValues?.isFourInOne || false,
+      isFiveInOne: staffAssignedTaskValues?.isFiveInOne || false,
+      isCollection: staffAssignedTaskValues?.isCollection || false,
       serialNumber: "" || assignTask?.machineId?.machine_sr_no,
       modelNumber: "" || assignTask?.machineId?.machine_model,
-      securityTag: "",
-      switchOffTimer: "",
-      isCheckTheOperationOfTheWaterDispenser: false,
-      isCheckAllOpertionInWorkinigCondition: false,
-      isCheckAndDismantle: false,
-      isCheckWireForLoose: false,
-      isCheckRemoveAndReplacment: false,
-      isCleanFilterComapartment: false,
-      isCleanMachineSurface: false,
-      isWashFilterbag: false,
-      isWaterMeterReading: false,
-      waterMeterReading: "",
-      waterDispensing: "",
-      isWaterDispensing: false,
-      waterTwenty: "",
-      isWaterTwenty: false,
-      vacuumDollarOne: "",
+      securityTag: staffAssignedTaskValues?.securityTag || "",
+      switchOffTimer: staffAssignedTaskValues?.switchOffTimer || "",
+      isCheckTheOperationOfTheWaterDispenser:
+        staffAssignedTaskValues?.isCheckTheOperationOfTheWaterDispenser ||
+        false,
+      isCheckAllOpertionInWorkinigCondition:
+        staffAssignedTaskValues?.isCheckAllOpertionInWorkinigCondition || false,
+      isCheckAndDismantle: staffAssignedTaskValues.isCheckAndDismantle || false,
+      isCheckWireForLoose: staffAssignedTaskValues.isCheckWireForLoose || false,
+      isCleanFilterComapartment:
+        staffAssignedTaskValues?.isCleanFilterComapartment || false,
+      isCleanMachineSurface:
+        staffAssignedTaskValues?.isCleanMachineSurface || false,
+      isWashFilterbag: staffAssignedTaskValues?.isWashFilterbag || false,
+      isWaterMeterReading:
+        staffAssignedTaskValues?.isWaterMeterReading || false,
+      waterMeterReading: staffAssignedTaskValues?.waterMeterReading || "",
+      waterDispensing: staffAssignedTaskValues?.waterDispensing || "",
+      isWaterDispensing: staffAssignedTaskValues?.isWaterDispensing || false,
+      waterTwenty: staffAssignedTaskValues?.waterTwenty || "",
+      isWaterTwenty: staffAssignedTaskValues?.isWaterTwenty || false,
+      vacuumDollarOne: staffAssignedTaskValues?.vacuumDollarOne || "",
       isVacuumDollarOne: false,
-      jetDollarOne: "",
-      isJetDollarOne: false,
-      isTotalMeterReadingBefore: false,
-      totalizerMeterReadingBeforeWater: "",
-      totalizerMeterReadingBeforeVaccum: "",
-      totalizerMeterReadingBeforeJet: "",
-      isTotalMeterReadingAfter: false,
-      totalizerMeterReadingAfterWater: "",
-      totalizerMeterReadingAfterVaccum: "",
-      totalizerMeterReadingAfterJet: "",
-      requestTextArea: "",
-      rectification: "",
-      isNewJetMotor: false,
-      isJetHose: false,
-      isJetNozzle: false,
-      isJetMotorRepaired: false,
-      isVacuumMotor: false,
-      isVacuumHose: false,
-      isVacuumNozzle: false,
-      isCh928Acceptor: false,
-      isBlowerMotor: false,
-      isBlowerHose: false,
-      isBlowerNozzle: false,
-      isMotherboard: false,
-      isSolenoidValve: false,
-      isSolenoidCoil: false,
-      isTotalizer: false,
-      isTimer: false,
-      isWaterTap: false,
-      isNayaxUnit: false,
-      isNetsUnit: false,
-      isNetsBd: false,
+      jetDollarOne: staffAssignedTaskValues?.jetDollarOne || "",
+      isJetDollarOne: staffAssignedTaskValues?.isJetDollarOne || false,
+      isTotalMeterReadingBefore:
+        staffAssignedTaskValues?.isTotalMeterReadingBefore || false,
+      totalizerMeterReadingBeforeWater:
+        staffAssignedTaskValues?.totalizerMeterReadingBeforeWater || "",
+      totalizerMeterReadingBeforeVaccum:
+        staffAssignedTaskValues?.totalizerMeterReadingBeforeVaccum || "",
+      totalizerMeterReadingBeforeJet:
+        staffAssignedTaskValues?.totalizerMeterReadingBeforeJet || "",
+      isTotalMeterReadingAfter:
+        staffAssignedTaskValues?.isTotalMeterReadingAfter || false,
+      totalizerMeterReadingAfterWater:
+        staffAssignedTaskValues?.totalizerMeterReadingAfterWater || "",
+      totalizerMeterReadingAfterVaccum:
+        staffAssignedTaskValues?.totalizerMeterReadingAfterVaccum || "",
+      totalizerMeterReadingAfterJet:
+        staffAssignedTaskValues?.totalizerMeterReadingAfterJet | "",
+      requestTextArea: staffAssignedTaskValues?.requestTextArea || "",
+      rectification: staffAssignedTaskValues?.rectification || "",
+      isNewJetMotor: staffAssignedTaskValues?.isNewJetMotor || false,
+      isJetHose: staffAssignedTaskValues?.isJetHose || false,
+      isJetNozzle: staffAssignedTaskValues?.isJetNozzle || false,
+      isJetMotorRepaired: staffAssignedTaskValues?.isJetMotorRepaired || false,
+      isVacuumMotor: staffAssignedTaskValues?.isVacuumMotor || false,
+      isVacuumHose: staffAssignedTaskValues?.isVacuumHose || false,
+      isVacuumNozzle: staffAssignedTaskValues?.isVacuumNozzle || false,
+      isCh928Acceptor: staffAssignedTaskValues?.isCh928Acceptor || false,
+      isBlowerMotor: staffAssignedTaskValues?.isBlowerMotor || false,
+      isBlowerHose: staffAssignedTaskValues?.isBlowerHose || false,
+      isBlowerNozzle: staffAssignedTaskValues?.isBlowerNozzle || false,
+      isMotherboard: staffAssignedTaskValues?.isMotherboard || false,
+      isSolenoidValve: staffAssignedTaskValues?.isSolenoidValve || false,
+      isSolenoidCoil: staffAssignedTaskValues?.isSolenoidCoil || false,
+      isTotalizer: staffAssignedTaskValues?.isTotalizer || false,
+      isTimer: staffAssignedTaskValues?.isTimer || false,
+      isWaterTap: staffAssignedTaskValues?.isWaterTap || false,
+      isNayaxUnit: staffAssignedTaskValues?.isNayaxUnit || false,
+      isNetsUnit: staffAssignedTaskValues?.isNetsUnit || false,
+      isNetsBd: staffAssignedTaskValues?.isNetsBd || false,
     },
     validationSchema: validationSchema,
     onSubmit: (values, { resetForm }) => {
-      if (!isValidDataUrl(staffImageURL)) {
-        toast.error("Please sign the staff document first.");
-        return;
+      if (!isUpdate) {
+        if (!isValidDataUrl(staffImageURL)) {
+          toast.error("Please sign the staff document first.");
+          return;
+        }
+        if (!isValidDataUrl(clientImageURL)) {
+          toast.error("Please sign the client document first.");
+          return;
+        }
+        values = {
+          ...values,
+          taskId: params?.id,
+          staffSign: staffImageURL,
+          clientSign: clientImageURL,
+        };
+
+        dispatch(createStaffAssignTaskRequest(values));
+        resetForm();
       }
-      if (!isValidDataUrl(clientImageURL)) {
-        toast.error("Please sign the client document first.");
-        return;
-      }
-      values = {
-        ...values,
-        taskId: params?.id,
-        staffSign: staffImageURL,
-        clientSign: clientImageURL,
-      };
-      dispatch(createStaffAssignTaskRequest(values));
-      resetForm();
     },
   });
   return (
     <>
-      <div className="p-5 w-100">
+      <div className="p-5 w-100" ref={contentRef} id="pdf-content">
         <div className="card shadow-sm border-0 pt-4 service_form_wrraper">
           <div className="main_container">
             <div className="header_container custom-border-bottom pb-1">
@@ -220,7 +281,6 @@ const StaffAssignedManagement = () => {
                         >
                           Complete Date
                         </label>
-                        {console.log(isRole)}
                         <input
                           className="form-input flex-fill ps-3 m-2"
                           type="date"
@@ -248,11 +308,7 @@ const StaffAssignedManagement = () => {
                           type="text"
                           id="location"
                           name="location"
-                          value={
-                            assignTask?.machineId?.location
-                              ? assignTask?.machineId?.location
-                              : ""
-                          }
+                          value={assignTask?.machineId?.location || ""}
                           disabled={isRole === "Admin" ? false : true}
                         />
                       </div>
@@ -272,9 +328,7 @@ const StaffAssignedManagement = () => {
                           className="form-input flex-fill ps-3 m-2"
                           placeholder="Telephone No"
                           aria-label="machine_model1"
-                          value={
-                            assignTask?.telephone ? assignTask?.telephone : ""
-                          }
+                          value={assignTask?.machineId?.recipientPhone || ""}
                           disabled={isRole === "Admin" ? false : true}
                         />
                       </div>
@@ -369,6 +423,7 @@ const StaffAssignedManagement = () => {
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               checked={formik.values.isWaterDispenser}
+                              disabled={isUpdate ? true : false}
                             />
                             Water Dispenser
                           </label>
@@ -381,6 +436,7 @@ const StaffAssignedManagement = () => {
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.serialNumber}
+                            disabled={isUpdate ? true : false}
                           >
                             <option value="" disabled>
                               Serial Number
@@ -409,6 +465,7 @@ const StaffAssignedManagement = () => {
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               checked={formik.values.isTwoInOne}
+                              disabled={isUpdate ? true : false}
                             />
                             2 in 1
                           </label>
@@ -421,6 +478,7 @@ const StaffAssignedManagement = () => {
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.modelNumber}
+                            disabled={isUpdate ? true : false}
                           >
                             <option value="" disabled>
                               Model Number
@@ -449,6 +507,7 @@ const StaffAssignedManagement = () => {
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               checked={formik.values.isThreeInOne}
+                              disabled={isUpdate ? true : false}
                             />
                             3 in 1
                           </label>
@@ -463,6 +522,7 @@ const StaffAssignedManagement = () => {
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.securityTag}
+                            disabled={isUpdate ? true : false}
                             aria-label="securityTag"
                           />
                           {formik.touched.securityTag &&
@@ -487,6 +547,7 @@ const StaffAssignedManagement = () => {
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               checked={formik.values.isFourInOne}
+                              disabled={isUpdate ? true : false}
                             />
                             4 in 1
                           </label>
@@ -501,6 +562,7 @@ const StaffAssignedManagement = () => {
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.switchOffTimer}
+                            disabled={isUpdate ? true : false}
                             aria-label="switchOffTimer"
                           />
                           {formik.touched.switchOffTimer &&
@@ -525,6 +587,7 @@ const StaffAssignedManagement = () => {
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               checked={formik.values.isFiveInOne}
+                              disabled={isUpdate ? true : false}
                             />
                             5 in 1
                           </label>
@@ -545,6 +608,7 @@ const StaffAssignedManagement = () => {
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               checked={formik.values.isCollection}
+                              disabled={isUpdate ? true : false}
                             />
                             Collection
                           </label>
@@ -567,6 +631,7 @@ const StaffAssignedManagement = () => {
                               type="checkbox"
                               id="isCheckTheOperationOfTheWaterDispenser"
                               name="isCheckTheOperationOfTheWaterDispenser"
+                              disabled={isUpdate ? true : false}
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               checked={
@@ -593,6 +658,7 @@ const StaffAssignedManagement = () => {
                               name="isCheckAllOpertionInWorkinigCondition"
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
+                              disabled={isUpdate ? true : false}
                               checked={
                                 formik.values
                                   .isCheckAllOpertionInWorkinigCondition
@@ -614,6 +680,7 @@ const StaffAssignedManagement = () => {
                               id="isCheckAndDismantle"
                               name="isCheckAndDismantle"
                               onChange={formik.handleChange}
+                              disabled={isUpdate ? true : false}
                               onBlur={formik.handleBlur}
                               checked={formik.values.isCheckAndDismantle}
                             />
@@ -636,6 +703,7 @@ const StaffAssignedManagement = () => {
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               checked={formik.values.isCheckWireForLoose}
+                              disabled={isUpdate ? true : false}
                             />
                             Check wire for loose connection.
                           </label>
@@ -655,6 +723,7 @@ const StaffAssignedManagement = () => {
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               checked={formik.values.isCheckRemoveAndReplacment}
+                              disabled={isUpdate ? true : false}
                             />
                             Check, remove and replacement of defective parts /
                             components when required
@@ -675,6 +744,7 @@ const StaffAssignedManagement = () => {
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               checked={formik.values.isCleanFilterComapartment}
+                              disabled={isUpdate ? true : false}
                             />
                             Clean filter compartment.
                           </label>
@@ -694,6 +764,7 @@ const StaffAssignedManagement = () => {
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               checked={formik.values.isCleanMachineSurface}
+                              disabled={isUpdate ? true : false}
                             />
                             Clean Machine Surface
                           </label>
@@ -713,6 +784,7 @@ const StaffAssignedManagement = () => {
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               checked={formik.values.isWashFilterbag}
+                              disabled={isUpdate ? true : false}
                             />
                             Wash filter bag.
                           </label>
@@ -745,6 +817,7 @@ const StaffAssignedManagement = () => {
                                   formik.setFieldValue("waterMeterReading", "");
                                 }
                               }}
+                              disabled={isUpdate ? true : false}
                             />
                             Water Meter Reading:
                           </label>
@@ -791,6 +864,7 @@ const StaffAssignedManagement = () => {
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               checked={formik.values.isWaterDispensing}
+                              disabled={isUpdate ? true : false}
                             />
                             Water Dispensing:
                           </label>
@@ -810,6 +884,7 @@ const StaffAssignedManagement = () => {
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.waterDispensing}
+                            disabled={isUpdate ? true : false}
                             aria-label="waterDispensing"
                           />
                           {formik.touched.waterDispensing &&
@@ -834,6 +909,7 @@ const StaffAssignedManagement = () => {
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               checked={formik.values.isWaterTwenty}
+                              disabled={isUpdate ? true : false}
                             />
                             Water:
                           </label>
@@ -853,6 +929,7 @@ const StaffAssignedManagement = () => {
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.waterTwenty}
+                            disabled={isUpdate ? true : false}
                             aria-label="waterTwenty"
                           />
                           {formik.touched.waterTwenty &&
@@ -877,6 +954,7 @@ const StaffAssignedManagement = () => {
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               checked={formik.values.isVacuumDollarOne}
+                              disabled={isUpdate ? true : false}
                             />
                             Vacuum / Blower:
                           </label>
@@ -891,6 +969,7 @@ const StaffAssignedManagement = () => {
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.vacuumDollarOne}
+                            disabled={isUpdate ? true : false}
                             aria-label="vacuumDollarOne"
                           />
                         </div>
@@ -908,6 +987,7 @@ const StaffAssignedManagement = () => {
                               name="isJetDollarOne"
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
+                              disabled={isUpdate ? true : false}
                               checked={formik.values.isJetDollarOne}
                             />
                             Jet / Foam:
@@ -923,6 +1003,7 @@ const StaffAssignedManagement = () => {
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.jetDollarOne}
+                            disabled={isUpdate ? true : false}
                             aria-label="jetDollarOne"
                           />
                         </div>
@@ -941,6 +1022,7 @@ const StaffAssignedManagement = () => {
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               checked={formik.values.isTotalMeterReadingBefore}
+                              disabled={isUpdate ? true : false}
                             />
                             Totalizer Meter Reading Before:
                           </label>
@@ -958,6 +1040,7 @@ const StaffAssignedManagement = () => {
                             className="form-input w-full ps-3 m-2"
                             placeholder="Water"
                             onChange={formik.handleChange}
+                            disabled={isUpdate ? true : false}
                             onBlur={formik.handleBlur}
                             value={
                               formik.values.totalizerMeterReadingBeforeWater
@@ -982,6 +1065,7 @@ const StaffAssignedManagement = () => {
                             className="form-input w-full ps-3 m-2"
                             placeholder="Vacuum"
                             onChange={formik.handleChange}
+                            disabled={isUpdate ? true : false}
                             onBlur={formik.handleBlur}
                             value={
                               formik.values.totalizerMeterReadingBeforeVaccum
@@ -1011,6 +1095,7 @@ const StaffAssignedManagement = () => {
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.totalizerMeterReadingBeforeJet}
+                            disabled={isUpdate ? true : false}
                             aria-label="totalizerMeterReadingBeforeJet"
                           />
                           {formik.touched.totalizerMeterReadingBeforeJet &&
@@ -1035,6 +1120,7 @@ const StaffAssignedManagement = () => {
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               checked={formik.values.isTotalMeterReadingAfter}
+                              disabled={isUpdate ? true : false}
                             />
                             Totalizer Meter Reading After:
                           </label>
@@ -1051,6 +1137,7 @@ const StaffAssignedManagement = () => {
                             name="totalizerMeterReadingAfterWater"
                             className="form-input w-full ps-3 m-2"
                             placeholder="Water"
+                            disabled={isUpdate ? true : false}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={
@@ -1074,6 +1161,7 @@ const StaffAssignedManagement = () => {
                             type="number"
                             name="totalizerMeterReadingAfterVaccum"
                             className="form-input w-full ps-3 m-2"
+                            disabled={isUpdate ? true : false}
                             placeholder="Vacuum"
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
@@ -1102,6 +1190,7 @@ const StaffAssignedManagement = () => {
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.totalizerMeterReadingAfterJet}
+                            disabled={isUpdate ? true : false}
                             aria-label="totalizerMeterReadingAfterJet"
                           />
                           {formik.touched.totalizerMeterReadingAfterJet &&
@@ -1126,6 +1215,7 @@ const StaffAssignedManagement = () => {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.requestTextArea}
+                        disabled={isUpdate ? true : false}
                         aria-label="requestTextArea"
                       />
                     </div>
@@ -1140,6 +1230,7 @@ const StaffAssignedManagement = () => {
                         className="form-input w-full ps-3 m-2"
                         placeholder="Type Here"
                         onChange={formik.handleChange}
+                        disabled={isUpdate ? true : false}
                         onBlur={formik.handleBlur}
                         value={formik.values.rectification}
                         aria-label="rectification"
@@ -1187,6 +1278,7 @@ const StaffAssignedManagement = () => {
                               onChange={formik.handleChange}
                               onBlur={formik.handleBlur}
                               checked={formik.values[item.id]}
+                              disabled={isUpdate ? true : false}
                             />
                             <label
                               className="form-check-label text-nowrap"
@@ -1218,51 +1310,57 @@ const StaffAssignedManagement = () => {
                         />
 
                         {/* Optional Save Button when signature already exists */}
-                        {staffImageURL && (
+                        {staffImageURL && !isUpdate ? (
                           <button
                             className="btn btn-primary mt-2"
                             onClick={() => setIsStaffOpen(true)}
                           >
                             Save Again
                           </button>
+                        ) : (
+                          ""
                         )}
 
                         {/* Popup for Signature Pad */}
-                        <Popup
-                          modal
-                          open={isStaffOpen}
-                          onClose={() => setIsStaffOpen(false)}
-                          closeOnDocumentClick={false}
-                        >
-                          {(staffclose) => (
-                            <>
-                              <SignaturePad
-                                ref={sigStaffCanvas}
-                                canvasProps={{ className: "signatureCanvas" }}
-                              />
-                              <div className="d-flex justify-content-center gap-2 mt-2">
-                                <button
-                                  className="btn btn-primary"
-                                  onClick={staffSave}
-                                >
-                                  Save
-                                </button>
-                                <button
-                                  className="btn btn-secondary"
-                                  onClick={staffClear}
-                                >
-                                  Clear
-                                </button>
-                                <button
-                                  className="btn btn-danger"
-                                  onClick={staffclose}
-                                >
-                                  Close
-                                </button>
-                              </div>
-                            </>
-                          )}
-                        </Popup>
+                        {isUpdate ? (
+                          ""
+                        ) : (
+                          <Popup
+                            modal
+                            open={isStaffOpen}
+                            onClose={() => setIsStaffOpen(false)}
+                            closeOnDocumentClick={false}
+                          >
+                            {(staffclose) => (
+                              <>
+                                <SignaturePad
+                                  ref={sigStaffCanvas}
+                                  canvasProps={{ className: "signatureCanvas" }}
+                                />
+                                <div className="d-flex justify-content-center gap-2 mt-2">
+                                  <button
+                                    className="btn btn-primary"
+                                    onClick={staffSave}
+                                  >
+                                    Save
+                                  </button>
+                                  <button
+                                    className="btn btn-secondary"
+                                    onClick={staffClear}
+                                  >
+                                    Clear
+                                  </button>
+                                  <button
+                                    className="btn btn-danger"
+                                    onClick={staffclose}
+                                  >
+                                    Close
+                                  </button>
+                                </div>
+                              </>
+                            )}
+                          </Popup>
+                        )}
                       </div>
 
                       {/* Right Static Signature Image */}
@@ -1281,51 +1379,57 @@ const StaffAssignedManagement = () => {
                         />
 
                         {/* Optional Save Button when signature already exists */}
-                        {clientImageURL && (
+                        {clientImageURL && !isUpdate ? (
                           <button
                             className="btn btn-primary mt-2"
                             onClick={() => setIsClientOpen(true)}
                           >
                             Save Again
                           </button>
+                        ) : (
+                          ""
                         )}
 
                         {/* Popup for Signature Pad */}
-                        <Popup
-                          modal
-                          open={isClientOpen}
-                          onClose={() => setIsClientOpen(false)}
-                          closeOnDocumentClick={false}
-                        >
-                          {(clientclose) => (
-                            <>
-                              <SignaturePad
-                                ref={sigClientCanvas}
-                                canvasProps={{ className: "signatureCanvas" }}
-                              />
-                              <div className="d-flex justify-content-center gap-2 mt-2">
-                                <button
-                                  className="btn btn-primary"
-                                  onClick={clientSave}
-                                >
-                                  Save
-                                </button>
-                                <button
-                                  className="btn btn-secondary"
-                                  onClick={clientClear}
-                                >
-                                  Clear
-                                </button>
-                                <button
-                                  className="btn btn-danger"
-                                  onClick={clientclose}
-                                >
-                                  Close
-                                </button>
-                              </div>
-                            </>
-                          )}
-                        </Popup>
+                        {isUpdate ? (
+                          ""
+                        ) : (
+                          <Popup
+                            modal
+                            open={isClientOpen}
+                            onClose={() => setIsClientOpen(false)}
+                            closeOnDocumentClick={false}
+                          >
+                            {(clientclose) => (
+                              <>
+                                <SignaturePad
+                                  ref={sigClientCanvas}
+                                  canvasProps={{ className: "signatureCanvas" }}
+                                />
+                                <div className="d-flex justify-content-center gap-2 mt-2">
+                                  <button
+                                    className="btn btn-primary"
+                                    onClick={clientSave}
+                                  >
+                                    Save
+                                  </button>
+                                  <button
+                                    className="btn btn-secondary"
+                                    onClick={clientClear}
+                                  >
+                                    Clear
+                                  </button>
+                                  <button
+                                    className="btn btn-danger"
+                                    onClick={clientclose}
+                                  >
+                                    Close
+                                  </button>
+                                </div>
+                              </>
+                            )}
+                          </Popup>
+                        )}
                       </div>
                       {/* <img
                         src={right}
@@ -1338,20 +1442,28 @@ const StaffAssignedManagement = () => {
 
                   <div className="section_6_container">
                     <div className="d-flex justify-content-between mt-3 px-2">
-                      <button
-                        aria-label="left"
-                        type="submit"
-                        className="btn-custom-blue rounded-lg px-4 py-3 fs-5 w-25 "
-                      >
-                        UPLOAD
-                      </button>
-
-                      <button
-                        aria-label="right"
-                        className="btn-custom-blue rounded-lg px-4 py-3 fs-5 w-25 "
-                      >
-                        FINAL SUBMISSION
-                      </button>
+                      {isUpdate ? (
+                        ""
+                      ) : (
+                        <button
+                          aria-label="left"
+                          type="submit"
+                          className="btn-custom-blue rounded-lg px-4 py-3 fs-5 w-25 "
+                        >
+                          UPLOAD
+                        </button>
+                      )}
+                      {staffAssignedTask?.isFinalSubmition || !isUpdate ? (
+                        ""
+                      ) : (
+                        <button
+                          aria-label="right"
+                          className="btn-custom-blue rounded-lg px-4 py-3 fs-5 w-25 "
+                          onClick={() => finalSubmit()}
+                        >
+                          FINAL SUBMISSION
+                        </button>
+                      )}
                     </div>
                   </div>
                   <div className="section_6_container">

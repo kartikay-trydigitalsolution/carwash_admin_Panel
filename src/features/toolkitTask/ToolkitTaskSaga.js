@@ -12,7 +12,10 @@ import {
 // FETCH
 function* fetchToolKitAssignTaskSaga() {
   try {
-    const response = yield call(axios.get, "/assignTask/assignTask");
+    const response = yield call(
+      axios.get,
+      "/toolkitAssignTask/toolkitAssignTask"
+    );
     yield put(fetchToolKitAssignTaskSuccess(response.data));
   } catch (error) {
     yield put(fetchToolKitAssignTaskFailure(error.message));

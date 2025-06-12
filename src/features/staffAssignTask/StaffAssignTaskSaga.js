@@ -7,6 +7,9 @@ import {
   createStaffAssignTaskRequest,
   createStaffAssignTaskSuccess,
   createStaffAssignTaskFailure,
+  updateStaffAssignedTaskRequest,
+  updateStaffAssignedTaskSuccess,
+  updateStaffAssignedTaskFailure,
 } from "./StaffAssignTaskSlice"; // Update this to match your AssignTask slice
 
 // FETCH
@@ -33,10 +36,36 @@ function* createStaffAssignTaskSaga(action) {
   }
 }
 
+// UPDATE
+function* updateStaffAssignedTaskSaga(action) {
+  try {
+    const formData = action.payload; // No destructuring
+
+    const response = yield call(
+      axios.put,
+      `/staffassignTask/updatestaffassigntask`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    yield put(updateStaffAssignedTaskSuccess(response.data));
+  } catch (error) {
+    yield put(updateStaffAssignedTaskFailure(error.message));
+  }
+}
+
 export function* watchStaffAssignTaskSaga() {
   yield takeLatest(fetchStaffAssignTaskRequest.type, fetchStaffAssignTaskSaga);
   yield takeLatest(
     createStaffAssignTaskRequest.type,
     createStaffAssignTaskSaga
+  );
+  yield takeLatest(
+    updateStaffAssignedTaskRequest.type,
+    updateStaffAssignedTaskSaga
   );
 }
