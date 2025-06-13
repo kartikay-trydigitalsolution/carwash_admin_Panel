@@ -53,6 +53,19 @@ const staffAssignTaskSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    deleteStaffAssignedTaskRequest: (state) => {
+      state.loading = true;
+      state.success = null;
+    },
+    deleteStaffAssignedTaskSuccess: (state, action) => {
+      state.loading = false;
+      state.success = true;
+      state.data = state.data.filter((item) => item._id !== action.payload);
+    },
+    deleteStaffAssignedTaskFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
     resetStaffAssignTaskSuccess: (state) => {
       state.success = null;
     },
@@ -70,6 +83,9 @@ export const {
   updateStaffAssignedTaskRequest,
   updateStaffAssignedTaskFailure,
   updateStaffAssignedTaskSuccess,
+  deleteStaffAssignedTaskRequest,
+  deleteStaffAssignedTaskFailure,
+  deleteStaffAssignedTaskSuccess,
 } = staffAssignTaskSlice.actions;
 
 export default staffAssignTaskSlice.reducer;

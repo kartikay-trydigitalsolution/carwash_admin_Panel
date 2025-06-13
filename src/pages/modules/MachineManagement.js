@@ -69,7 +69,6 @@ const MachineManagement = () => {
     (id) => {
       dispatch(deleteMachineRequest(id));
       setShowDeleteModal(false);
-      dispatch(fetchMachineRequest());
     },
     [dispatch]
   );

@@ -86,6 +86,7 @@ const StaffAssignedManagement = () => {
     formData.append("pdfUrl", blob, "output.pdf");
     formData.append("id", staffAssignedTask?._id);
     dispatch(updateStaffAssignedTaskRequest(formData));
+    navigate("/");
   };
 
   const clientSave = () => {
@@ -217,7 +218,7 @@ const StaffAssignedManagement = () => {
         };
 
         dispatch(createStaffAssignTaskRequest(values));
-        navigate();
+        navigate("/");
         resetForm();
       }
     },

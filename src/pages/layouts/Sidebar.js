@@ -99,7 +99,7 @@ const Sidebar = () => {
               Inventory Management
             </NavLink>
             <NavLink
-              to="/reports"
+              to="/dashboard/reports"
               className={({ isActive }) =>
                 `nav-link ${isActive ? "active" : ""}`
               }

@@ -5,8 +5,9 @@ import { watchInventorySaga } from "../features/inventory/InventorySaga";
 import { watchAuthSaga } from "../features/auth/AuthSaga";
 import { watchAssignTaskSaga } from "../features/assignTask/AssignTaskSaga";
 import { watchStaffAssignTaskSaga } from "../features/staffAssignTask/StaffAssignTaskSaga";
-import {watchToolkitAssignTaskSaga} from "../features/toolkitTask/ToolkitTaskSaga";
+import { watchToolkitAssignTaskSaga } from "../features/toolkitTask/ToolkitTaskSaga";
 import { watchSendEmailSaga } from "../features/email/emailSaga";
+import { watchMixDataSaga } from "../features/mixData/mixDataSaga";
 
 export default function* rootSaga() {
   yield all([
@@ -17,6 +18,7 @@ export default function* rootSaga() {
     watchAssignTaskSaga(),
     watchStaffAssignTaskSaga(),
     watchToolkitAssignTaskSaga(),
-    watchSendEmailSaga()
+    watchSendEmailSaga(),
+    watchMixDataSaga()
   ]);
 }

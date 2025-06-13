@@ -10,6 +10,9 @@ import {
   updateStaffAssignedTaskRequest,
   updateStaffAssignedTaskSuccess,
   updateStaffAssignedTaskFailure,
+  deleteStaffAssignedTaskSuccess,
+  deleteStaffAssignedTaskFailure,
+  deleteStaffAssignedTaskRequest,
 } from "./StaffAssignTaskSlice"; // Update this to match your AssignTask slice
 
 // FETCH
@@ -57,6 +60,18 @@ function* updateStaffAssignedTaskSaga(action) {
     yield put(updateStaffAssignedTaskFailure(error.message));
   }
 }
+// DELETE
+function* deleteStaffAssignTaskSaga(action) {
+  try {
+    yield call(
+      axios.delete,
+      `/staffassigntask/staffassigntask/${action.payload}`
+    );
+    yield put(deleteStaffAssignedTaskSuccess(action.payload));
+  } catch (error) {
+    yield put(deleteStaffAssignedTaskFailure(error.message));
+  }
+}
 
 export function* watchStaffAssignTaskSaga() {
   yield takeLatest(fetchStaffAssignTaskRequest.type, fetchStaffAssignTaskSaga);
@@ -67,5 +82,9 @@ export function* watchStaffAssignTaskSaga() {
   yield takeLatest(
     updateStaffAssignedTaskRequest.type,
     updateStaffAssignedTaskSaga
+  );
+  yield takeLatest(
+    deleteStaffAssignedTaskRequest.type,
+    deleteStaffAssignTaskSaga
   );
 }

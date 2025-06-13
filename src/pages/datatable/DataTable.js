@@ -134,6 +134,88 @@ const DataTableComponent = ({
       sortable: true,
     },
   ];
+  const reportColumns = [
+    {
+      name: "Machine Sr. No.",
+      selector: (row) => row?.taskId?.machineId?.machine_sr_no,
+      sortable: true,
+    },
+    {
+      name: "Date",
+      selector: (row) => moment(row?.taskId?.due_date).format("DD-MM-YYYY"),
+      sortable: true,
+    },
+    {
+      name: "Staff Name",
+      selector: (row) => row?.taskId?.staffId?.name,
+      sortable: true,
+    },
+    {
+      name: "Location",
+      selector: (row) => row?.taskId?.machineId?.location,
+      sortable: true,
+    },
+    {
+      name: "Operational Status",
+      sortable: true,
+      cell: (row) => {
+        const statusRaw = row?.taskId?.machineId?.operation_status || "Unknown";
+        const status = statusRaw.toLowerCase();
+
+        const statusMap = {
+          active: "bg-light-green text-success",
+          in_maintenance: "bg-light-yellow text-warning",
+          inactive: "bg-light-red text-danger",
+        };
+
+        // Capitalize first letter
+        const formatStatus = (str) =>
+          str.charAt(0).toUpperCase() + str.slice(1);
+
+        return (
+          <span
+            className={`rounded-pill px-3 py-1 fw-semibold ${
+              statusMap[status] || "bg-secondary text-white"
+            }`}
+          >
+            {formatStatus(status)}
+          </span>
+        );
+      },
+    },
+    {
+      name: "Action",
+      cell: (row) => (
+        <div className="flex gap-2 d-flex justify-content-center">
+          <button variant="outline" size="icon" onClick={() => handleEdit(row)}>
+            <img src={eye} />
+          </button>
+          <button
+            variant="outline"
+            size="icon"
+            onClick={() => handleSendEmail(row)}
+          >
+            <img src={sms} />
+          </button>
+          <button
+            variant="outline"
+            size="icon"
+            onClick={() => handleDownload(row)}
+          >
+            <img src={document} />
+          </button>
+
+          <button
+            variant="destructive"
+            size="icon"
+            onClick={() => handleDelete(row)}
+          >
+            <i className="fas fa-trash-alt img-fluid border-0 shadow-none"></i>
+          </button>
+        </div>
+      ),
+    },
+  ];
   const staffAssignedTask = [
     {
       name: "Due Date",
@@ -193,7 +275,8 @@ const DataTableComponent = ({
       cell: (row) => (
         <div className="flex gap-2 d-flex justify-content-center">
           <button variant="outline" size="icon" onClick={() => handleEdit(row)}>
-            <i className="fas fa-eye"></i>
+            {/* <i className="fas fa-eye"></i> */}
+            <img src={eye} />
           </button>
           <button
             variant="destructive"
@@ -386,7 +469,9 @@ const DataTableComponent = ({
       cell: (row) => (
         <div className="flex gap-2 d-flex justify-content-center">
           <button variant="outline" size="icon" onClick={() => handleEdit(row)}>
-            <i className="fas fa-eye"></i>
+            {/* <i className="fas fa-eye"></i> */}
+            <img src={eye} />
+
           </button>
         </div>
       ),
@@ -510,6 +595,8 @@ const DataTableComponent = ({
             ? recipientColumns
             : dataTableType == "MAINTANCERECORD"
             ? maintanancetask
+            : dataTableType == "REPORT"
+            ? reportColumns
             : machineColumns
         }
         data={dataTableData}

@@ -1,18 +1,16 @@
 // src/pages/dashboard/DashboardHome.jsx
 import DataTableHeaderContainer from "../components/DataTableHeaderContainer";
 import DataTableComponent from "../datatable/DataTable";
-import { useCallback, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchStaffAssignTaskRequest } from "../../features/staffAssignTask/StaffAssignTaskSlice";
 import { sendEmailRequest } from "../../features/email/emailSlice";
-import AddDeleteModal from "../modal/DeleteModal";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 const MaintenanceRecordManagement = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [filterData, setFilterData] = useState("");
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [dataForDelete, setDataForDelete] = useState({});
   const [dataType, setDataType] = useState("MAINTANCERECORD");
 
   const staffAssignedTask = useSelector(
@@ -23,9 +21,9 @@ const MaintenanceRecordManagement = () => {
 
     if (!item?.taskId?.staffId || !item?.taskId?.machineId) return false;
 
-    const staffFields = ["name", "email", "role", "phone"];
+    const staffFields = ["name"];
 
-    const machineFields = ["location"];
+    const machineFields = ["location", "machine_sr_no"];
     const itemFields = ["task"];
 
     const matchStaff = staffFields.some((key) =>
@@ -41,38 +39,34 @@ const MaintenanceRecordManagement = () => {
   const handleDataFromChild = (data) => {
     setFilterData(data);
   };
-
-  const handleDelete = (row) => {
-    setShowDeleteModal(true);
-    setDataForDelete(row);
-  };
   const handleEye = (data) => {
-    navigate("/");
+    navigate(`/dashboard/service-form/${data?.taskId?._id}`);
   };
   const handleEmail = (data) => {
-    let emailData = {
-      email: data?.taskId?.machineId?.recipientEmail,
-      taskId: data._id,
-    };
-    dispatch(sendEmailRequest(emailData));
+    if (data?.isFinalSubmition) {
+      let emailData = {
+        email: data?.taskId?.machineId?.recipientEmail,
+        taskId: data._id,
+      };
+      dispatch(sendEmailRequest(emailData));
+    } else {
+      toast.error("Report not available yet.");
+    }
   };
-  const handleDownload = (data) => {
-    console.log(data);
+  const handleDownload = async (data) => {
+    if (data.isFinalSubmition) {
+      let url = `http://localhost:5000${data.pdfUrl}`;
+      window.open(url, "_blank"); // Open in new tab
+    } else {
+      toast.error("Report not available yet.");
+    }
   };
-  const handleDeleteModal = useCallback((id) => {}, [dispatch]);
   useEffect(() => {
     dispatch(fetchStaffAssignTaskRequest());
   }, [dispatch]);
   return (
     <>
       {" "}
-      <AddDeleteModal
-        data={dataForDelete}
-        showDelete={showDeleteModal}
-        onCloseDelete={() => setShowDeleteModal(false)}
-        onDelete={handleDeleteModal}
-        type={dataType}
-      />
       <div className="p-5 w-100">
         <div className="card shadow-sm border-0 pt-4 datatable_wrapper">
           <DataTableHeaderContainer
@@ -83,7 +77,6 @@ const MaintenanceRecordManagement = () => {
             onUpdate={handleEye}
             onEmailSend={handleEmail}
             dataTableData={filteredTasks?.length > 0 ? filteredTasks : []}
-            onDelete={handleDelete}
             dataTableType={dataType}
             onDownloadFile={handleDownload}
           />
