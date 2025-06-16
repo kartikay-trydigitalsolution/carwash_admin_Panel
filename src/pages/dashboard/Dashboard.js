@@ -27,7 +27,7 @@ const DashboardHome = () => {
   );
   useEffect(() => {
     dispatch(fetchMixDataRequest());
-  });
+  }, []);
   return (
     <div className="container-fluid p-4" style={{ background: "#f4f4f4" }}>
       <div className="row mb-4">

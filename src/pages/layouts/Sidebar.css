@@ -5,7 +5,8 @@
 .sidebar {
   width: 300px;
   min-width: 300px;
-  min-height: 100vh;
+  height: 100%;
+  overflow: auto;
   position: fixed;
   top: 0;
   left: 0;

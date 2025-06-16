@@ -16,6 +16,7 @@ import { fetchStaffAssignTaskRequest } from "../../features/staffAssignTask/Staf
 import {
   createStaffAssignTaskRequest,
   updateStaffAssignedTaskRequest,
+  resetStaffAssignTaskSuccess,
 } from "../../features/staffAssignTask/StaffAssignTaskSlice";
 import { toast } from "react-toastify";
 
@@ -23,12 +24,14 @@ const StaffAssignedManagement = () => {
   const navigate = useNavigate();
   const [isStaffOpen, setIsStaffOpen] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [staffAssignedTaskValues, setStaffAssignedTaskValues] = useState({});
   const [isClientOpen, setIsClientOpen] = useState(false);
   const [staffImageURL, setStaffImageURL] = useState(null); // create a state that will contain our image url
   const [clientImageURL, setClientImageURL] = useState(null); // create a state that will contain our image url
   const params = useParams();
   const isRole = useSelector((state) => state?.auth?.userRole);
+  const pdfSuccess = useSelector((state) => state?.staffAssignTask?.pdfSuccess);
   const dispatch = useDispatch();
   const sigStaffCanvas = useRef({});
   const sigClientCanvas = useRef({});
@@ -42,6 +45,13 @@ const StaffAssignedManagement = () => {
   const staffAssignedTask = useSelector((state) =>
     state?.staffAssignTask?.data?.find((t) => t?.taskId?._id === params?.id)
   );
+  useEffect(() => {
+    if (pdfSuccess) {
+      navigate("/");
+      setIsLoading(false);
+      dispatch(resetStaffAssignTaskSuccess());
+    }
+  }, [pdfSuccess]);
 
   useEffect(() => {
     if (staffAssignedTask) {
@@ -66,6 +76,7 @@ const StaffAssignedManagement = () => {
 
   const contentRef = useRef();
   const finalSubmit = async () => {
+    setIsLoading(true);
     const input = contentRef.current;
 
     await document.fonts.ready; // wait for fonts
@@ -86,7 +97,6 @@ const StaffAssignedManagement = () => {
     formData.append("pdfUrl", blob, "output.pdf");
     formData.append("id", staffAssignedTask?._id);
     dispatch(updateStaffAssignedTaskRequest(formData));
-    navigate("/");
   };
 
   const clientSave = () => {
@@ -1456,17 +1466,29 @@ const StaffAssignedManagement = () => {
                           UPLOAD
                         </button>
                       )}
-                      {staffAssignedTask?.isFinalSubmition || !isUpdate ? (
+                      {/* {staffAssignedTask?.isFinalSubmition || !isUpdate ? (
                         ""
-                      ) : (
-                        <button
-                          aria-label="right"
-                          className="btn-custom-blue rounded-lg px-4 py-3 fs-5 w-25 "
-                          onClick={() => finalSubmit()}
-                        >
-                          FINAL SUBMISSION
-                        </button>
-                      )}
+                      ) : ( */}
+                      <button
+                        aria-label="right"
+                        className="btn-custom-blue rounded-lg px-4 py-3 fs-5 w-25 d-flex align-items-center justify-content-center gap-2"
+                        onClick={finalSubmit}
+                        disabled={isLoading}
+                      >
+                        {isLoading ? (
+                          <>
+                            <span
+                              className="spinner-border spinner-border-sm"
+                              role="status"
+                              aria-hidden="true"
+                            ></span>
+                            <span>Submitting...</span>
+                          </>
+                        ) : (
+                          "FINAL SUBMISSION"
+                        )}
+                      </button>
+                      {/* )} */}
                     </div>
                   </div>
                   <div className="section_6_container">
