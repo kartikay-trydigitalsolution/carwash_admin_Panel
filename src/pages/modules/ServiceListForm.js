@@ -1466,29 +1466,29 @@ const StaffAssignedManagement = () => {
                           UPLOAD
                         </button>
                       )}
-                      {/* {staffAssignedTask?.isFinalSubmition || !isUpdate ? (
+                      {staffAssignedTask?.isFinalSubmition || !isUpdate ? (
                         ""
-                      ) : ( */}
-                      <button
-                        aria-label="right"
-                        className="btn-custom-blue rounded-lg px-4 py-3 fs-5 w-25 d-flex align-items-center justify-content-center gap-2"
-                        onClick={finalSubmit}
-                        disabled={isLoading}
-                      >
-                        {isLoading ? (
-                          <>
-                            <span
-                              className="spinner-border spinner-border-sm"
-                              role="status"
-                              aria-hidden="true"
-                            ></span>
-                            <span>Submitting...</span>
-                          </>
-                        ) : (
-                          "FINAL SUBMISSION"
-                        )}
-                      </button>
-                      {/* )} */}
+                      ) : (
+                        <button
+                          aria-label="right"
+                          className="btn-custom-blue rounded-lg px-4 py-3 fs-5 w-25 d-flex align-items-center justify-content-center gap-2"
+                          onClick={finalSubmit}
+                          disabled={isLoading}
+                        >
+                          {isLoading ? (
+                            <>
+                              <span
+                                className="spinner-border spinner-border-sm"
+                                role="status"
+                                aria-hidden="true"
+                              ></span>
+                              <span>Submitting...</span>
+                            </>
+                          ) : (
+                            "FINAL SUBMISSION"
+                          )}
+                        </button>
+                      )}
                     </div>
                   </div>
                   <div className="section_6_container">
