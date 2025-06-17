@@ -18,6 +18,7 @@ const AddStaffModal = ({ show, onClose, onSubmit, data, type }) => {
     email: Yup.string()
       .trim()
       .required("*Email is required")
+      .max(30, "Email must be at most 30 characters")
       .email("*Invalid email format")
       .test(
         "email-regex",
@@ -41,7 +42,7 @@ const AddStaffModal = ({ show, onClose, onSubmit, data, type }) => {
     password: Yup.string()
       .trim()
       .min(8, "*Password must be at least 8 characters")
-      .max(15, "*Password not more than 15 characters")
+      .max(20, "*Password not more than 20 characters")
       .required("*Password is required"),
     confirmPassword: Yup.string()
       .trim()

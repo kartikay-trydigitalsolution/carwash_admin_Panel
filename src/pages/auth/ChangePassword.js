@@ -14,6 +14,7 @@ const ChangePasswordPage = () => {
   const validationSchema = Yup.object({
     newPassword: Yup.string()
       .min(8, "*New Password must be at least 8 characters")
+      .max(20, "*Password must be at most 20 characters")
       .required("*New Password is required"),
     confirmNewPassword: Yup.string()
       .oneOf([Yup.ref(" newPassword"), null], "*Passwords must match")
@@ -33,7 +34,7 @@ const ChangePasswordPage = () => {
     onSubmit: (values) => {
       dispatch({
         type: newPasswordRequest.type,
-        payload: { ...values, id: params.id }
+        payload: { ...values, id: params.id },
       });
     },
   });

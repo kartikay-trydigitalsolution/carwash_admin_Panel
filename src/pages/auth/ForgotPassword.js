@@ -15,6 +15,7 @@ const ForgotPasswordPage = () => {
   const validationSchema = Yup.object({
     email: Yup.string()
       .email("*Invalid email format")
+      .max(30, "Email must be at most 30 characters")
       .required("*Email is required"),
   });
   useEffect(() => {

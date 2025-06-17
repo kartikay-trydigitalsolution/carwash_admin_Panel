@@ -12,9 +12,11 @@ const LoginPage = () => {
   const validationSchema = Yup.object({
     email: Yup.string()
       .email("*Invalid email format")
+      .max(30, "Email must be at most 30 characters")
       .required("*Email is required"),
     password: Yup.string()
       .min(8, "*Password must be at least 8 characters")
+      .max(20, "*Password must be at most 20 characters")
       .required("*Password is required"),
   });
   const formik = useFormik({
