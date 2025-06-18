@@ -75,30 +75,6 @@ const StaffAssignedManagement = () => {
   }, []);
 
   const contentRef = useRef();
-  const finalSubmit = async () => {
-    setIsLoading(true);
-    const input = contentRef.current;
-
-    await document.fonts.ready; // wait for fonts
-
-    const canvas = await html2canvas(input, {
-      useCORS: true,
-      scale: 2,
-      scrollY: -window.scrollY,
-    });
-    const imgData = canvas.toDataURL("image/png");
-    const pxToMm = (px) => px * 0.264583;
-    const imgWidthMm = pxToMm(canvas.width);
-    const imgHeightMm = pxToMm(canvas.height);
-    const pdf = new jsPDF("p", "mm", [imgHeightMm, imgWidthMm]);
-    pdf.addImage(imgData, "PNG", 0, 0, imgWidthMm, imgHeightMm);
-    const blob = pdf.output("blob");
-    const formData = new FormData();
-    formData.append("pdfUrl", blob, "output.pdf");
-    formData.append("id", staffAssignedTask?._id);
-    dispatch(updateStaffAssignedTaskRequest(formData));
-  };
-
   const clientSave = () => {
     setClientImageURL(sigClientCanvas?.current?.toDataURL("image/png"));
     setIsClientOpen(false);
@@ -233,6 +209,1869 @@ const StaffAssignedManagement = () => {
       }
     },
   });
+  const finalSubmit = async () => {
+    if (isUpdate) {
+      let htmlContent = `<html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>form DATA</title>
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+            rel="stylesheet"
+          />
+          <style>
+            * {
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
+              font-family: "inter", sans-serif;
+              font-weight: 100;
+              font-style: normal;
+            }
+              input[type=checkbox] {
+  accent-color:  #d2d5da;
+}
+          </style>
+        </head>
+        <body>
+          <div
+            class="container"
+            style="
+              border-bottom: 1px solid #00000033;
+              width: 100%;
+              height: 180px;
+              padding: 20px;
+              gap: 20px;
+              border-bottom-width: 1px;
+            "
+          >
+            <div
+              style="
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+              "
+            >
+              <div style="font-weight: 700; font-size: 29px">
+                Checklist For Servicing and Maintenance <br />of Coin Operated Water
+                Dispensers
+              </div>
+              <div style="font-weight: 600; font-size: 25px">
+                Ref No: 2024/__________________
+              </div>
+            </div>
+          </div>
+          <div
+            class="container_2"
+            style="
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              width: 100%;
+              height: 176px;
+            "
+          >
+            <div
+              style="
+                width: 95%;
+                height: 100%;
+                gap: 20px;
+                border-bottom-width: 1px;
+                padding-top: 20px;
+                padding-left: 10px;
+                padding-right: 10px;
+                border-bottom: 1px solid #00000033;
+              "
+            >
+              <div
+                style="
+                  display: flex;
+                  width: 100%;
+                  height: 63px;
+                  gap: 15px;
+                  justify-content: space-between;
+                "
+              >
+                <div
+                  style="
+                    display: flex;
+                    align-items: start;
+                    width: 402px;
+                    border-radius: 8px;
+                    flex-direction: column;
+                    padding-right: 20px;
+                    padding-left: 20px;
+                    padding-top: 12px;
+
+                    gap: 2px;
+                    border-width: 1px;
+                    background-color: #f4f4f4;
+                    border: 1px solid #cdcdcd;
+                  "
+                >
+                  <div style="font-size: small; font-weight: 400">Date Issued</div>
+                  <div style="font-weight: 500">${
+                    assignTask?.createdAt
+                      ? new Date(assignTask?.createdAt)
+                          .toISOString()
+                          .split("T")[0]
+                      : ""
+                  }</div>
+                </div>
+                <div
+                  style="
+                     display: flex;
+                    align-items: start;
+                    width: 402px;
+                    height: 63px;
+                    border-radius: 8px;
+                    flex-direction: column;
+                    padding-right: 20px;
+                    padding-left: 20px;
+                     padding-top: 12px;
+                    gap: 2px;
+                    border-width: 1px;
+                    background-color: #f4f4f4;
+                    border: 1px solid #cdcdcd;
+                  "
+                >
+                  <div style="font-size: small; font-weight: 400">Date Complete</div>
+                  <div style="font-weight: 500">${
+                    assignTask?.due_date
+                      ? new Date(assignTask?.due_date)
+                          .toISOString()
+                          .split("T")[0]
+                      : ""
+                  }</div>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                      display: flex;
+                    align-items: start;
+                    width: 402px;
+                    height: 63px;
+                    border-radius: 8px;
+                    flex-direction: column;
+                    padding-right: 20px;
+                    padding-left: 20px;
+                     padding-top: 12px;
+                    gap: 2px;
+                    border-width: 1px;
+                    background-color: #f4f4f4;
+                    border: 1px solid #cdcdcd;
+                  "
+                >
+                  <div style="font-size: small; font-weight: 400">Location</div>
+                  <div style="font-weight: 500">${
+                    assignTask?.machineId?.location || ""
+                  }</div>
+                </div>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  width: 100%;
+                  height: 63px;
+                  gap: 15px;
+                  margin-top: 10px;
+                  justify-content: space-between;
+                "
+              >
+                <div
+                  style="
+                   display: flex;
+                    align-items: start;
+                    width: 402px;
+                    height: 63px;
+                    border-radius: 8px;
+                    flex-direction: column;
+                    padding-right: 20px;
+                    padding-left: 20px;
+                    padding-top: 12px;
+                    gap: 2px;
+                    border-width: 1px;
+                    background-color: #f4f4f4;
+                    border: 1px solid #cdcdcd;
+                  "
+                >
+                  <div style="font-size: small; font-weight: 400">Telephone No</div>
+                  <div style="font-weight: 500">${
+                    assignTask?.machineId?.recipientPhone || ""
+                  }</div>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    width: 490px;
+                    height: 40px;
+                    gap: 10px;
+                    padding-top: 20px;
+                  "
+                >
+                  <div style="width: 198px; height: 20px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 13px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        assignTask?.service_type === "Servicing"
+                          ? "checked"
+                          : ""
+                      } name="sameadr" />
+
+                      Servicing
+                    </label>
+                  </div>
+                  <div style="width: 198px; height: 20px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 13px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                    <input type="checkbox" ${
+                      assignTask?.service_type === "Complaint" ? "checked" : ""
+                    } name="sameadr" />
+                      Complaint
+                    </label>
+                  </div>
+                  <div style="width: 198px; height: 20px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 13px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        assignTask?.service_type === "Installation"
+                          ? "checked"
+                          : ""
+                      } name="sameadr" />
+
+                      Installation
+                    </label>
+                  </div>
+                  <div style="width: 198px; height: 20px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 13px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        assignTask?.service_type === "No fault found"
+                          ? "checked"
+                          : ""
+                      } name="sameadr" /> No
+                      fault found
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="container_3"
+            style="
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              width: 100%;
+              height: 323px;
+            "
+          >
+            <div
+              class="row_3"
+              style="
+                width: 90%;
+                gap: 20px;
+                border-bottom-width: 1px;
+                padding-bottom: 10px;
+              "
+            >
+              <div
+                style="
+                  height: 29px;
+                  font-family: Inter;
+                  font-weight: 500;
+                  font-size: 22px;
+                  line-height: 130%;
+                  letter-spacing: -2%;
+                "
+              >
+                Manufacturer / Supplier of Coin Operated Water Dispenser
+              </div>
+              <div
+                class="row_3"
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  width: 100%;
+                  height: 244px;
+                  gap: 30px;
+                  padding: 10px;
+                "
+              >
+                <div
+                  class="col-3"
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    width: 300px;
+                    height: 244px;
+                    gap: 15px;
+                    padding-top: 10px;
+                  "
+                >
+                  <div style="width: 530px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" checked ${
+                        formik.values.isWaterDispenser ? "checked" : ""
+                      } name="isWaterDispenser" /> Water
+                      Dispenser
+                    </label>
+                  </div>
+                  <div style="width: 530px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        formik.values.isTwoInOne ? "checked" : ""
+                      } name="sameadr" /> 2 in
+                      1
+                    </label>
+                  </div>
+                  <div style="width: 530px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        formik.values.isThreeInOne ? "checked" : ""
+                      } name="sameadr" /> 3 in
+                      1
+                    </label>
+                  </div>
+                  <div style="width: 530px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        formik.values.isFourInOne ? "checked" : ""
+                      } name="sameadr" /> 4 in
+                      1
+                    </label>
+                  </div>
+                  <div style="width: 530px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        formik.values.isFiveInOne ? "checked" : ""
+                      } name="sameadr" /> 5 in
+                      1
+                    </label>
+                  </div>
+                  <div style="width: 530px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        formik.values.isCollection ? "checked" : ""
+                      } name="sameadr" />
+                      Collection
+                    </label>
+                  </div>
+                </div>
+                <div
+                  class="col-3"
+                  style="
+                    display: flex;
+                    flex-direction: column;
+                    width: 400px;
+                    height: 241px;
+                    gap: 15px;
+                  "
+                >
+                  <div
+                    style="
+                      width: 400px;
+                      height: 49px;
+                      border-radius: 8px;
+                      border-width: 1px;
+                      padding: 15px;
+                      background-color: #f4f4f4;
+                      border: 1px solid #cdcdcd;
+                    "
+                  >
+                    <div
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 16px;
+                        line-height: 100%;
+                        letter-spacing: -2%;
+                        color: #4b5563;
+                      "
+                    >
+                      ${assignTask?.machineId?.machine_sr_no}
+                    </div>
+                  </div>
+                  <div
+                    style="
+                      width: 400px;
+                      height: 49px;
+                      border-radius: 8px;
+                      border-width: 1px;
+                      padding: 15px;
+                      background-color: #f4f4f4;
+                      border: 1px solid #cdcdcd;
+                    "
+                  >
+                    <div
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 16px;
+                        line-height: 100%;
+                        letter-spacing: -2%;
+                        color: #4b5563;
+                      "
+                    >
+                    ${assignTask?.machineId?.machine_model}
+
+                    </div>
+                  </div>
+                  <div
+                    style="
+                      width: 400px;
+                      height: 49px;
+                      border-radius: 8px;
+                      border-width: 1px;
+                      padding: 15px;
+                      background-color: #f4f4f4;
+                      border: 1px solid #cdcdcd;
+                      color: #4b5563;
+                    "
+                  >
+                    <div
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 16px;
+                        line-height: 100%;
+                        letter-spacing: -2%;
+                        color: #4b5563;
+                      "
+                    >
+                      ${formik.values.securityTag}
+                    </div>
+                  </div>
+                  <div
+                    style="
+                      width: 400px;
+                      height: 49px;
+                      border-radius: 8px;
+                      border-width: 1px;
+                      padding: 15px;
+                      background-color: #f4f4f4;
+                      border: 1px solid #cdcdcd;
+                    "
+                  >
+                    <div
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 16px;
+                        line-height: 100%;
+                        letter-spacing: -2%;
+                        color: #4b5563;
+                      "
+                    >
+                      ${formik.values.switchOffTimer}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="container_4"
+            style="
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              width: 100%;
+              height: 950px;
+              gap: 20px;
+              border-bottom-width: 1px;
+              padding-bottom: 30px;
+            "
+          >
+            <div
+              class="row"
+              style="display: flex; flex-direction: column; width: 90%; gap: 20px"
+            >
+              <div
+                style="
+                  width: 300px;
+                  height: 29px;
+                  font-family: Inter;
+                  font-weight: 700;
+                  font-size: 22px;
+                  line-height: 130%;
+                  letter-spacing: -2%;
+                "
+              >
+                Maintenance Checklist
+              </div>
+              <div
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  width: 100%;
+                  height: 900px;
+                  gap: 15px;
+                "
+              >
+                <div style="width: 100%; height: 20px">
+                  <label
+                    style="
+                      font-family: Inter;
+                      font-weight: 500;
+                      font-size: 14px;
+                      line-height: 20px;
+                      letter-spacing: -2%;
+                    "
+                  >
+                    <input type="checkbox" ${
+                      formik.values.isCheckTheOperationOfTheWaterDispenser
+                        ? "checked"
+                        : ""
+                    } name="sameadr" /> Check
+                    the operation of the Water Dispenser, removing coin acceptor and
+                    servicing to ensure pro functioning when necessary
+                  </label>
+                </div>
+                <div style="width: 100%; height: 20px">
+                  <label
+                    style="
+                      font-family: Inter;
+                      font-weight: 500;
+                      font-size: 14px;
+                      line-height: 20px;
+                      letter-spacing: -2%;
+                    "
+                  >
+                    <input type="checkbox" ${
+                      formik.values.isCheckAllOpertionInWorkinigCondition
+                        ? "checked"
+                        : ""
+                    } name="sameadr" /> Check
+                    all operation in working condition.
+                  </label>
+                </div>
+                <div style="width: 100%; height: 20px">
+                  <label
+                    style="
+                      font-family: Inter;
+                      font-weight: 500;
+                      font-size: 14px;
+                      line-height: 20px;
+                      letter-spacing: -2%;
+                    "
+                  >
+                    <input type="checkbox" ${
+                      formik.values.isCheckAndDismantle ? "checked" : ""
+                    } name="sameadr" /> Check
+                    and dismantle the solenoid valve and clean thoroughly
+                  </label>
+                </div>
+                <div style="width: 100%; height: 20px">
+                  <label
+                    style="
+                      font-family: Inter;
+                      font-weight: 500;
+                      font-size: 14px;
+                      line-height: 20px;
+                      letter-spacing: -2%;
+                    "
+                  >
+                    <input type="checkbox" ${
+                      formik.values.isCheckWireForLoose ? "checked" : ""
+                    } name="sameadr" /> Check
+                    wire for loose connection.
+                  </label>
+                </div>
+                <div style="width: 100%; height: 20px">
+                  <label
+                    style="
+                      font-family: Inter;
+                      font-weight: 500;
+                      font-size: 14px;
+                      line-height: 20px;
+                      letter-spacing: -2%;
+                    "
+                  >
+                    <input type="checkbox" ${
+                      formik.values.isCheckRemoveAndReplacment ? "checked" : ""
+                    } name="sameadr" /> Check,
+                    remove and replacement of defective parts / components when
+                    required
+                  </label>
+                </div>
+                <div style="width: 100%; height: 20px">
+                  <label
+                    style="
+                      font-family: Inter;
+                      font-weight: 500;
+                      font-size: 14px;
+                      line-height: 20px;
+                      letter-spacing: -2%;
+                    "
+                  >
+                    <input type="checkbox" ${
+                      formik.values.isCleanFilterComapartment ? "checked" : ""
+                    } name="sameadr" /> Clean
+                    filter compartment.
+                  </label>
+                </div>
+                <div style="width: 100%; height: 20px">
+                  <label
+                    style="
+                      font-family: Inter;
+                      font-weight: 500;
+                      font-size: 14px;
+                      line-height: 20px;
+                      letter-spacing: -2%;
+                    "
+                  >
+                    <input type="checkbox" ${
+                      formik.values.isCleanMachineSurface ? "checked" : ""
+                    } name="sameadr" /> Clean
+                    Machine Surface.
+                  </label>
+                </div>
+                <div style="width: 100%; height: 20px">
+                  <label
+                    style="
+                      font-family: Inter;
+                      font-weight: 500;
+                      font-size: 14px;
+                      line-height: 20px;
+                      letter-spacing: -2%;
+                    "
+                  >
+                    <input type="checkbox" ${
+                      formik.values.isWashFilterbag ? "checked" : ""
+                    } name="sameadr" /> Wash
+                    filter bag.
+                  </label>
+                </div>
+                <div style="width: 100%; height: 49px">
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      width: 100%;
+                    "
+                  >
+                    <div style="width: 611px; height: 24px; gap: 10px">
+                      <label
+                        style="
+                          font-family: Inter;
+                          font-weight: 500;
+                          font-size: 14px;
+                          line-height: 20px;
+                          letter-spacing: -2%;
+                        "
+                      >
+                        <input type="checkbox" ${
+                          formik.values.isWaterMeterReading ? "checked" : ""
+                        } name="sameadr" />
+                        Water Meter Reading:
+                      </label>
+                    </div>
+
+                    <div
+                      style="
+                        width: 611px;
+                        height: 49px;
+                        border-radius: 8px;
+                        border-width: 1px;
+                        padding: 15px;
+                        background-color: #f4f4f4;
+                        border: 1px solid #cdcdcd;
+                        color: #4b5563;
+                      "
+                    >
+                      <div
+                        style="
+                          font-family: Inter;
+                          font-weight: 500;
+                          font-size: 16px;
+                          line-height: 100%;
+                          letter-spacing: -2%;
+                          color: #4b5563;
+                        "
+                      >
+                        ${formik.values.waterMeterReading}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="width: 100%; height: 49px">
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      width: 100%;
+                    "
+                  >
+                    <div style="width: 611px; height: 24px; gap: 10px">
+                      <label
+                        style="
+                          font-family: Inter;
+                          font-weight: 500;
+                          font-size: 14px;
+                          line-height: 20px;
+                          letter-spacing: -2%;
+                        "
+                      >
+                        <input type="checkbox" ${
+                          formik.values.isWaterDispensing ? "checked" : ""
+                        } name="sameadr" />
+                        Water Dispensing:
+                      </label>
+                    </div>
+
+                    <div
+                      style="
+                        width: 611px;
+                        height: 49px;
+                        border-radius: 8px;
+                        border-width: 1px;
+                        padding: 15px;
+                        background-color: #f4f4f4;
+                        border: 1px solid #cdcdcd;
+                        color: #4b5563;
+                      "
+                    >
+                      <div
+                        style="
+                          font-family: Inter;
+                          font-weight: 500;
+                          font-size: 16px;
+                          line-height: 100%;
+                          letter-spacing: -2%;
+                          color: #4b5563;
+                        "
+                      >
+                        ${formik.values.waterDispensing}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div style="width: 100%; height: 49px">
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      width: 100%;
+                      padding-top:10px;
+                    "
+                  >
+                    <div style="width: 611px; height: 24px; gap: 10px">
+                      <label
+                        style="
+                          font-family: Inter;
+                          font-weight: 500;
+                          font-size: 14px;
+                          line-height: 20px;
+                          letter-spacing: -2%;
+                        "
+                      >
+                        <input type="checkbox" ${
+                          formik.values.isWaterTwenty ? "checked" : ""
+                        } name="sameadr" />
+                        Water
+                      </label>
+                    </div>
+
+                    <div
+                      style="
+                        width: 611px;
+                        height: 49px;
+                        border-radius: 8px;
+                        border-width: 1px;
+                        padding: 15px;
+                        background-color: #f4f4f4;
+                        border: 1px solid #cdcdcd;
+                        color: #4b5563;
+                      "
+                    >
+                      <div
+                        style="
+                          font-family: Inter;
+                          font-weight: 500;
+                          font-size: 16px;
+                          line-height: 100%;
+                          letter-spacing: -2%;
+                          color: #4b5563;
+                        "
+                      >
+                         ${formik.values.waterTwenty}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div style="width: 100%; height: 49px">
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      width: 100%;
+                    "
+                  >
+                    <div style="width: 611px; height: 24px; gap: 10px">
+                      <label
+                        style="
+                          font-family: Inter;
+                          font-weight: 500;
+                          font-size: 14px;
+                          line-height: 20px;
+                          letter-spacing: -2%;
+                        "
+                      >
+                        <input type="checkbox" ${
+                          formik.values.isVacuumDollarOne ? "checked" : ""
+                        } name="sameadr" />
+                        Vacuum / Blower
+                      </label>
+                    </div>
+
+                    <div
+                      style="
+                        width: 611px;
+                        height: 49px;
+                        border-radius: 8px;
+                        border-width: 1px;
+                        padding: 15px;
+                        background-color: #f4f4f4;
+                        border: 1px solid #cdcdcd;
+                        color: #4b5563;
+                      "
+                    >
+                      <div
+                        style="
+                          font-family: Inter;
+                          font-weight: 500;
+                          font-size: 16px;
+                          line-height: 100%;
+                          letter-spacing: -2%;
+                          color: #4b5563;
+                        "
+                      >
+                        ${formik.values.vacuumDollarOne}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div style="width: 100%; height: 49px;">
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      width: 100%;
+                    "
+                  >
+                    <div style="width: 611px; height: 24px; gap: 10px">
+                      <label
+                        style="
+                          font-family: Inter;
+                          font-weight: 500;
+                          font-size: 14px;
+                          line-height: 20px;
+                          letter-spacing: -2%;
+                        "
+                      >
+                        <input type="checkbox" ${
+                          formik.values.isJetDollarOne ? "checked" : ""
+                        } name="sameadr" /> Jet
+                        / Foam
+                      </label>
+                    </div>
+
+                    <div
+                      style="
+                        width: 611px;
+                        height: 49px;
+                        border-radius: 8px;
+                        border-width: 1px;
+                        padding: 15px;
+                        background-color: #f4f4f4;
+                        border: 1px solid #cdcdcd;
+                        color: #4b5563;
+                      "
+                    >
+                      <div
+                        style="
+                          font-family: Inter;
+                          font-weight: 500;
+                          font-size: 16px;
+                          line-height: 100%;
+                          letter-spacing: -2%;
+                          color: #4b5563;
+                        "
+                      >
+                        ${formik.values.jetDollarOne}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div style="width: 100%; height: 167px">
+                  <div
+                    style="display: flex; justify-content: space-between; width: 100%"
+                  >
+                    <div style="width: 611px; height: 24px; gap: 10px">
+                      <label
+                        style="
+                          font-family: Inter;
+                          font-weight: 500;
+                          font-size: 14px;
+                          line-height: 20px;
+                          letter-spacing: -2%;
+                        "
+                      >
+                        <input type="checkbox" ${
+                          formik.values.isTotalMeterReadingBefore
+                            ? "checked"
+                            : ""
+                        } name="sameadr" />
+                        Totalizer Meter Reading Before
+                      </label>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 10px">
+                      <div
+                        style="
+                          width: 363px;
+                          height: 49px;
+                          border-radius: 8px;
+                          border-width: 1px;
+                          padding: 15px;
+                          background-color: #f4f4f4;
+                          border: 1px solid #cdcdcd;
+                          color: #4b5563;
+                        "
+                      >
+                        <div
+                          style="
+                            font-family: Inter;
+                            font-weight: 500;
+                            font-size: 16px;
+                            line-height: 100%;
+                            letter-spacing: -2%;
+                            color: #4b5563;
+                          "
+                        >
+                          ${formik.values.totalizerMeterReadingBeforeWater}
+                        </div>
+                      </div>
+                      <div
+                        style="
+                          width: 363px;
+                          height: 49px;
+                          border-radius: 8px;
+                          border-width: 1px;
+                          padding: 15px;
+                          background-color: #f4f4f4;
+                          border: 1px solid #cdcdcd;
+                          color: #4b5563;
+                        "
+                      >
+                        <div
+                          style="
+                            font-family: Inter;
+                            font-weight: 500;
+                            font-size: 16px;
+                            line-height: 100%;
+                            letter-spacing: -2%;
+                            color: #4b5563;
+                          "
+                        >
+                          ${formik.values.totalizerMeterReadingBeforeVaccum}
+                        </div>
+                      </div>
+                      <div
+                        style="
+                          width: 363px;
+                          height: 49px;
+                          border-radius: 8px;
+                          border-width: 1px;
+                          padding: 15px;
+                          background-color: #f4f4f4;
+                          border: 1px solid #cdcdcd;
+                          color: #4b5563;
+                        "
+                      >
+                        <div
+                          style="
+                            font-family: Inter;
+                            font-weight: 500;
+                            font-size: 16px;
+                            line-height: 100%;
+                            letter-spacing: -2%;
+                            color: #4b5563;
+                          "
+                        >
+                        ${formik.values.totalizerMeterReadingBeforeJet}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="width: 100%; height: 167px">
+                  <div
+                    style="display: flex; justify-content: space-between; width: 100%"
+                  >
+                    <div style="width: 300px; height: 24px; gap: 10px">
+                      <label
+                        style="
+                          font-family: Inter;
+                          font-weight: 500;
+                          font-size: 14px;
+                          line-height: 20px;
+                          letter-spacing: -2%;
+                        "
+                      >
+                        <input type="checkbox" ${
+                          formik.values.isTotalMeterReadingAfter
+                            ? "checked"
+                            : ""
+                        } name="sameadr" />
+                        Totalizer Meter Reading after
+                      </label>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 10px">
+                      <div
+                        style="
+                          width: 363px;
+                          height: 49px;
+                          border-radius: 8px;
+                          border-width: 1px;
+                          padding: 15px;
+                          background-color: #f4f4f4;
+                          border: 1px solid #cdcdcd;
+                          color: #4b5563;
+                        "
+                      >
+                        <div
+                          style="
+                            font-family: Inter;
+                            font-weight: 500;
+                            font-size: 16px;
+                            line-height: 100%;
+                            letter-spacing: -2%;
+                            color: #4b5563;
+                          "
+                        >
+                           ${formik.values.totalizerMeterReadingAfterWater}
+                        </div>
+                      </div>
+                      <div
+                        style="
+                          width: 363px;
+                          height: 49px;
+                          border-radius: 8px;
+                          border-width: 1px;
+                          padding: 15px;
+                          background-color: #f4f4f4;
+                          border: 1px solid #cdcdcd;
+                          color: #4b5563;
+                        "
+                      >
+                        <div
+                          style="
+                            font-family: Inter;
+                            font-weight: 500;
+                            font-size: 16px;
+                            line-height: 100%;
+                            letter-spacing: -2%;
+                            color: #4b5563;
+                          "
+                        >
+                                               ${
+                                                 formik.values
+                                                   .totalizerMeterReadingAfterVaccum
+                                               }
+
+                        </div>
+                      </div>
+                      <div
+                        style="
+                          width: 363px;
+                          height: 49px;
+                          border-radius: 8px;
+                          border-width: 1px;
+                          padding: 15px;
+                          background-color: #f4f4f4;
+                          border: 1px solid #cdcdcd;
+                          color: #4b5563;
+                        "
+                      >
+                        <div
+                          style="
+                            font-family: Inter;
+                            font-weight: 500;
+                            font-size: 16px;
+                            line-height: 100%;
+                            letter-spacing: -2%;
+                            color: #4b5563;
+                          "
+                        >
+                                                                   ${
+                                                                     formik
+                                                                       .values
+                                                                       .totalizerMeterReadingAfterJet
+                                                                   }
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="container_5"
+            style="
+              display: flex;
+              justify-content: center;
+              align-self: center;
+              width: 100%;
+              height: 169px;
+              gap: 20px;
+              border-bottom-width: 1px;
+              padding-top:10px;
+              padding-bottom: 5px;
+            "
+          >
+            <div class="row" style="width: 90%; height: 169px">
+              <div style="display: flex; flex-direction: column; gap: 20px">
+                <div
+                  style="
+                    width: 87px;
+                    height: 29px;
+                    font-family: Inter;
+                    font-weight: 700;
+                    font-size: 22px;
+                    line-height: 130%;
+                    letter-spacing: -2%;
+                    color: #1e1e1e;
+                  "
+                >
+                  Request
+                </div>
+                <div
+                  style="
+                    width: 100%;
+                    height: 120px;
+                    font-family: Inter;
+                    font-weight: 500;
+                    font-size: 16px;
+                    line-height: 100%;
+                    letter-spacing: -2%;
+                    color: #4b5563;
+                    padding: 20px;
+                    border-radius: 8px;
+                    gap: 15px;
+                    background-color: #f4f4f4;
+                    border: 1px solid #cdcdcd;
+                  "
+                >
+                                                          ${
+                                                            formik.values
+                                                              .requestTextArea
+                                                          }
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="container_5"
+            style="
+              display: flex;
+              justify-content: center;
+              align-self: center;
+              width: 100%;
+              height: 169px;
+              gap: 20px;
+              border-bottom-width: 1px;
+              padding-top: 5px;
+            "
+          >
+            <div class="row" style="width: 90%; height: 400px; margin-top: 30px">
+              <div style="display: flex; flex-direction: column; gap: 10px">
+                <div
+                  style="
+                    width: 87px;
+                    height: 29px;
+                    font-family: Inter;
+                    font-weight: 700;
+                    font-size: 22px;
+                    line-height: 130%;
+                    letter-spacing: -2%;
+                    color: #1e1e1e;
+                  "
+                >
+                  Rectification
+                </div>
+                <div
+                  style="
+                    width: 100%;
+                    height: 120px;
+                    font-family: Inter;
+                    font-weight: 500;
+                    font-size: 16px;
+                    line-height: 100%;
+                    letter-spacing: -2%;
+                    color: #4b5563;
+                    border-radius: 8px;
+                    padding: 20px;
+                    gap: 15px;
+                    background-color: #f4f4f4;
+                    border: 1px solid #cdcdcd;
+                  "
+                >
+                   ${formik.values.rectification}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="container_6"
+            style="
+              display: flex;
+              justify-content: center;
+              align-self: center;
+              margin-top: 20px;
+              width: 100%;
+              height: 300px;
+              gap: 20px;
+              border-bottom-width: 1px;
+              padding-top: 20px;
+            "
+          >
+            <div class="row" style="width: 90%; height: 169px">
+              <div style="display: flex; flex-direction: column; gap: 20px">
+                <div
+                  style="
+                    width: 87px;
+                    height: 29px;
+                    font-family: Inter;
+                    font-weight: 700;
+                    font-size: 22px;
+                    line-height: 130%;
+                    padding-top: 30px;
+                    letter-spacing: -2%;
+                    color: #1e1e1e;
+                    margin-bottom: 20px;
+                  "
+                >
+                  Replaced
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-evenly;
+                    align-items: center;
+                    width: 100%;
+                    height: 24px;
+                    gap: 15px;
+                  "
+                >
+                  <div style="width: 611px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        formik.values.isNewJetMotor ? "checked" : ""
+                      } name="sameadr" /> New
+                      Jet Motor
+                    </label>
+                  </div>
+                  <div style="width: 611px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        formik.values.isJetHose ? "checked" : ""
+                      } name="sameadr" /> Jet
+                      Hose
+                    </label>
+                  </div>
+                  <div style="width: 611px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        formik.values.isJetNozzle ? "checked" : ""
+                      } name="sameadr" /> Jet
+                      Nozzle
+                    </label>
+                  </div>
+                  <div style="width: 611px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        formik.values.isJetMotorRepaired ? "checked" : ""
+                      } name="sameadr" /> Jet
+                      Motor (Repaired)
+                    </label>
+                  </div>
+                  <div style="width: 611px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        formik.values.isVacuumMotor ? "checked" : ""
+                      } name="sameadr" />
+                      Vacuum Motor
+                    </label>
+                  </div>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-evenly;
+                    align-items: center;
+                    width: 100%;
+                    height: 24px;
+                    gap: 15px;
+                  "
+                >
+                  <div style="width: 611px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        formik.values.isVacuumHose ? "checked" : ""
+                      } name="sameadr" />
+                      Vacuum Hose
+                    </label>
+                  </div>
+                  <div style="width: 611px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        formik.values.isVacuumNozzle ? "checked" : ""
+                      } name="sameadr" />
+                      Vacuum Nozzle
+                    </label>
+                  </div>
+                  <div style="width: 611px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        formik.values.isCh928Acceptor ? "checked" : ""
+                      } name="sameadr" />
+                      CH-928 Acceptor
+                    </label>
+                  </div>
+                  <div style="width: 611px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        formik.values.isBlowerMotor ? "checked" : ""
+                      } name="sameadr" />
+                      Blower Motor
+                    </label>
+                  </div>
+                  <div style="width: 611px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        formik.values.isBlowerHose ? "checked" : ""
+                      } name="sameadr" />
+                      Blower Hose
+                    </label>
+                  </div>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-evenly;
+                    align-items: center;
+                    width: 100%;
+                    height: 24px;
+                    gap: 15px;
+                  "
+                >
+                  <div style="width: 611px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        formik.values.isBlowerNozzle ? "checked" : ""
+                      } name="sameadr" />
+                      Blower Nozzle
+                    </label>
+                  </div>
+                  <div style="width: 611px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        formik.values.isMotherboard ? "checked" : ""
+                      } name="sameadr" />
+                      Motherboard
+                    </label>
+                  </div>
+                  <div style="width: 611px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        formik.values.isSolenoidValve ? "checked" : ""
+                      } name="sameadr" />
+                      Solenoid Valve
+                    </label>
+                  </div>
+                  <div style="width: 611px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        formik.values.isSolenoidCoil ? "checked" : ""
+                      } name="sameadr" />
+                      Solenoid Coil
+                    </label>
+                  </div>
+                  <div style="width: 611px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        formik.values.isTotalizer ? "checked" : ""
+                      } name="sameadr" />
+                      Totalizer
+                    </label>
+                  </div>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-evenly;
+                    align-items: center;
+                    width: 100%;
+                    height: 24px;
+                    gap: 15px;
+                  "
+                >
+                  <div style="width: 611px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        formik.values.isTimer ? "checked" : ""
+                      } name="sameadr" /> Timer
+                    </label>
+                  </div>
+                  <div style="width: 611px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        formik.values.isWaterTap ? "checked" : ""
+                      } name="sameadr" /> Water
+                      Tap
+                    </label>
+                  </div>
+                  <div style="width: 611px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        formik.values.isNayaxUnit ? "checked" : ""
+                      } name="sameadr" /> Nayax
+                      Unit
+                    </label>
+                  </div>
+                  <div style="width: 611px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox"${
+                        formik.values.isNetsUnit ? "checked" : ""
+                      } name="sameadr" /> Nets
+                      Unit
+                    </label>
+                  </div>
+                  <div style="width: 611px; height: 24px; gap: 10px">
+                    <label
+                      style="
+                        font-family: Inter;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 20px;
+                        letter-spacing: -2%;
+                      "
+                    >
+                      <input type="checkbox" ${
+                        formik.values.isNetsBd ? "checked" : ""
+                      } name="sameadr" /> Nets
+                      BD
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="container-7"
+            style="
+              display: flex;
+              justify-content: center;
+              align-self: center;
+              width: 100%;
+              height: 120px;
+              margin-bottom: 30px;
+              gap: 20px;
+              border-bottom-width: 1px;
+            "
+          >
+            <div
+              class="row"
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: end;
+                width: 90%;
+                height: 120px;
+              "
+            >
+              <div
+                style="
+                  display: flex;
+                  justify-content: center;
+                  align-items: end;
+                  width: 350px;
+                  height: 110px;
+                  gap: 10px;
+                  padding-bottom: 10px;
+                  border-width: 1px;
+                  border: 1px solid #000000;
+                "
+              >
+               <img src="${staffImageURL}" width="350" height="100">
+              </div>
+
+              <div
+                style="
+                  display: flex;
+                  justify-content: center;
+                  align-items: end;
+                  width: 350px;
+                  height: 110px;
+                  gap: 10px;
+                  padding-bottom: 10px;
+                  border-width: 1px;
+                  border: 1px solid #000000;
+                "
+              >
+              <img src="${clientImageURL}" width="350" height="100" />
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="container-8"
+            style="
+              display: flex;
+              margin-top: 30px;
+              padding-top: 30px;
+              justify-content: center;
+              align-self: center;
+              width: 100%;
+              height: 314px;
+              gap: 20px;
+              border-bottom-width: 1px;
+              margin-top: 30px;
+            "
+          >
+            <div
+              class="row"
+              style="
+                width: 50%;
+                display: flex;
+                justify-content: center;
+                align-self: center;
+              "
+            >
+              <div
+                style="
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  width: 661px;
+                  height: 145px;
+                  text-align: center;
+                  flex-direction: column;
+                  gap: 10px;
+                "
+              >
+                <div
+                  style="
+                    font-family: Inter;
+                    font-weight: 500;
+                    font-size: 19px;
+                    line-height: 29px;
+                    letter-spacing: 0%;
+                    text-align: center;
+                  "
+                >
+                  QE ELEMECH ENGINEERING PTE LTD 53 Woodlands Industrial <br />
+                  Park E2, Singapore 757473
+                  <br />https://www.qe.com.sg/
+                </div>
+                <div
+                  style="
+                    font-family: Inter;
+                    font-weight: 500;
+                    font-size: 19px;
+                    line-height: 29px;
+                    letter-spacing: 0%;
+                    text-align: center;
+                  "
+                >
+                  Tel: 64844355 | Fax: 64844354 | Email: qeengrg@singnet.com.sg
+                </div>
+                <div>
+                  <img src="/ecc2ac3b439d7dabdfc66ebdb1ded014dd023659.png" alt="" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </body>
+      </html>`;
+      const res = await fetch("http://localhost:5000/pdf/pdFRouter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ html: htmlContent }),
+      });
+    }
+    // setIsLoading(true);
+    // const input = contentRef.current;
+
+    // await document.fonts.ready; // wait for fonts
+
+    // const canvas = await html2canvas(input, {
+    //   useCORS: true,
+    //   scale: 2,
+    //   scrollY: -window.scrollY,
+    // });
+    // const imgData = canvas.toDataURL("image/png");
+    // const pxToMm = (px) => px * 0.264583;
+    // const imgWidthMm = pxToMm(canvas.width);
+    // const imgHeightMm = pxToMm(canvas.height);
+    // const pdf = new jsPDF("p", "mm", [imgHeightMm, imgWidthMm]);
+    // pdf.addImage(imgData, "PNG", 0, 0, imgWidthMm, imgHeightMm);
+    // const blob = pdf.output("blob");
+    // const formData = new FormData();
+    // formData.append("pdfUrl", blob, "output.pdf");
+    // formData.append("id", staffAssignedTask?._id);
+    // dispatch(updateStaffAssignedTaskRequest(formData));
+  };
   return (
     <>
       <div className="p-5 w-100" ref={contentRef} id="pdf-content">
@@ -1466,29 +3305,29 @@ const StaffAssignedManagement = () => {
                           UPLOAD
                         </button>
                       )}
-                      {staffAssignedTask?.isFinalSubmition || !isUpdate ? (
-                        ""
-                      ) : (
-                        <button
-                          aria-label="right"
-                          className="btn-custom-blue rounded-lg px-4 py-3 fs-5 w-25 d-flex align-items-center justify-content-center gap-2"
-                          onClick={finalSubmit}
-                          disabled={isLoading}
-                        >
-                          {isLoading ? (
-                            <>
-                              <span
-                                className="spinner-border spinner-border-sm"
-                                role="status"
-                                aria-hidden="true"
-                              ></span>
-                              <span>Submitting...</span>
-                            </>
-                          ) : (
-                            "FINAL SUBMISSION"
-                          )}
-                        </button>
-                      )}
+                      {/* {staffAssignedTask?.isFinalSubmition || !isUpdate ? ( */}
+                      {/* "" */}
+                      {/* ) : ( */}
+                      <button
+                        aria-label="right"
+                        className="btn-custom-blue rounded-lg px-4 py-3 fs-5 w-25 d-flex align-items-center justify-content-center gap-2"
+                        onClick={finalSubmit}
+                        disabled={isLoading}
+                      >
+                        {isLoading ? (
+                          <>
+                            <span
+                              className="spinner-border spinner-border-sm"
+                              role="status"
+                              aria-hidden="true"
+                            ></span>
+                            <span>Submitting...</span>
+                          </>
+                        ) : (
+                          "FINAL SUBMISSION"
+                        )}
+                      </button>
+                      {/* )} */}
                     </div>
                   </div>
                   <div className="section_6_container">
