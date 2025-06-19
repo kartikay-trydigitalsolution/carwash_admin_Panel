@@ -47,12 +47,7 @@ function* updateStaffAssignedTaskSaga(action) {
     const response = yield call(
       axios.put,
       `/staffassignTask/updatestaffassigntask`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
+      formData
     );
 
     yield put(updateStaffAssignedTaskSuccess(response.data));

@@ -471,7 +471,6 @@ const DataTableComponent = ({
           <button variant="outline" size="icon" onClick={() => handleEdit(row)}>
             {/* <i className="fas fa-eye"></i> */}
             <img src={eye} />
-
           </button>
         </div>
       ),

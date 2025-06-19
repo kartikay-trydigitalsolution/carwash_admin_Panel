@@ -2037,40 +2037,19 @@ const StaffAssignedManagement = () => {
                   Tel: 64844355 | Fax: 64844354 | Email: qeengrg@singnet.com.sg
                 </div>
                 <div>
-                  <img src="/ecc2ac3b439d7dabdfc66ebdb1ded014dd023659.png" alt="" />
+                  <img src="http://157.173.218.220:5001/db/footer_image.png" alt="" />
                 </div>
               </div>
             </div>
           </div>
         </body>
       </html>`;
-      const res = await fetch("http://localhost:5000/pdf/pdFRouter", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ html: htmlContent }),
-      });
+      let data = {
+        html: htmlContent,
+        id: staffAssignedTask?._id,
+      };
+      dispatch(updateStaffAssignedTaskRequest(data));
     }
-    // setIsLoading(true);
-    // const input = contentRef.current;
-
-    // await document.fonts.ready; // wait for fonts
-
-    // const canvas = await html2canvas(input, {
-    //   useCORS: true,
-    //   scale: 2,
-    //   scrollY: -window.scrollY,
-    // });
-    // const imgData = canvas.toDataURL("image/png");
-    // const pxToMm = (px) => px * 0.264583;
-    // const imgWidthMm = pxToMm(canvas.width);
-    // const imgHeightMm = pxToMm(canvas.height);
-    // const pdf = new jsPDF("p", "mm", [imgHeightMm, imgWidthMm]);
-    // pdf.addImage(imgData, "PNG", 0, 0, imgWidthMm, imgHeightMm);
-    // const blob = pdf.output("blob");
-    // const formData = new FormData();
-    // formData.append("pdfUrl", blob, "output.pdf");
-    // formData.append("id", staffAssignedTask?._id);
-    // dispatch(updateStaffAssignedTaskRequest(formData));
   };
   return (
     <>
@@ -3283,12 +3262,6 @@ const StaffAssignedManagement = () => {
                           </Popup>
                         )}
                       </div>
-                      {/* <img
-                        src={right}
-                        alt="right"
-                        className="img-fluid"
-                        style={{ maxWidth: "48%" }}
-                      /> */}
                     </div>
                   </div>
 
@@ -3305,29 +3278,29 @@ const StaffAssignedManagement = () => {
                           UPLOAD
                         </button>
                       )}
-                      {/* {staffAssignedTask?.isFinalSubmition || !isUpdate ? ( */}
-                      {/* "" */}
-                      {/* ) : ( */}
-                      <button
-                        aria-label="right"
-                        className="btn-custom-blue rounded-lg px-4 py-3 fs-5 w-25 d-flex align-items-center justify-content-center gap-2"
-                        onClick={finalSubmit}
-                        disabled={isLoading}
-                      >
-                        {isLoading ? (
-                          <>
-                            <span
-                              className="spinner-border spinner-border-sm"
-                              role="status"
-                              aria-hidden="true"
-                            ></span>
-                            <span>Submitting...</span>
-                          </>
-                        ) : (
-                          "FINAL SUBMISSION"
-                        )}
-                      </button>
-                      {/* )} */}
+                      {staffAssignedTask?.isFinalSubmition || !isUpdate ? (
+                        ""
+                      ) : (
+                        <button
+                          aria-label="right"
+                          className="btn-custom-blue rounded-lg px-4 py-3 fs-5 w-25 d-flex align-items-center justify-content-center gap-2"
+                          onClick={finalSubmit}
+                          disabled={isLoading}
+                        >
+                          {isLoading ? (
+                            <>
+                              <span
+                                className="spinner-border spinner-border-sm"
+                                role="status"
+                                aria-hidden="true"
+                              ></span>
+                              <span>Submitting...</span>
+                            </>
+                          ) : (
+                            "FINAL SUBMISSION"
+                          )}
+                        </button>
+                      )}
                     </div>
                   </div>
                   <div className="section_6_container">

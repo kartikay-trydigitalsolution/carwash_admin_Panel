@@ -16,23 +16,41 @@ const MaintenanceRecordManagement = () => {
   const staffAssignedTask = useSelector(
     (state) => state?.staffAssignTask?.data
   );
+  console.log(staffAssignedTask);
+  // const filteredTasks = staffAssignedTask?.filter((item) => {
+  //   const search = filterData?.toLowerCase();
+  //   if (!item?.taskId?.staffId || !item?.taskId?.machineId) return false;
+  //   const staffFields = ["name"];
+  //   const machineFields = ["location", "machine_sr_no"];
+  //   const itemFields = ["task"];
+  //   const matchStaff = staffFields.some((key) =>
+  //     item.taskId.staffId[key]?.toString().toLowerCase().includes(search)
+  //   );
+  //   const matchMachine = machineFields.some((key) =>
+  //     item.taskId.machineId[key]?.toString().toLowerCase().includes(search)
+  //   );
+  //   return matchStaff || matchMachine;
+  // });
   const filteredTasks = staffAssignedTask?.filter((item) => {
     const search = filterData?.toLowerCase();
+    if (!search) return true; // No search term, include all
 
-    if (!item?.taskId?.staffId || !item?.taskId?.machineId) return false;
+    // Extract safely
+    const staff = item?.taskId?.staffId;
+    const machine = item?.taskId?.machineId;
 
     const staffFields = ["name"];
-
     const machineFields = ["location", "machine_sr_no"];
-    const itemFields = ["task"];
 
     const matchStaff = staffFields.some((key) =>
-      item.taskId.staffId[key]?.toString().toLowerCase().includes(search)
+      staff?.[key]?.toString().toLowerCase().includes(search)
     );
 
-    const matchMachine = machineFields.some((key) =>
-      item.taskId.machineId[key]?.toString().toLowerCase().includes(search)
-    );
+    const matchMachine = machine
+      ? machineFields.some((key) =>
+          machine?.[key]?.toString().toLowerCase().includes(search)
+        )
+      : false;
 
     return matchStaff || matchMachine;
   });
